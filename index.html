@@ -266,7 +266,7 @@
     </div>
 
     <!-- 中間的 3D 賽博球體 -->
-    <div id="bg-video-wrapper" class="fixed inset-0 w-full h-full -z-10 pointer-events-none transition-opacity duration-700 mix-blend-normal dark:mix-blend-screen overflow-hidden">
+    <div id="bg-video-wrapper" class="fixed inset-0 w-full h-full -z-10 pointer-events-none transition-opacity duration-700 mix-blend-normal dark:mix-blend-screen overflow-hidden opacity-60">
         <!-- 深度背景層 -->
         <div id="canvas-depth-layer" class="transition-colors duration-700" style="position: absolute; inset: 0;"></div>
         <!-- Canvas 將由 Three.js 動態注入於此 -->
@@ -574,18 +574,9 @@
             const heroHeight = heroSection?.offsetHeight || window.innerHeight;
             const progress = Math.min(pageYOffset / heroHeight, 1);
             
-            const isMobile = window.innerWidth < 820;
-            let startOpacity, endOpacity;
-            
-            if (window.isDarkMode) {
-                // Dark Mode: 整體透明度降至 60% (半透/暗調)
-                startOpacity = 0.60;
-                endOpacity = 0.40;
-            } else {
-                // Light Mode: 保持明亮設定
-                startOpacity = isMobile ? 1.0 : 0.95;
-                endOpacity = isMobile ? 0.75 : 0.68;
-            }
+            // 無論 Dark 或 Light Mode，初始背景透明度都設為 60%，捲動後降至 40%
+            const startOpacity = 0.60;
+            const endOpacity = 0.40;
             
             const currentOpacity = startOpacity - (progress * (startOpacity - endOpacity));
             bgVideoWrapper.style.opacity = currentOpacity;
@@ -697,7 +688,7 @@
             geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
             geometry.setAttribute('ringInfo', new THREE.Float32BufferAttribute(ringInfo, 2));
 
-            // --- 獨立的 Dark Material (完全還原) ---
+            // --- 獨立的 Dark Material ---
             darkRibbonMaterial = new THREE.ShaderMaterial({
                 uniforms: {
                     uTime: { value: 0 },
@@ -822,7 +813,7 @@
                 dustPositions[i * 3 + 2] = r * Math.cos(phi);
             }
 
-            // --- 獨立的 Dark Dust (完全還原) ---
+            // --- 獨立的 Dark Dust ---
             const darkDustGeometry = new THREE.BufferGeometry();
             const darkDustColors = new Float32Array(DUST_COUNT * 3); 
             for (let i = 0; i < DUST_COUNT; i++) {
