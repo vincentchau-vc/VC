@@ -86,10 +86,16 @@
         @keyframes blink { from, to { opacity: 1; } 50% { opacity: 0; } }
 
         /* --- 全站入場動畫 --- */
+        /* 結合 Scroll Effect (2.2s) 與 Theme Toggle Color Fade (0.7s) 解決覆蓋問題 */
         .reveal-up {
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 2.2s cubic-bezier(0.22, 1, 0.36, 1), transform 2.2s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: opacity 2.2s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 2.2s cubic-bezier(0.22, 1, 0.36, 1),
+                        color 0.7s ease,
+                        background-color 0.7s ease,
+                        border-color 0.7s ease,
+                        filter 0.7s ease;
             will-change: opacity, transform;
         }
         .reveal-up.active {
@@ -100,7 +106,10 @@
         .reveal-image {
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 2.2s cubic-bezier(0.22, 1, 0.36, 1), transform 2.2s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: opacity 2.2s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 2.2s cubic-bezier(0.22, 1, 0.36, 1),
+                        background-color 0.7s ease,
+                        filter 0.7s ease;
             will-change: opacity, transform;
         }
         .reveal-image.active {
@@ -113,7 +122,8 @@
             height: 1px;
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 2.5s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 2.5s cubic-bezier(0.22, 1, 0.36, 1),
+                        background-color 0.7s ease;
             will-change: transform;
         }
         .reveal-line.active {
@@ -233,25 +243,27 @@
                 </div>
             </nav>
 
-            <!-- Right: Light/Dark Mode Toggle (初次載入顯示) -->
-            <button id="theme-toggle" class="flex items-center gap-[6px] cursor-pointer pointer-events-auto transition duration-300 hover:opacity-70 reveal-up hero-reveal h-full" style="transition-delay: 2000ms;">
-                <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] hidden dark:block">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] block dark:hidden">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-                <!-- 文字 - 在 Mobile 隱藏 (hidden)，在 820px 以上顯示 (min-[820px]:block) -->
-                <span id="theme-text" class="hidden min-[820px]:block text-[10px] font-light tracking-[0.2em] leading-none uppercase -translate-y-[1px]">Light</span>
-            </button>
+            <!-- Right: Light/Dark Mode Toggle (初次載入顯示) - 使用 div 包裝避免 reveal-up 覆蓋 hover 動畫 -->
+            <div class="reveal-up hero-reveal h-full flex items-center" style="transition-delay: 2000ms;">
+                <button id="theme-toggle" class="flex items-center gap-[6px] cursor-pointer pointer-events-auto transition duration-300 hover:opacity-70">
+                    <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] hidden dark:block">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] block dark:hidden">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <!-- 文字 - 在 Mobile 隱藏 (hidden)，在 820px 以上顯示 (min-[820px]:block) -->
+                    <span id="theme-text" class="hidden min-[820px]:block text-[10px] font-light tracking-[0.2em] leading-none uppercase -translate-y-[1px]">Light</span>
+                </button>
+            </div>
 
         </div>
     </header>
@@ -277,8 +289,9 @@
         <!-- Hero Section -->
         <section id="hero" class="relative h-[100svh] min-h-[600px] flex flex-col items-center justify-center pt-10 min-[820px]:pt-20 overflow-hidden">
             <div class="flex flex-col items-center -translate-y-[80px] min-[820px]:-translate-y-[100px] z-10 text-center">
-                <p class="text-[18px] min-[820px]:text-[20px] lg:text-[22px] font-normal tracking-[0.02em] text-black dark:text-white mb-6 reveal-up hero-reveal transition-colors duration-700" style="transition-delay: 200ms;">Hello! I am Vincent.</p>
-                <h1 class="text-[48px] min-[820px]:text-[68px] lg:text-[87px] font-light tracking-[0.02em] text-center leading-tight min-[820px]:leading-tight lg:leading-[100px] text-black dark:text-white reveal-up hero-reveal max-w-[320px] min-[820px]:max-w-none transition-colors duration-700" style="transition-delay: 800ms;">
+                <!-- 移除了過度干擾的 transition-colors duration-700，讓 reveal-up 正常運作 -->
+                <p class="text-[18px] min-[820px]:text-[20px] lg:text-[22px] font-normal tracking-[0.02em] text-black dark:text-white mb-6 reveal-up hero-reveal" style="transition-delay: 200ms;">Hello! I am Vincent.</p>
+                <h1 class="text-[48px] min-[820px]:text-[68px] lg:text-[87px] font-light tracking-[0.02em] text-center leading-tight min-[820px]:leading-tight lg:leading-[100px] text-black dark:text-white reveal-up hero-reveal max-w-[320px] min-[820px]:max-w-none" style="transition-delay: 800ms;">
                     Backend Architect & <br class="hidden min-[820px]:block"> Systems Developer
                 </h1>
             </div>
@@ -308,15 +321,15 @@
             <div class="reveal-line mb-8 bg-black dark:bg-white"></div>
             <div class="py-20 min-[820px]:py-32 grid grid-cols-4 min-[820px]:grid-cols-6 items-start gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
                 <div class="col-span-4 min-[820px]:col-span-3 text-center min-[820px]:text-left">
-                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white min-[820px]:md:pr-10 mb-8 min-[820px]:mb-0 reveal-up transition-colors duration-700">
+                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white min-[820px]:md:pr-10 mb-8 min-[820px]:mb-0 reveal-up">
                         Building the invisible <br>power that drives <br>seamless experiences.
                     </h2>
                 </div>
                 <div class="col-span-4 min-[820px]:col-span-3 flex flex-col space-y-6 text-center min-[820px]:text-left">
-                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up transition-colors duration-700" style="transition-delay: 100ms;">
+                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up" style="transition-delay: 100ms;">
                         I specialize in the "under the hood" of digital products — where logic meets performance. With a focus on backend architecture, system integration, and database optimization, I transform complex business requirements into stable, high-performance technical solutions.
                     </p>
-                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up transition-colors duration-700" style="transition-delay: 200ms;">
+                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up" style="transition-delay: 200ms;">
                         I believe that the best systems are the ones you never have to think about because they just work. Efficiently. Securely. Scalably.
                     </p>
                 </div>
@@ -362,22 +375,22 @@
                         </div>
                     </div>
                     <div class="flex flex-wrap justify-center min-[820px]:justify-start gap-4 mt-8 min-[820px]:mt-8 lg:mt-[10px]">
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 200ms;">TypeScript</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 250ms;">Node.js</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 300ms;">Python</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 350ms;">Java</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 400ms;">FastAPI</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 450ms;">SQL</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 200ms;">TypeScript</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 250ms;">Node.js</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 300ms;">Python</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 350ms;">Java</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 400ms;">FastAPI</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 450ms;">SQL</span>
                     </div>
                 </div>
                 <!-- Award Logos -->
                 <div class="col-span-4 min-[820px]:col-start-4 min-[820px]:col-span-3 grid grid-cols-3 gap-y-12 gap-x-4 min-[820px]:flex min-[820px]:flex-wrap min-[820px]:gap-12 items-center justify-items-center min-[820px]:justify-start mt-4 min-[820px]:mt-4 lg:mt-[20px]">
-                    <img src="./assets/home/HKDA.svg" alt="HKDA" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 100ms;">
-                    <img src="./assets/home/Awwwards.svg" alt="Awwwards" class="w-[96px] min-[820px]:w-[96px] lg:w-[120px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 150ms;">
-                    <img src="./assets/home/W3.svg" alt="W3" class="w-[29px] min-[820px]:w-[29px] lg:text-[36px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 200ms;">
-                    <img src="./assets/home/Horizon.svg" alt="Horizon" class="w-[70px] min-[820px]:w-[70px] lg:w-[88px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 250ms;">
-                    <img src="./assets/home/WebAward.svg" alt="WebAward" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 300ms;">
-                    <img src="./assets/home/ComAward.svg" alt="ComAward" class="w-[100px] min-[820px]:w-[100px] lg:w-[124px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 350ms;">
+                    <img src="./assets/home/HKDA.svg" alt="HKDA" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 100ms;">
+                    <img src="./assets/home/Awwwards.svg" alt="Awwwards" class="w-[96px] min-[820px]:w-[96px] lg:w-[120px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 150ms;">
+                    <img src="./assets/home/W3.svg" alt="W3" class="w-[29px] min-[820px]:w-[29px] lg:text-[36px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 200ms;">
+                    <img src="./assets/home/Horizon.svg" alt="Horizon" class="w-[70px] min-[820px]:w-[70px] lg:w-[88px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 250ms;">
+                    <img src="./assets/home/WebAward.svg" alt="WebAward" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 300ms;">
+                    <img src="./assets/home/ComAward.svg" alt="ComAward" class="w-[100px] min-[820px]:w-[100px] lg:w-[124px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 350ms;">
                 </div>
             </div>
         </section>
@@ -385,25 +398,25 @@
         <!-- Works Section -->
         <section id="works" class="custom-container pb-[90px] min-[820px]:pb-[90px] lg:pb-32">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
-                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="01">
+                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="01">
                     <img src="./assets/works/01/01_image_01.webp" alt="Work 01" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="02" style="transition-delay: 100ms;">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="02" style="transition-delay: 100ms;">
                     <img src="./assets/works/02/02_image_01.webp" alt="Work 02" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="03">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="03">
                     <img src="./assets/works/03/03_image_01.webp" alt="Work 03" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="04" style="transition-delay: 100ms;">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="04" style="transition-delay: 100ms;">
                     <img src="./assets/works/04/04_image_01.webp" alt="Work 04" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="05" style="transition-delay: 200ms;">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="05" style="transition-delay: 200ms;">
                     <img src="./assets/works/05/05_image_01.webp" alt="Work 05" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="06">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="06">
                     <img src="./assets/works/06/06_image_01.webp" alt="Work 06" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="07" style="transition-delay: 100ms;">
+                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="07" style="transition-delay: 100ms;">
                     <img src="./assets/works/07/07_image_01.webp" alt="Work 07" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
             </div>
@@ -417,17 +430,22 @@
             <div class="reveal-line mb-8 bg-black dark:bg-white"></div>
             <div class="pt-20 grid grid-cols-4 min-[820px]:grid-cols-6 items-start gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
                 <div class="col-span-4 min-[820px]:col-span-3 text-center min-[820px]:text-left">
-                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white reveal-up transition-colors duration-700">
+                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white reveal-up">
                         Ready to build <br> something solid? <br> Let's talk.
                     </h2>
                 </div>
                 <div class="col-span-4 min-[820px]:col-span-3 flex flex-col items-center min-[820px]:items-start justify-start mt-12 min-[820px]:mt-0 lg:mt-0 text-center min-[820px]:text-left">
-                    <a href="mailto:vcii@live.hk" class="text-[22px] min-[820px]:text-[35px] lg:text-[37px] font-medium leading-tight min-[820px]:leading-tight lg:leading-[37px] tracking-[0px] text-black dark:text-white transition duration-300 cursor-pointer hover:opacity-70 reveal-up" style="transition-delay: 100ms;">vcii@live.hk</a>
-                    <a href="tel:+85298408445" class="mt-[28px] min-[820px]:mt-[36px] text-[22px] min-[820px]:text-[35px] lg:text-[37px] font-medium leading-tight min-[820px]:leading-tight lg:leading-[37px] tracking-[0px] text-black dark:text-white transition duration-300 cursor-pointer hover:opacity-70 reveal-up" style="transition-delay: 200ms;">+852 9840 8445</a>
+                    <!-- 使用 wrapper 保護 reveal-up，讓 hover 動畫不受影響 -->
+                    <div class="reveal-up" style="transition-delay: 100ms;">
+                        <a href="mailto:vcii@live.hk" class="text-[22px] min-[820px]:text-[35px] lg:text-[37px] font-medium leading-tight min-[820px]:leading-tight lg:leading-[37px] tracking-[0px] text-black dark:text-white transition duration-300 cursor-pointer hover:opacity-70">vcii@live.hk</a>
+                    </div>
+                    <div class="reveal-up mt-[28px] min-[820px]:mt-[36px]" style="transition-delay: 200ms;">
+                        <a href="tel:+85298408445" class="text-[22px] min-[820px]:text-[35px] lg:text-[37px] font-medium leading-tight min-[820px]:leading-tight lg:leading-[37px] tracking-[0px] text-black dark:text-white transition duration-300 cursor-pointer hover:opacity-70">+852 9840 8445</a>
+                    </div>
                 </div>
             </div>
             <!-- Copyright 宣告 -->
-            <div class="mt-[110px] pb-[80px] text-[10px] min-[820px]:text-[12px] lg:text-[14px] text-gray-500 dark:text-gray-400 text-center min-[820px]:text-left tracking-wide reveal-up transition-colors duration-700">
+            <div class="mt-[110px] pb-[80px] text-[10px] min-[820px]:text-[12px] lg:text-[14px] text-gray-500 dark:text-gray-400 text-center min-[820px]:text-left tracking-wide reveal-up">
                 Copyright &copy; 2026 VCII. All rights reserved.
             </div>
         </section>
@@ -1021,7 +1039,7 @@
                 const img = document.createElement('img');
                 img.src = `./assets/works/${id}/${id}_image_${i.toString().padStart(2, '0')}.webp`;
                 // 圖片佔位底色切換：Light Mode 淺灰 / Dark Mode 深黑
-                img.className = 'w-full h-auto object-cover mb-12 bg-[#f0f0f0] dark:bg-[#050505] transition-colors duration-700 reveal-image';
+                img.className = 'w-full h-auto object-cover mb-12 bg-[#f0f0f0] dark:bg-[#050505] reveal-image';
                 img.onerror = function() { this.remove(); };
                 imagesContainer.appendChild(img);
                 setTimeout(() => img.classList.add('active'), 100 + (i * 150));
