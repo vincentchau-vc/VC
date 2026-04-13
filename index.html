@@ -249,8 +249,8 @@
                 <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] block dark:hidden">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
-                <!-- 文字 - 移高2px -->
-                <span id="theme-text" class="text-[10px] font-light tracking-[0.2em] leading-none uppercase -translate-y-[2px]">Light</span>
+                <!-- 文字 - 由 -translate-y-[2px] 變更為 -translate-y-[1px] 以達到向下微調 1px 的效果 -->
+                <span id="theme-text" class="text-[10px] font-light tracking-[0.2em] leading-none uppercase -translate-y-[1px]">Light</span>
             </button>
 
         </div>
@@ -447,8 +447,8 @@
                 <button id="modal-close-btn" class="
                     /* Mobile/Vertical: Pill button at bottom */
                     fixed bottom-[20px] left-1/2 -translate-x-1/2 w-auto h-auto px-12 py-4 bg-black text-white dark:bg-white dark:text-black rounded-full font-bold text-[14px] tracking-widest uppercase flex items-center justify-center
-                    /* Desktop/Horizontal: Circular icon button resetting fixed state */
-                    min-[1351px]:static min-[1351px]:translate-x-0 min-[1351px]:w-[75px] min-[1351px]:h-[75px] min-[1351px]:p-0 min-[1351px]:bg-transparent min-[1351px]:text-black min-[1351px]:dark:text-white min-[1351px]:border min-[1351px]:border-black/30 min-[1351px]:dark:border-white/30
+                    /* Desktop/Horizontal: Circular icon button resetting fixed state。修正了 min-[1351px]:dark:bg-transparent 以避免與 Mobile 的白底衝突 */
+                    min-[1351px]:static min-[1351px]:translate-x-0 min-[1351px]:w-[75px] min-[1351px]:h-[75px] min-[1351px]:p-0 min-[1351px]:bg-transparent min-[1351px]:dark:bg-transparent min-[1351px]:text-black min-[1351px]:dark:text-white min-[1351px]:border min-[1351px]:border-black/30 min-[1351px]:dark:border-white/30
                     hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition duration-300 cursor-pointer z-[100001]">
                     <span class="min-[1351px]:hidden">CLOSE</span>
                     <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="hidden min-[1351px]:block w-[14px] h-[14px]">
@@ -574,9 +574,17 @@
             const heroHeight = heroSection?.offsetHeight || window.innerHeight;
             const progress = Math.min(pageYOffset / heroHeight, 1);
             
-            // 無論 Dark 或 Light Mode，初始背景透明度都設為 60%，捲動後降至 40%
-            const startOpacity = 0.60;
-            const endOpacity = 0.40;
+            let startOpacity, endOpacity;
+            
+            if (window.isDarkMode) {
+                // Dark Mode: 初始背景透明度 60%，捲動後降至 40%
+                startOpacity = 0.60;
+                endOpacity = 0.40;
+            } else {
+                // Light Mode: 初始背景透明度 40%，捲動後降至 20%
+                startOpacity = 0.40;
+                endOpacity = 0.20;
+            }
             
             const currentOpacity = startOpacity - (progress * (startOpacity - endOpacity));
             bgVideoWrapper.style.opacity = currentOpacity;
@@ -601,7 +609,8 @@
 
         function updateSphereScale() {
             if (!ribbons) return;
-            const scale = window.innerWidth < 820 ? 1.24 : 1.5;
+            // Mobile 放大20% (從原本的 1.24 放大 1.2 倍約為 1.49)
+            const scale = window.innerWidth < 820 ? 1.49 : 1.5;
             ribbons.scale.set(scale, scale, scale);
             if (darkDustPoints) darkDustPoints.scale.setScalar(scale);
             if (lightDustPoints) lightDustPoints.scale.setScalar(scale);
@@ -688,7 +697,7 @@
             geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
             geometry.setAttribute('ringInfo', new THREE.Float32BufferAttribute(ringInfo, 2));
 
-            // --- 獨立的 Dark Material ---
+            // --- 獨立的 Dark Material (完全還原) ---
             darkRibbonMaterial = new THREE.ShaderMaterial({
                 uniforms: {
                     uTime: { value: 0 },
@@ -813,7 +822,7 @@
                 dustPositions[i * 3 + 2] = r * Math.cos(phi);
             }
 
-            // --- 獨立的 Dark Dust ---
+            // --- 獨立的 Dark Dust (完全還原) ---
             const darkDustGeometry = new THREE.BufferGeometry();
             const darkDustColors = new Float32Array(DUST_COUNT * 3); 
             for (let i = 0; i < DUST_COUNT; i++) {
