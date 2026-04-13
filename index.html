@@ -86,7 +86,6 @@
         @keyframes blink { from, to { opacity: 1; } 50% { opacity: 0; } }
 
         /* --- 全站入場動畫 --- */
-        /* 結合 Scroll Effect (2.2s) 與 Theme Toggle Color Fade (0.7s) 解決覆蓋問題 */
         .reveal-up {
             opacity: 0;
             transform: translateY(30px);
@@ -178,22 +177,19 @@
             grid-template-columns: repeat(4, 1fr);
             column-gap: 10px;
             pointer-events: none;
-            z-index: 9999;
+            z-index: 2147483647; /* 確保 Grid 浮在最上層 */
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        #design-grid.active { opacity: 1; }
-        .grid-col-guide { height: 100%; }
+        #design-grid.active { opacity: 1 !important; }
         
-        .dark .grid-col-guide {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        html:not(.dark) .grid-col-guide {
-            background-color: rgba(0, 0, 0, 0.03);
-            border-left: 1px solid rgba(0, 0, 0, 0.05);
-            border-right: 1px solid rgba(0, 0, 0, 0.05);
+        /* 統一灰色網格 (不分 Dark/Light mode) */
+        .grid-col-guide {
+            height: 100%;
+            background-color: rgba(128, 128, 128, 0.12); /* 淺灰色填充 */
+            border-left: 1px dashed rgba(128, 128, 128, 0.4); /* 灰色虛線邊線 */
+            border-right: 1px dashed rgba(128, 128, 128, 0.4);
+            pointer-events: none;
         }
 
         @media (min-width: 820px) { #design-grid { padding: 0 50px; grid-template-columns: repeat(6, 1fr); column-gap: 20px; } }
@@ -209,23 +205,32 @@
 </head>
 <body class="antialiased selection:bg-black/30 selection:text-black dark:selection:bg-white/30 dark:selection:text-white lock-scroll bg-white dark:bg-[#000] text-black dark:text-white transition-colors duration-700">
 
+    <!-- Design Grid (按下 G 顯示網格) -->
+    <div id="design-grid">
+        <div class="grid-col-guide"></div>
+        <div class="grid-col-guide"></div>
+        <div class="grid-col-guide"></div>
+        <div class="grid-col-guide"></div>
+        <!-- 喺 Mobile 隱藏，Desktop 顯示多出黎既 2 格 -->
+        <div class="grid-col-guide hidden min-[820px]:block"></div>
+        <div class="grid-col-guide hidden min-[820px]:block"></div>
+    </div>
+
     <!-- Intro Screen -->
     <div id="intro-screen" class="bg-white dark:bg-black">
         <h1 id="typing-text" class="cursor-blink text-black dark:text-white"></h1>
     </div>
 
     <!-- 全域 Header (包含 Logo, 居中 Menu, 右側 Theme Toggle) -->
-    <!-- 使用 mix-blend-difference 和 text-white 確保白底變黑、黑底變白 -->
     <header class="fixed top-[33px] left-0 w-full z-[100000] mix-blend-difference text-white pointer-events-none">
-        <!-- 確保 Header 本身擁有高度，完美居中所有元素 -->
         <div class="custom-container flex justify-between items-center relative h-[36px]">
             
-            <!-- Left: Logo (受滾動控制顯示，初始隱藏 opacity-0) - 移高1px -->
+            <!-- Left: Logo -->
             <a href="#" id="main-logo" class="flex items-center cursor-pointer transition-opacity duration-500 opacity-0 pointer-events-none hover:opacity-70 h-full">
                 <img src="./assets/home/Logo.svg" alt="VCII" class="w-[36px] object-contain -translate-y-[1px]">
             </a>
 
-            <!-- Center: Menu (絕對水平置中 & 垂直置中) -->
+            <!-- Center: Menu -->
             <nav id="nav-menu" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex justify-center items-center text-[13px] min-[820px]:text-[13px] lg:text-[15px] font-bold tracking-[0.1em] uppercase pointer-events-auto w-max h-full">
                 <div class="flex space-x-[34px] min-[820px]:space-x-[34px] lg:space-x-[68px] reveal-up hero-reveal" style="transition-delay: 2000ms;">
                     <a href="#about" class="relative group transition duration-300 cursor-pointer flex flex-col items-center justify-center">
@@ -243,7 +248,7 @@
                 </div>
             </nav>
 
-            <!-- Right: Light/Dark Mode Toggle (初次載入顯示) - 使用 div 包裝避免 reveal-up 覆蓋 hover 動畫 -->
+            <!-- Right: Light/Dark Mode Toggle -->
             <div class="reveal-up hero-reveal h-full flex items-center" style="transition-delay: 2000ms;">
                 <button id="theme-toggle" class="flex items-center gap-[6px] cursor-pointer pointer-events-auto transition duration-300 hover:opacity-70">
                     <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] hidden dark:block">
@@ -260,7 +265,6 @@
                     <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] block dark:hidden">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
-                    <!-- 文字 - 在 Mobile 隱藏 (hidden)，在 820px 以上顯示 (min-[820px]:block) -->
                     <span id="theme-text" class="hidden min-[820px]:block text-[10px] font-light tracking-[0.2em] leading-none uppercase -translate-y-[1px]">Light</span>
                 </button>
             </div>
@@ -289,7 +293,6 @@
         <!-- Hero Section -->
         <section id="hero" class="relative h-[100svh] min-h-[600px] flex flex-col items-center justify-center pt-10 min-[820px]:pt-20 overflow-hidden">
             <div class="flex flex-col items-center -translate-y-[80px] min-[820px]:-translate-y-[100px] z-10 text-center">
-                <!-- 移除了過度干擾的 transition-colors duration-700，讓 reveal-up 正常運作 -->
                 <p class="text-[18px] min-[820px]:text-[20px] lg:text-[22px] font-normal tracking-[0.02em] text-black dark:text-white mb-6 reveal-up hero-reveal" style="transition-delay: 200ms;">Hello! I am Vincent.</p>
                 <h1 class="text-[48px] min-[820px]:text-[68px] lg:text-[87px] font-light tracking-[0.02em] text-center leading-tight min-[820px]:leading-tight lg:leading-[100px] text-black dark:text-white reveal-up hero-reveal max-w-[320px] min-[820px]:max-w-none" style="transition-delay: 800ms;">
                     Backend Architect & <br class="hidden min-[820px]:block"> Systems Developer
@@ -321,15 +324,15 @@
             <div class="reveal-line mb-8 bg-black dark:bg-white"></div>
             <div class="py-20 min-[820px]:py-32 grid grid-cols-4 min-[820px]:grid-cols-6 items-start gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
                 <div class="col-span-4 min-[820px]:col-span-3 text-center min-[820px]:text-left">
-                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white min-[820px]:md:pr-10 mb-8 min-[820px]:mb-0 reveal-up">
+                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white min-[820px]:md:pr-10 mb-8 min-[820px]:mb-0 reveal-up transition-colors duration-700">
                         Building the invisible <br>power that drives <br>seamless experiences.
                     </h2>
                 </div>
                 <div class="col-span-4 min-[820px]:col-span-3 flex flex-col space-y-6 text-center min-[820px]:text-left">
-                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up" style="transition-delay: 100ms;">
+                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up transition-colors duration-700" style="transition-delay: 100ms;">
                         I specialize in the "under the hood" of digital products — where logic meets performance. With a focus on backend architecture, system integration, and database optimization, I transform complex business requirements into stable, high-performance technical solutions.
                     </p>
-                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up" style="transition-delay: 200ms;">
+                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up transition-colors duration-700" style="transition-delay: 200ms;">
                         I believe that the best systems are the ones you never have to think about because they just work. Efficiently. Securely. Scalably.
                     </p>
                 </div>
@@ -375,22 +378,22 @@
                         </div>
                     </div>
                     <div class="flex flex-wrap justify-center min-[820px]:justify-start gap-4 mt-8 min-[820px]:mt-8 lg:mt-[10px]">
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 200ms;">TypeScript</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 250ms;">Node.js</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 300ms;">Python</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 350ms;">Java</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 400ms;">FastAPI</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 450ms;">SQL</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 200ms;">TypeScript</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 250ms;">Node.js</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 300ms;">Python</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 350ms;">Java</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 400ms;">FastAPI</span>
+                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up transition-colors duration-700" style="transition-delay: 450ms;">SQL</span>
                     </div>
                 </div>
                 <!-- Award Logos -->
                 <div class="col-span-4 min-[820px]:col-start-4 min-[820px]:col-span-3 grid grid-cols-3 gap-y-12 gap-x-4 min-[820px]:flex min-[820px]:flex-wrap min-[820px]:gap-12 items-center justify-items-center min-[820px]:justify-start mt-4 min-[820px]:mt-4 lg:mt-[20px]">
-                    <img src="./assets/home/HKDA.svg" alt="HKDA" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 100ms;">
-                    <img src="./assets/home/Awwwards.svg" alt="Awwwards" class="w-[96px] min-[820px]:w-[96px] lg:w-[120px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 150ms;">
-                    <img src="./assets/home/W3.svg" alt="W3" class="w-[29px] min-[820px]:w-[29px] lg:text-[36px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 200ms;">
-                    <img src="./assets/home/Horizon.svg" alt="Horizon" class="w-[70px] min-[820px]:w-[70px] lg:w-[88px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 250ms;">
-                    <img src="./assets/home/WebAward.svg" alt="WebAward" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 300ms;">
-                    <img src="./assets/home/ComAward.svg" alt="ComAward" class="w-[100px] min-[820px]:w-[100px] lg:w-[124px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 350ms;">
+                    <img src="./assets/home/HKDA.svg" alt="HKDA" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 100ms;">
+                    <img src="./assets/home/Awwwards.svg" alt="Awwwards" class="w-[96px] min-[820px]:w-[96px] lg:w-[120px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 150ms;">
+                    <img src="./assets/home/W3.svg" alt="W3" class="w-[29px] min-[820px]:w-[29px] lg:text-[36px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 200ms;">
+                    <img src="./assets/home/Horizon.svg" alt="Horizon" class="w-[70px] min-[820px]:w-[70px] lg:w-[88px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 250ms;">
+                    <img src="./assets/home/WebAward.svg" alt="WebAward" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 300ms;">
+                    <img src="./assets/home/ComAward.svg" alt="ComAward" class="w-[100px] min-[820px]:w-[100px] lg:w-[124px] object-contain brightness-0 dark:invert transition-all duration-700 reveal-up" style="transition-delay: 350ms;">
                 </div>
             </div>
         </section>
@@ -398,25 +401,25 @@
         <!-- Works Section -->
         <section id="works" class="custom-container pb-[90px] min-[820px]:pb-[90px] lg:pb-32">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
-                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="01">
+                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="01">
                     <img src="./assets/works/01/01_image_01.webp" alt="Work 01" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="02" style="transition-delay: 100ms;">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="02" style="transition-delay: 100ms;">
                     <img src="./assets/works/02/02_image_01.webp" alt="Work 02" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="03">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="03">
                     <img src="./assets/works/03/03_image_01.webp" alt="Work 03" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="04" style="transition-delay: 100ms;">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="04" style="transition-delay: 100ms;">
                     <img src="./assets/works/04/04_image_01.webp" alt="Work 04" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="05" style="transition-delay: 200ms;">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="05" style="transition-delay: 200ms;">
                     <img src="./assets/works/05/05_image_01.webp" alt="Work 05" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="06">
+                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="06">
                     <img src="./assets/works/06/06_image_01.webp" alt="Work 06" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="07" style="transition-delay: 100ms;">
+                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] transition-colors duration-700 cursor-pointer overflow-hidden group reveal-image" data-id="07" style="transition-delay: 100ms;">
                     <img src="./assets/works/07/07_image_01.webp" alt="Work 07" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
                 </div>
             </div>
@@ -430,12 +433,11 @@
             <div class="reveal-line mb-8 bg-black dark:bg-white"></div>
             <div class="pt-20 grid grid-cols-4 min-[820px]:grid-cols-6 items-start gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
                 <div class="col-span-4 min-[820px]:col-span-3 text-center min-[820px]:text-left">
-                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white reveal-up">
+                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white reveal-up transition-colors duration-700">
                         Ready to build <br> something solid? <br> Let's talk.
                     </h2>
                 </div>
                 <div class="col-span-4 min-[820px]:col-span-3 flex flex-col items-center min-[820px]:items-start justify-start mt-12 min-[820px]:mt-0 lg:mt-0 text-center min-[820px]:text-left">
-                    <!-- 使用 wrapper 保護 reveal-up，讓 hover 動畫不受影響 -->
                     <div class="reveal-up" style="transition-delay: 100ms;">
                         <a href="mailto:vcii@live.hk" class="text-[22px] min-[820px]:text-[35px] lg:text-[37px] font-medium leading-tight min-[820px]:leading-tight lg:leading-[37px] tracking-[0px] text-black dark:text-white transition duration-300 cursor-pointer hover:opacity-70">vcii@live.hk</a>
                     </div>
@@ -445,7 +447,7 @@
                 </div>
             </div>
             <!-- Copyright 宣告 -->
-            <div class="mt-[110px] pb-[80px] text-[10px] min-[820px]:text-[12px] lg:text-[14px] text-gray-500 dark:text-gray-400 text-center min-[820px]:text-left tracking-wide reveal-up">
+            <div class="mt-[110px] pb-[80px] text-[10px] min-[820px]:text-[12px] lg:text-[14px] text-gray-500 dark:text-gray-400 text-center min-[820px]:text-left tracking-wide reveal-up transition-colors duration-700">
                 Copyright &copy; 2026 VCII. All rights reserved.
             </div>
         </section>
@@ -458,15 +460,15 @@
     <div id="project-modal" class="fixed inset-x-0 bottom-0 top-[81px] z-[99999] bg-white dark:bg-[#0A0A0A] flex flex-col min-[1351px]:flex-row w-full translate-y-full transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-y-auto min-[1351px]:overflow-hidden shadow-none">
         
         <!-- 文字資訊容器 -->
-        <div class="w-full min-[1351px]:w-1/3 h-auto min-[1351px]:h-full bg-white dark:bg-[#0A0A0A] transition-colors duration-700 p-8 md:p-12 lg:p-20 flex flex-col relative border-none min-[1351px]:border-l border-black/10 dark:border-white/10 shrink-0 text-center min-[1351px]:text-left items-center min-[1351px]:items-start order-1 min-[1351px]:order-2">
+        <div id="modal-right-panel" class="w-full min-[1351px]:w-1/3 h-auto min-[1351px]:h-full min-[1351px]:overflow-y-auto hide-scrollbar bg-white dark:bg-[#0A0A0A] transition-colors duration-700 p-8 md:p-12 lg:p-20 flex flex-col relative border-none min-[1351px]:border-l border-black/10 dark:border-white/10 shrink-0 text-center min-[1351px]:text-left items-center min-[1351px]:items-start order-1 min-[1351px]:order-2">
             
             <!-- Close Button -->
-            <div class="absolute top-8 right-8 md:top-12 md:right-12 min-[1351px]:relative min-[1351px]:top-0 min-[1351px]:right-0 min-[1351px]:w-full min-[1351px]:flex min-[1351px]:justify-end">
+            <div class="absolute top-8 right-8 md:top-12 md:right-12 min-[1351px]:sticky min-[1351px]:top-8 min-[1351px]:right-0 min-[1351px]:w-full min-[1351px]:flex min-[1351px]:justify-end min-[1351px]:z-[100005]">
                 <button id="modal-close-btn" class="
                     /* Mobile/Vertical: Pill button at bottom */
                     fixed bottom-[20px] left-1/2 -translate-x-1/2 w-auto h-auto px-12 py-4 bg-black text-white dark:bg-white dark:text-black rounded-full font-bold text-[14px] tracking-widest uppercase flex items-center justify-center
-                    /* Desktop/Horizontal: Circular icon button resetting fixed state。修正了 min-[1351px]:dark:bg-transparent 以避免與 Mobile 的白底衝突 */
-                    min-[1351px]:static min-[1351px]:translate-x-0 min-[1351px]:w-[75px] min-[1351px]:h-[75px] min-[1351px]:p-0 min-[1351px]:bg-transparent min-[1351px]:dark:bg-transparent min-[1351px]:text-black min-[1351px]:dark:text-white min-[1351px]:border min-[1351px]:border-black/30 min-[1351px]:dark:border-white/30
+                    /* Desktop/Horizontal: Circular icon button resetting fixed state */
+                    min-[1351px]:static min-[1351px]:translate-x-0 min-[1351px]:w-[75px] min-[1351px]:h-[75px] min-[1351px]:p-0 min-[1351px]:bg-white min-[1351px]:dark:bg-[#0A0A0A] min-[1351px]:text-black min-[1351px]:dark:text-white min-[1351px]:border min-[1351px]:border-black/30 min-[1351px]:dark:border-white/30
                     hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition duration-300 cursor-pointer z-[100001]">
                     <span class="min-[1351px]:hidden">CLOSE</span>
                     <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="hidden min-[1351px]:block w-[14px] h-[14px]">
@@ -475,7 +477,8 @@
                 </button>
             </div>
             
-            <div class="mt-16 md:mt-24 min-[1351px]:pr-4 flex-grow">
+            <!-- 文字區塊 (跟隨父層一起滾動) -->
+            <div id="modal-text-container" class="mt-16 md:mt-24 min-[1351px]:pr-4 flex-grow w-full">
                 <p id="modal-category" class="text-[12px] min-[820px]:text-[12px] lg:text-[14px] text-gray-500 dark:text-gray-400 mb-4 tracking-wide transition-colors duration-700"></p>
                 <h2 id="modal-title" class="text-[30px] min-[820px]:text-[38px] lg:text-[40px] font-bold text-black dark:text-white leading-tight mb-8 transition-colors duration-700"></h2>
                 <p id="modal-desc" class="text-[12px] min-[820px]:text-[14px] lg:text-[16px] text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap transition-colors duration-700"></p>
@@ -544,9 +547,36 @@
         };
         bindHovers();
 
+        const handleScrollCursorMove = (e) => {
+            // 如果 Hover 緊喺 Button 或者 Link 上面 (例如 Close / 左右箭嘴)，強制取消 scroll-mode
+            if (e.target.closest('button, a, .cursor-pointer:not(.portfolio-item)')) {
+                cursor.classList.remove('scroll-mode');
+                return;
+            }
+
+            let target = e.currentTarget;
+            // 於 Tablet/Mobile 版面時，檢查整個 Modal 是否可滾動
+            if (window.innerWidth < 1351) {
+                target = document.getElementById('project-modal');
+            }
+            // 判斷是否有隱藏的滾動區域
+            if (target && target.scrollHeight > Math.ceil(target.clientHeight)) {
+                cursor.classList.add('scroll-mode');
+            } else {
+                cursor.classList.remove('scroll-mode');
+            }
+        };
+
         const modalImagesContainer = document.getElementById('modal-images-container');
-        modalImagesContainer.addEventListener('mouseenter', () => cursor.classList.add('scroll-mode'));
-        modalImagesContainer.addEventListener('mouseleave', () => cursor.classList.remove('scroll-mode'));
+        modalImagesContainer.addEventListener('mousemove', handleScrollCursorMove);
+        modalImagesContainer.addEventListener('mouseleave', cursorUnscroll);
+
+        // 右側面板 Hover 時也加入 Scroll 游標提示 (按需顯示)
+        const modalRightPanel = document.getElementById('modal-right-panel');
+        if (modalRightPanel) {
+            modalRightPanel.addEventListener('mousemove', handleScrollCursorMove);
+            modalRightPanel.addEventListener('mouseleave', cursorUnscroll);
+        }
 
         const revealObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
@@ -715,7 +745,7 @@
             geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
             geometry.setAttribute('ringInfo', new THREE.Float32BufferAttribute(ringInfo, 2));
 
-            // --- 獨立的 Dark Material (完全還原) ---
+            // --- 獨立的 Dark Material ---
             darkRibbonMaterial = new THREE.ShaderMaterial({
                 uniforms: {
                     uTime: { value: 0 },
@@ -840,7 +870,7 @@
                 dustPositions[i * 3 + 2] = r * Math.cos(phi);
             }
 
-            // --- 獨立的 Dark Dust (完全還原) ---
+            // --- 獨立的 Dark Dust ---
             const darkDustGeometry = new THREE.BufferGeometry();
             const darkDustColors = new Float32Array(DUST_COUNT * 3); 
             for (let i = 0; i < DUST_COUNT; i++) {
@@ -994,7 +1024,7 @@
         });
 
         // Data Definition
-        const commonDescPrefix = "Co-founded in the 1980s by Alice King, Alisan Fine Arts is Hong Kong’s longest-standing contemporary gallery, celebrated for its trailblazing promotion of Chinese contemporary art and New Ink art. The gallery has consistently championed artists from the Greater China region and Chinese diaspora, making an impact on cross-cultural dialogues and global appreciation of diverse artistic expressions. With locations in Hong Kong’s Central and Aberdeen districts, as well as New York, Alisan Fine Arts is committed to expanding its vision by fostering an innovative creative platform and supporting the next generation of Chinese contemporary artists worldwide.";
+        const commonDescPrefix = "Co-founded in the 1980s by Alice King, Alisan Fine Arts is Hong Kong’s longest-standing contemporary gallery, celebrated for its trailblazing promotion of Chinese contemporary art and New Ink art. The gallery has consistently championed artists from the Greater China region and Chinese diaspora, making an impact on cross-cultural dialogues and global appreciation of diverse artistic expressions. With locations in Hong Kong’s Central and Aberdeen districts, as well as New York, Alisan Fine Arts is committed to expanding institutional presence and pushing boundaries within the local arts ecosystem.";
 
         const projectsData = {
             '01': { 
@@ -1048,6 +1078,8 @@
             // Scroll to top
             imagesContainer.scrollTop = 0;
             modal.scrollTop = 0;
+            const rightPanel = document.getElementById('modal-right-panel');
+            if (rightPanel) rightPanel.scrollTop = 0;
         };
 
         const openModal = (id) => {
@@ -1113,8 +1145,19 @@
 
         document.getElementById('modal-close-btn').addEventListener('click', closeModal);
         modalBackdrop.addEventListener('click', closeModal);
-        document.addEventListener('keydown', (e) => {
-            if (e.key.toLowerCase() === 'g') document.getElementById('design-grid')?.classList.toggle('active');
+        
+        // --- 修正 Grid 鍵盤監聽 ---
+        window.addEventListener('keydown', (e) => {
+            // 防止在 input 等元件打字時誤觸
+            if (e.target && e.target.tagName) {
+                const tag = e.target.tagName.toLowerCase();
+                if (tag === 'input' || tag === 'textarea') return;
+            }
+            
+            if (e.key && e.key.toLowerCase() === 'g') {
+                const grid = document.getElementById('design-grid');
+                if (grid) grid.classList.toggle('active');
+            }
             if (e.key === 'Escape') closeModal();
         });
     </script>
