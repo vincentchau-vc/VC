@@ -183,12 +183,12 @@
         }
         #design-grid.active { opacity: 1 !important; }
         
-        /* 統一灰色網格 (不分 Dark/Light mode) */
+        /* 統一香檳金網格 (不分 Dark/Light mode) */
         .grid-col-guide {
             height: 100%;
-            background-color: rgba(128, 128, 128, 0.12); /* 淺灰色填充 */
-            border-left: 1px dashed rgba(128, 128, 128, 0.4); /* 灰色虛線邊線 */
-            border-right: 1px dashed rgba(128, 128, 128, 0.4);
+            background-color: rgba(225, 198, 153, 0.12); /* 香檳金填充 */
+            border-left: 1px dashed rgba(225, 198, 153, 0.45); /* 香檳金虛線邊線 */
+            border-right: 1px dashed rgba(225, 198, 153, 0.45);
             pointer-events: none;
         }
 
@@ -201,6 +201,11 @@
         @media (min-width: 820px) { .custom-container { padding: 0 50px; } }
         @media (min-width: 1024px) { .custom-container { padding: 0 75px; } }
         @media (min-width: 1280px) { .custom-container { padding: 0 101px; } }
+
+        /* Theme Sync (消除切換主題時的過渡延遲) */
+        body.theme-switching, body.theme-switching * {
+            transition-delay: 0ms !important;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-black/30 selection:text-black dark:selection:bg-white/30 dark:selection:text-white lock-scroll bg-white dark:bg-[#000] text-black dark:text-white transition-colors duration-700">
@@ -988,6 +993,12 @@
         themeToggleBtn.addEventListener('click', (e) => {
             e.preventDefault();
             window.isDarkMode = !window.isDarkMode;
+
+            // 強制移除所有元素的主題切換延遲，確保同步 (750ms 對應 Tailwind duration-700)
+            document.body.classList.add('theme-switching');
+            setTimeout(() => {
+                document.body.classList.remove('theme-switching');
+            }, 750);
 
             if (window.isDarkMode) {
                 document.documentElement.classList.add('dark');
