@@ -249,8 +249,8 @@
                 <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] block dark:hidden">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
-                <!-- 文字 - 由 -translate-y-[2px] 變更為 -translate-y-[1px] 以達到向下微調 1px 的效果 -->
-                <span id="theme-text" class="text-[10px] font-light tracking-[0.2em] leading-none uppercase -translate-y-[1px]">Light</span>
+                <!-- 文字 - 在 Mobile 隱藏 (hidden)，在 820px 以上顯示 (min-[820px]:block) -->
+                <span id="theme-text" class="hidden min-[820px]:block text-[10px] font-light tracking-[0.2em] leading-none uppercase -translate-y-[1px]">Light</span>
             </button>
 
         </div>
