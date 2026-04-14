@@ -525,7 +525,6 @@
         if (history.scrollRestoration) {
             history.scrollRestoration = 'manual';
         }
-        window.scrollTo(0, 0);
 
         const cursor = document.getElementById('custom-cursor');
         const bgVideoWrapper = document.getElementById('bg-video-wrapper');
@@ -978,14 +977,6 @@
             animateThree();
         }
 
-        window.addEventListener('load', () => {
-            window.scrollTo(0, 0);
-            setTimeout(type, 500);
-            initThreeJS(); 
-            // 初次加載時更新透明度
-            updateBackgroundOpacity();
-        });
-
         // Theme Toggle Logic
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIconSun = document.getElementById('theme-icon-sun');
@@ -1097,10 +1088,15 @@
         const navMenu = document.getElementById('nav-menu');
         let currentProjectId = null;
 
-        const renderProject = (id) => {
+        const renderProject = (id, pushToHistory = true) => {
             currentProjectId = id;
             const data = projectsData[id];
             if (!data) return;
+
+            // Shareable URL Link - Update Hash
+            if (pushToHistory) {
+                history.pushState({ projectId: id }, '', `#pj_${id}`);
+            }
 
             document.getElementById('modal-title').textContent = data.title;
             document.getElementById('modal-category').textContent = data.category;
@@ -1125,8 +1121,8 @@
             if (rightPanel) rightPanel.scrollTop = 0;
         };
 
-        const openModal = (id) => {
-            renderProject(id);
+        const openModal = (id, pushToHistory = true) => {
+            renderProject(id, pushToHistory);
             modalBackdrop.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
             modalBackdrop.classList.add('opacity-100');
             modal.classList.remove('translate-y-full');
@@ -1137,7 +1133,10 @@
             document.body.classList.add('lock-scroll');
         };
 
-        const closeModal = () => {
+        const closeModal = (pushToHistory) => {
+            // 確保 event object (PointerEvent) 唔會當咗 boolean
+            const updateHistory = typeof pushToHistory === 'boolean' ? pushToHistory : true;
+            
             modal.classList.add('translate-y-full');
             modalBackdrop.classList.remove('opacity-100');
             modalBackdrop.classList.add('opacity-0', 'pointer-events-none');
@@ -1148,6 +1147,10 @@
             cursorUndiscover();
             cursorUnscroll();
 
+            if (updateHistory) {
+                history.pushState(null, '', window.location.pathname + window.location.search);
+            }
+
             setTimeout(() => {
                 document.documentElement.classList.remove('lock-scroll');
                 document.body.classList.remove('lock-scroll');
@@ -1155,6 +1158,51 @@
                 currentProjectId = null;
             }, 1000);
         };
+
+        // Handle Browser Back/Forward buttons (Popstate)
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#pj_')) {
+                const projectId = hash.replace('#pj_', '');
+                if (projectsData[projectId]) {
+                    if (currentProjectId === null) {
+                        openModal(projectId, false);
+                    } else {
+                        renderProject(projectId, false);
+                    }
+                }
+            } else {
+                if (currentProjectId !== null) {
+                    closeModal(false);
+                }
+            }
+        });
+
+        // Initial Load Logic (Check for direct link)
+        window.addEventListener('load', () => {
+            window.scrollTo(0, 0);
+            initThreeJS(); 
+            updateBackgroundOpacity();
+
+            const hash = window.location.hash;
+            const hasDirectLink = hash && hash.startsWith('#pj_') && projectsData[hash.replace('#pj_', '')];
+
+            if (hasDirectLink) {
+                // 如果有 Project Direct Link，跳過打字動畫，直接顯示畫面同 Modal
+                introScreen.style.display = 'none';
+                document.documentElement.classList.remove('lock-scroll');
+                document.body.classList.remove('lock-scroll');
+                
+                document.querySelectorAll('.hero-reveal').forEach(el => el.classList.add('active'));
+                document.querySelectorAll('.reveal-up:not(.hero-reveal), .reveal-fade, .reveal-line, .reveal-image').forEach(el => revealObserver.observe(el));
+                
+                const projectId = hash.replace('#pj_', '');
+                openModal(projectId, false);
+            } else {
+                // 正常首頁 Load 入場打字動畫
+                setTimeout(type, 500);
+            }
+        });
 
         // Navigation Arrows Logic
         document.getElementById('modal-prev-btn').addEventListener('click', () => {
