@@ -178,17 +178,16 @@
             grid-template-columns: repeat(4, 1fr);
             column-gap: 10px;
             pointer-events: none;
-            z-index: 2147483647; /* 確保 Grid 浮在最上層 */
+            z-index: 2147483647;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
         #design-grid.active { opacity: 1 !important; }
         
-        /* 統一香檳金網格 (不分 Dark/Light mode) */
         .grid-col-guide {
             height: 100%;
-            background-color: rgba(225, 198, 153, 0.12); /* 香檳金填充 */
-            border-left: 1px dashed rgba(225, 198, 153, 0.45); /* 香檳金虛線邊線 */
+            background-color: rgba(225, 198, 153, 0.12);
+            border-left: 1px dashed rgba(225, 198, 153, 0.45);
             border-right: 1px dashed rgba(225, 198, 153, 0.45);
             pointer-events: none;
         }
@@ -203,75 +202,74 @@
         @media (min-width: 1024px) { .custom-container { padding: 0 75px; } }
         @media (min-width: 1280px) { .custom-container { padding: 0 101px; } }
 
-        /* Theme Sync (消除切換主題時的過渡延遲) */
+        /* Theme Sync */
         body.theme-switching, body.theme-switching * {
             transition-delay: 0ms !important;
         }
         
-        /* 強制顯示 Logo (當 Modal 開啟時) */
+        /* 強制顯示 Logo */
         #main-logo.force-show {
             opacity: 1 !important;
             pointer-events: auto !important;
         }
 
-        /* --- Client Logos Marquee (重構版，完美對應 Resize 且絕不爛版) --- */
+        /* --- Client Logos Marquee (純 CSS Variables 終極防閃爍版) --- */
+        :root {
+            --logo-w: calc(100vw / 3);
+        }
+        @media (min-width: 1024px) { :root { --logo-w: calc(100vw / 4); } }
+        @media (min-width: 1300px) { :root { --logo-w: calc(100vw / 5); } }
+        @media (min-width: 1600px) { :root { --logo-w: calc(100vw / 6); } }
+
         .client-marquee-track {
             display: flex;
             flex-wrap: nowrap;
+            width: 100%;
             overflow: hidden;
-            width: 100vw;
-            max-width: 100%;
         }
+        
         .client-marquee-group {
             display: flex;
             flex-shrink: 0;
             flex-wrap: nowrap;
             align-items: center;
             will-change: transform;
-        }
-        .anim-rl {
-            animation: scroll-rl linear infinite;
-        }
-        .anim-lr {
-            animation: scroll-lr linear infinite;
-        }
-        @keyframes scroll-rl {
-            from { transform: translateX(0); }
-            to { transform: translateX(-100%); }
-        }
-        @keyframes scroll-lr {
-            from { transform: translateX(-100%); }
-            to { transform: translateX(0); }
+            transform: translateZ(0); /* 強制 GPU 渲染 */
+            width: calc(var(--logo-w) * 10); /* 嚴格鎖定寬度 (每組 10 個 Logo) */
         }
 
+        .anim-rl { animation: scroll-rl linear infinite; }
+        .anim-lr { animation: scroll-lr linear infinite; }
+        
+        /* 放棄 -100% 寫法，改用精準 calc()，解決 Resize 閃現 / 走位問題 */
+        @keyframes scroll-rl {
+            from { transform: translate3d(0, 0, 0); }
+            to { transform: translate3d(calc(var(--logo-w) * -10), 0, 0); }
+        }
+        @keyframes scroll-lr {
+            from { transform: translate3d(calc(var(--logo-w) * -10), 0, 0); }
+            to { transform: translate3d(0, 0, 0); }
+        }
+
+        /* 統一變數控制寬度，保證 Resize 絕對流暢無縫 */
         .client-logo-wrapper {
             flex-shrink: 0;
-            width: calc(100vw / 3); /* Mobile: 一行3個 */
+            width: var(--logo-w);
             padding: 0 15px;
         }
-        @media (min-width: 1024px) {
-            .client-logo-wrapper { width: calc(100vw / 4); padding: 0 20px; } /* 1024-1299: 一行4個 */
-        }
-        @media (min-width: 1300px) {
-            .client-logo-wrapper { width: calc(100vw / 5); padding: 0 25px; } /* 1300-1599: 一行5個 */
-        }
-        @media (min-width: 1600px) {
-            .client-logo-wrapper { width: calc(100vw / 6); padding: 0 30px; } /* >=1600: 一行6個 */
-        }
-        @media (min-width: 1920px) {
-            .client-logo-wrapper { width: calc(1920px / 6); }
-        }
+        @media (min-width: 1024px) { .client-logo-wrapper { padding: 0 20px; } }
+        @media (min-width: 1300px) { .client-logo-wrapper { padding: 0 25px; } }
+        @media (min-width: 1600px) { .client-logo-wrapper { padding: 0 30px; } }
     </style>
 </head>
 <body class="antialiased selection:bg-black/30 selection:text-black dark:selection:bg-white/30 dark:selection:text-white lock-scroll bg-white dark:bg-[#000] text-black dark:text-white transition-colors duration-700">
 
-    <!-- Design Grid (按下 G 顯示網格) -->
+    <!-- Design Grid -->
     <div id="design-grid">
         <div class="grid-col-guide"></div>
         <div class="grid-col-guide"></div>
         <div class="grid-col-guide"></div>
         <div class="grid-col-guide"></div>
-        <!-- 喺 Mobile 隱藏，Desktop 顯示多出黎既 2 格 -->
         <div class="grid-col-guide hidden min-[820px]:block"></div>
         <div class="grid-col-guide hidden min-[820px]:block"></div>
     </div>
@@ -281,13 +279,12 @@
         <h1 id="typing-text" class="cursor-blink text-black dark:text-white"></h1>
     </div>
 
-    <!-- 全域 Header (包含 Logo, 居中 Menu, 右側 Theme Toggle) -->
+    <!-- 全域 Header -->
     <header class="fixed top-[33px] left-0 w-full z-[100000] mix-blend-difference text-white pointer-events-none">
         <div class="custom-container flex justify-between items-center relative h-[36px]">
             
-            <!-- Left: Logo -->
+            <!-- Left: Logo (已更新路徑至 home) -->
             <a href="#" id="main-logo" class="flex items-center cursor-pointer transition-opacity duration-500 opacity-0 pointer-events-none hover:opacity-70 h-full">
-                <!-- 正確路徑：home 資料夾 -->
                 <img src="./assets/home/Logo.svg" alt="VCII" class="w-[36px] object-contain -translate-y-[1px]">
             </a>
 
@@ -344,9 +341,7 @@
 
     <!-- 中間的 3D 賽博球體 -->
     <div id="bg-video-wrapper" class="fixed inset-0 w-full h-full -z-10 pointer-events-none transition-opacity duration-700 mix-blend-normal dark:mix-blend-screen overflow-hidden opacity-60">
-        <!-- 深度背景層 -->
         <div id="canvas-depth-layer" class="transition-colors duration-700" style="position: absolute; inset: 0;"></div>
-        <!-- Canvas 將由 Three.js 動態注入於此 -->
     </div>
 
     <!-- 頁面內容區塊 -->
@@ -447,18 +442,26 @@
                         <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 350ms;">Node.js</span>
                         <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 400ms;">Python</span>
                         <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 450ms;">Java</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 500ms;">FastAPI</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 550ms;">SQL</span>
+                        
+                        <!-- 將最後兩個 Skill 打包，保證唔夠位時會一齊跌落去 -->
+                        <div class="flex gap-4">
+                            <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 500ms;">FastAPI</span>
+                            <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 550ms;">SQL</span>
+                        </div>
                     </div>
                 </div>
-                <!-- Award Logos (正確路徑：home 資料夾) -->
+                <!-- Award Logos (路徑已更新至 home) -->
                 <div class="col-span-4 min-[820px]:col-start-4 min-[820px]:col-span-3 grid grid-cols-3 gap-y-12 gap-x-4 min-[820px]:flex min-[820px]:flex-wrap min-[820px]:gap-12 items-center justify-items-center min-[820px]:justify-start mt-4 min-[820px]:mt-[10px]">
                     <img src="./assets/home/HKDA.svg" alt="HKDA" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 100ms;">
                     <img src="./assets/home/Awwwards.svg" alt="Awwwards" class="w-[96px] min-[820px]:w-[96px] lg:w-[120px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 150ms;">
                     <img src="./assets/home/W3.svg" alt="W3" class="w-[29px] min-[820px]:w-[29px] lg:text-[36px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 200ms;">
                     <img src="./assets/home/Horizon.svg" alt="Horizon" class="w-[70px] min-[820px]:w-[70px] lg:w-[88px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 250ms;">
-                    <img src="./assets/home/WebAward.svg" alt="WebAward" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 300ms;">
-                    <img src="./assets/home/ComAward.svg" alt="ComAward" class="w-[100px] min-[820px]:w-[100px] lg:w-[124px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 350ms;">
+                    
+                    <!-- 將最後兩個 Logo 打包。contents 確保 Mobile 時維持 Grid，Desktop 時一齊跌 -->
+                    <div class="contents min-[820px]:flex min-[820px]:gap-12 min-[820px]:items-center">
+                        <img src="./assets/home/WebAward.svg" alt="WebAward" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 300ms;">
+                        <img src="./assets/home/ComAward.svg" alt="ComAward" class="w-[100px] min-[820px]:w-[100px] lg:w-[124px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 350ms;">
+                    </div>
                 </div>
             </div>
         </section>
@@ -490,7 +493,7 @@
             </div>
         </section>
 
-        <!-- Worked With Section (重構防爛版 Marquee 系統) -->
+        <!-- Worked With Section -->
         <section id="clients" class="pb-[90px] min-[820px]:pb-[90px] lg:pb-32 scroll-mt-[100px] overflow-hidden w-full">
             <div class="custom-container reveal-up mb-8 min-[820px]:mb-12">
                 <p class="font-['Inter'] font-normal text-[10px] min-[820px]:text-[12px] tracking-[0.1em] uppercase text-black dark:text-white text-center">
@@ -534,31 +537,28 @@
     <!-- Popup Modal -->
     <div id="project-modal" class="fixed inset-0 z-[99999] bg-[#fafafa] dark:bg-[#000] w-full translate-y-full transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] shadow-none overflow-hidden flex flex-col">
         
-        <!-- Modal Header (Absolute to match global header) -->
+        <!-- Modal Header -->
         <div class="shrink-0 absolute top-[33px] left-0 w-full h-[36px] z-[100005] pointer-events-none mix-blend-difference text-white">
             <div class="custom-container flex justify-between items-center w-full h-full relative">
-                <!-- Left spacer (Empty div to balance flexbox if needed) -->
                 <div></div>
                 
-                <!-- Center Title (Absolutely Centered) -->
+                <!-- Center Title -->
                 <div id="modal-category" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 font-['Inter'] font-normal text-[10px] min-[820px]:text-[12px] tracking-[0.1em] uppercase whitespace-nowrap" style="line-height: 35px;">
                     PROJECT HIGHLIGHT
                 </div>
 
                 <!-- Right Controls: Navigation & Close -->
                 <div class="flex justify-end items-center gap-4 min-[820px]:gap-6 pointer-events-auto">
-                    <!-- Navigation Arrows -->
+                    <!-- Navigation Arrows (已更新路徑至 home) -->
                     <div class="flex items-center gap-2 mr-[5px] min-[820px]:mr-0">
                         <button id="modal-prev-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
-                            <!-- 正確路徑：home 資料夾 -->
-                            <img src="./assets/home/arrow.svg" alt="Prev" class="w-[18px] min-[820px]:w-[20px] rotate-180 object-contain pointer-events-none brightness-0 invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <img src="./assets/home/arrow.svg" alt="Prev" class="w-[18px] min-[820px]:w-[20px] rotate-180 object-contain pointer-events-none brightness-0 invert transition-opacity duration-300" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none" style="transform: scaleX(-1);">
                                 <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </button>
                         <button id="modal-next-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
-                            <!-- 正確路徑：home 資料夾 -->
-                            <img src="./assets/home/arrow.svg" alt="Next" class="w-[18px] min-[820px]:w-[20px] object-contain pointer-events-none brightness-0 invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <img src="./assets/home/arrow.svg" alt="Next" class="w-[18px] min-[820px]:w-[20px] object-contain pointer-events-none brightness-0 invert transition-opacity duration-300" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none">
                                 <path d="M5 12H19M19 12L12 19M19 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -576,23 +576,18 @@
         </div>
 
         <!-- Modal Content Area -->
-        <!-- Mobile: scroll container is the parent. Desktop: overflow hidden -->
-        <div id="modal-main-scroll" class="flex-grow w-full overflow-y-auto min-[820px]:overflow-hidden transition-colors duration-700 pt-[130px] min-[820px]:pt-[90px]">
-            <!-- Added pb-[30px] here for Mobile so the entire scrolling content has a bottom margin -->
-            <div class="custom-container min-[820px]:h-full pb-[30px] min-[820px]:pb-0">
-                <!-- Removed h-full on Mobile so it flows naturally -->
-                <div class="grid grid-cols-4 lg:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px] min-[820px]:h-full min-[820px]:min-h-0">
+        <div id="modal-main-scroll" class="flex-grow w-full overflow-y-auto min-[1281px]:overflow-hidden transition-colors duration-700 pt-[130px] min-[1281px]:pt-[90px]">
+            <div class="custom-container min-[1281px]:h-full pb-[30px] min-[1281px]:pb-0">
+                <div class="grid grid-cols-1 min-[1281px]:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px] min-[1281px]:h-full min-[1281px]:min-h-0">
                     
                     <!-- Images -->
-                    <!-- Removed pb-[30px] on mobile to match grid gap naturally, Desktop keeps independent scroll -->
-                    <div class="col-span-4 lg:col-span-3 xl:col-span-4 min-[820px]:h-full min-[820px]:overflow-y-auto hide-scrollbar order-2 lg:order-1 min-[820px]:pb-[40px] lg:pb-[60px] min-[820px]:min-h-0 flex flex-col gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]" id="modal-images-container">
-                        <!-- JS injects images without mb-12 now -->
+                    <div class="col-span-1 min-[1281px]:col-span-4 min-[1281px]:h-full min-[1281px]:overflow-y-auto hide-scrollbar order-2 min-[1281px]:order-1 pb-[20px] min-[820px]:pb-[40px] min-[1281px]:pb-[60px] min-[1281px]:min-h-0 flex flex-col gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]" id="modal-images-container">
+                        <!-- JS injects images -->
                     </div>
 
                     <!-- Text -->
-                    <div class="col-span-4 lg:col-span-3 xl:col-span-2 min-[820px]:h-full min-[820px]:overflow-y-auto hide-scrollbar flex flex-col order-1 lg:order-2 min-[820px]:pb-[40px] lg:pb-[60px] min-[820px]:min-h-0 text-center min-[820px]:text-left" id="modal-right-panel">
-                        <!-- Text Area -->
-                        <div class="flex-grow pb-6 min-[820px]:min-h-0" id="modal-text-scroll-container">
+                    <div class="col-span-1 min-[1281px]:col-span-2 min-[1281px]:h-full min-[1281px]:overflow-y-auto hide-scrollbar flex flex-col order-1 min-[1281px]:order-2 pb-[20px] min-[820px]:pb-[40px] min-[1281px]:pb-[60px] min-[1281px]:min-h-0 text-center min-[1281px]:text-left" id="modal-right-panel">
+                        <div class="flex-grow pb-6 min-[1281px]:min-h-0" id="modal-text-scroll-container">
                             <h2 id="modal-title" class="text-[28px] min-[820px]:text-[34px] lg:text-[40px] font-bold text-black dark:text-white leading-tight mb-6 transition-colors duration-700"></h2>
                             <p id="modal-desc" class="text-[13px] min-[820px]:text-[14px] lg:text-[15px] text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap transition-colors duration-700"></p>
                         </div>
@@ -643,22 +638,28 @@
         bindHovers();
 
         const handleScrollCursorMove = (e) => {
-            // 如果 Hover 緊喺 Button 或者 Link 上面 (例如 Close / 左右箭嘴)，強制取消 scroll-mode
             if (e.target.closest('button, a, .cursor-pointer:not(.portfolio-item)')) {
                 cursor.classList.remove('scroll-mode');
                 return;
             }
 
-            let target = e.currentTarget;
-            // 於 Tablet/Mobile 版面時，檢查對應的 scroll 容器
-            if (window.innerWidth < 820) {
-                target = document.getElementById('modal-main-scroll');
-            } else if (window.innerWidth < 1351) {
-                target = document.getElementById('project-modal');
+            let isScrollable = false;
+
+            // 更新為 1280px 或以下使用全頁 Scroll 判斷
+            if (window.innerWidth <= 1280) {
+                const mainScroll = document.getElementById('modal-main-scroll');
+                if (mainScroll && mainScroll.scrollHeight > Math.ceil(mainScroll.clientHeight)) {
+                    isScrollable = true;
+                }
+            } else {
+                // > 1280px 時分為左右獨立 Scroll
+                const scrollCol = e.target.closest('#modal-images-container, #modal-right-panel');
+                if (scrollCol && scrollCol.scrollHeight > Math.ceil(scrollCol.clientHeight)) {
+                    isScrollable = true;
+                }
             }
 
-            // 判斷是否有隱藏的滾動區域
-            if (target && target.scrollHeight > Math.ceil(target.clientHeight)) {
+            if (isScrollable) {
                 cursor.classList.add('scroll-mode');
             } else {
                 cursor.classList.remove('scroll-mode');
@@ -667,19 +668,9 @@
 
         const modalMainScroll = document.getElementById('modal-main-scroll');
         if (modalMainScroll) {
+            // 統一喺最外層監聽，避免 Event Bubbling 互相覆蓋
             modalMainScroll.addEventListener('mousemove', handleScrollCursorMove);
             modalMainScroll.addEventListener('mouseleave', cursorUnscroll);
-        }
-
-        const modalImagesContainer = document.getElementById('modal-images-container');
-        modalImagesContainer.addEventListener('mousemove', handleScrollCursorMove);
-        modalImagesContainer.addEventListener('mouseleave', cursorUnscroll);
-
-        // 右側面板 Hover 時也加入 Scroll 游標提示 (按需顯示)
-        const modalRightPanel = document.getElementById('modal-right-panel');
-        if (modalRightPanel) {
-            modalRightPanel.addEventListener('mousemove', handleScrollCursorMove);
-            modalRightPanel.addEventListener('mouseleave', cursorUnscroll);
         }
 
         const revealObserver = new IntersectionObserver((entries, observer) => {
@@ -720,7 +711,6 @@
             }
         }
 
-        // --- 獨立抽取背景透明度更新函數 ---
         function updateBackgroundOpacity() {
             const pageYOffset = window.pageYOffset;
             const heroHeight = heroSection?.offsetHeight || window.innerHeight;
@@ -729,11 +719,9 @@
             let startOpacity, endOpacity;
             
             if (window.isDarkMode) {
-                // Dark Mode: 初始背景透明度 60%，捲動後降至 40%
                 startOpacity = 0.60;
                 endOpacity = 0.40;
             } else {
-                // Light Mode: 初始背景透明度 40%，捲動後降至 20%
                 startOpacity = 0.40;
                 endOpacity = 0.20;
             }
@@ -761,33 +749,28 @@
 
         function updateSphereScale() {
             if (!ribbons) return;
-            // Mobile 放大20% (從原本的 1.24 放大 1.2 倍約為 1.49)
             const scale = window.innerWidth < 820 ? 1.49 : 1.5;
             ribbons.scale.set(scale, scale, scale);
             if (darkDustPoints) darkDustPoints.scale.setScalar(scale);
             if (lightDustPoints) lightDustPoints.scale.setScalar(scale);
         }
 
-        // --- 主題切換核心邏輯 ---
         window.updateThreeTheme = function(isDark) {
             const depthLayer = document.getElementById('canvas-depth-layer');
             if (!depthLayer) return;
 
             if (isDark) {
-                // Dark Mode 3D Setting
                 depthLayer.style.background = 'radial-gradient(circle at center, #000410 0%, #000000 100%)';
                 if (ribbons) ribbons.material = darkRibbonMaterial;
                 if (darkDustPoints) darkDustPoints.visible = true;
                 if (lightDustPoints) lightDustPoints.visible = false;
             } else {
-                // Light Mode 3D Setting
                 depthLayer.style.background = 'radial-gradient(circle at center, #ffffff 0%, #f2f5f8 100%)';
                 if (ribbons) ribbons.material = lightRibbonMaterial;
                 if (darkDustPoints) darkDustPoints.visible = false;
                 if (lightDustPoints) lightDustPoints.visible = true;
             }
             
-            // 切換主題時立即更新背景透明度
             updateBackgroundOpacity();
         };
 
@@ -803,7 +786,6 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             
-            // 防止 Flex 排版壓扁 Canvas
             renderer.domElement.style.position = 'absolute';
             renderer.domElement.style.inset = '0';
             renderer.domElement.style.width = '100%';
@@ -849,7 +831,6 @@
             geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
             geometry.setAttribute('ringInfo', new THREE.Float32BufferAttribute(ringInfo, 2));
 
-            // --- 獨立的 Dark Material ---
             darkRibbonMaterial = new THREE.ShaderMaterial({
                 uniforms: {
                     uTime: { value: 0 },
@@ -904,7 +885,6 @@
                 `
             });
 
-            // --- 獨立的 Light Material ---
             lightRibbonMaterial = new THREE.ShaderMaterial({
                 uniforms: {
                     uTime: { value: 0 },
@@ -959,11 +939,9 @@
                 `
             });
 
-            // 預設使用 Dark
             ribbons = new THREE.Mesh(geometry, darkRibbonMaterial);
             scene.add(ribbons);
 
-            // --- 構造共用粉塵座標 ---
             const dustPositions = new Float32Array(DUST_COUNT * 3);
             for (let i = 0; i < DUST_COUNT; i++) {
                 const r = RADIUS * (1.0 + Math.random() * 1.6); 
@@ -974,7 +952,6 @@
                 dustPositions[i * 3 + 2] = r * Math.cos(phi);
             }
 
-            // --- 獨立的 Dark Dust ---
             const darkDustGeometry = new THREE.BufferGeometry();
             const darkDustColors = new Float32Array(DUST_COUNT * 3); 
             for (let i = 0; i < DUST_COUNT; i++) {
@@ -995,7 +972,6 @@
             darkDustPoints = new THREE.Points(darkDustGeometry, darkDustMaterial);
             scene.add(darkDustPoints);
 
-            // --- 獨立的 Light Dust ---
             const lightDustGeometry = new THREE.BufferGeometry();
             const lightDustColors = new Float32Array(DUST_COUNT * 3); 
             for (let i = 0; i < DUST_COUNT; i++) {
@@ -1017,7 +993,6 @@
             scene.add(lightDustPoints);
 
             updateSphereScale();
-            // 同步主題
             window.updateThreeTheme(window.isDarkMode);
 
             window.addEventListener('mousemove', (e) => {
@@ -1085,7 +1060,6 @@
             e.preventDefault();
             window.isDarkMode = !window.isDarkMode;
 
-            // 強制移除所有元素的主題切換延遲，確保同步 (750ms 對應 Tailwind duration-700)
             document.body.classList.add('theme-switching');
             setTimeout(() => {
                 document.body.classList.remove('theme-switching');
@@ -1114,7 +1088,6 @@
             updateBackgroundOpacity();
 
             const pageYOffset = window.pageYOffset;
-            // Logo 在 Scroll 後顯示
             const mainLogo = document.getElementById('main-logo');
             if (pageYOffset > 100) {
                 mainLogo.classList.remove('opacity-0', 'pointer-events-none');
@@ -1124,9 +1097,6 @@
                 mainLogo.classList.add('opacity-0', 'pointer-events-none');
             }
         });
-
-        // Data Definition
-        const commonDescPrefix = "Co-founded in the 1980s by Alice King, Alisan Fine Arts is Hong Kong’s longest-standing contemporary gallery, celebrated for its trailblazing promotion of Chinese contemporary art and New Ink art. The gallery has consistently championed artists from the Greater China region and Chinese diaspora, making an impact on cross-cultural dialogues and global appreciation of diverse artistic expressions. With locations in Hong Kong’s Central and Aberdeen districts, as well as New York, Alisan Fine Arts is committed to expanding institutional presence and pushing boundaries within the local arts ecosystem.";
 
         const projectsData = {
             '01': { 
@@ -1180,10 +1150,8 @@
             }
         };
 
-        // Scrollbar compensation utility
         const getScrollbarWidth = () => window.innerWidth - document.documentElement.clientWidth;
 
-        // Modal Logic
         const modal = document.getElementById('project-modal');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const navMenu = document.getElementById('nav-menu');
@@ -1195,7 +1163,6 @@
             const data = projectsData[id];
             if (!data) return;
 
-            // Shareable URL Link - Update Hash
             if (pushToHistory) {
                 history.pushState({ projectId: id }, '', `#pj_${id}`);
             }
@@ -1208,14 +1175,12 @@
             for (let i = 1; i <= data.imagesCount; i++) {
                 const img = document.createElement('img');
                 img.src = `./assets/works/${id}/${id}_image_${i.toString().padStart(2, '0')}.webp`;
-                // 圖片佔位底色切換：Light Mode 淺灰 / Dark Mode 深黑 (移除 mb-12，交由 grid gap 處理)
                 img.className = 'w-full object-cover bg-[#f0f0f0] dark:bg-[#050505] reveal-image shrink-0 aspect-[4/3] lg:aspect-[1132/695]';
                 img.onerror = function() { this.remove(); };
                 imagesContainer.appendChild(img);
                 setTimeout(() => img.classList.add('active'), 100 + (i * 150));
             }
             
-            // Scroll to top for independent columns (Desktop) and Main Wrapper (Mobile)
             const mainScroll = document.getElementById('modal-main-scroll');
             if (mainScroll) mainScroll.scrollTop = 0;
             
@@ -1226,7 +1191,6 @@
         };
 
         const openModal = (id, pushToHistory = true) => {
-            // 清除關閉動畫嘅計時器，防止誤刪 state
             if (modalCloseTimeout) {
                 clearTimeout(modalCloseTimeout);
                 modalCloseTimeout = null;
@@ -1234,7 +1198,6 @@
 
             renderProject(id, pushToHistory);
             
-            // Fix Scrollbar Jump
             const scrollbarWidth = getScrollbarWidth();
             if (scrollbarWidth > 0) {
                 document.body.style.paddingRight = `${scrollbarWidth}px`;
@@ -1242,11 +1205,9 @@
                 if (header) header.style.paddingRight = `${scrollbarWidth}px`;
             }
 
-            // Force global logo visibility during modal
             const mainLogo = document.getElementById('main-logo');
             if (mainLogo) mainLogo.classList.add('force-show');
 
-            // Hide Theme Toggle avoiding any light mode overlay
             const themeToggle = document.getElementById('theme-toggle-wrapper');
             if (themeToggle) {
                 themeToggle.classList.add('opacity-0', 'pointer-events-none');
@@ -1263,7 +1224,6 @@
         };
 
         const closeModal = (pushToHistory) => {
-            // 確保 event object (PointerEvent) 唔會當咗 boolean
             const updateHistory = typeof pushToHistory === 'boolean' ? pushToHistory : true;
             
             modal.classList.add('translate-y-full');
@@ -1287,7 +1247,6 @@
                 document.documentElement.classList.remove('lock-scroll');
                 document.body.classList.remove('lock-scroll');
                 
-                // Restore scrollbar padding
                 document.body.style.paddingRight = '0px';
                 const header = document.querySelector('header');
                 if (header) header.style.paddingRight = '0px';
@@ -1295,11 +1254,9 @@
                 modalBackdrop.classList.add('hidden');
                 currentProjectId = null;
 
-                // Remove logo force-show
                 const mainLogo = document.getElementById('main-logo');
                 if (mainLogo) mainLogo.classList.remove('force-show');
 
-                // Restore Theme Toggle safely
                 const themeToggle = document.getElementById('theme-toggle-wrapper');
                 if (themeToggle) {
                     themeToggle.classList.remove('hidden');
@@ -1309,7 +1266,6 @@
             }, 1000);
         };
 
-        // Handle Browser Back/Forward buttons (Popstate)
         window.addEventListener('popstate', () => {
             const hash = window.location.hash;
             if (hash && hash.startsWith('#pj_')) {
@@ -1328,18 +1284,18 @@
             }
         });
 
-        // Initial Load Logic (Check for direct link)
+        // --- 優化：移除咗容易搞到爛版同拖慢效能嘅 updateLogoWidth JS 函數 ---
+
         window.addEventListener('load', () => {
             window.scrollTo(0, 0);
             initThreeJS(); 
             updateBackgroundOpacity();
-            initClientLogos(); // 啟動 Client Logo 動畫
+            initClientLogos(); 
 
             const hash = window.location.hash;
             const hasDirectLink = hash && hash.startsWith('#pj_') && projectsData[hash.replace('#pj_', '')];
 
             if (hasDirectLink) {
-                // 如果有 Project Direct Link，跳過打字動畫，直接顯示畫面同 Modal
                 introScreen.style.display = 'none';
                 document.documentElement.classList.remove('lock-scroll');
                 document.body.classList.remove('lock-scroll');
@@ -1350,12 +1306,10 @@
                 const projectId = hash.replace('#pj_', '');
                 openModal(projectId, false);
             } else {
-                // 正常首頁 Load 入場打字動畫
                 setTimeout(type, 500);
             }
         });
 
-        // Navigation Arrows Logic
         document.getElementById('modal-prev-btn').addEventListener('click', () => {
             if (!currentProjectId) return;
             const projectKeys = Object.keys(projectsData);
@@ -1372,13 +1326,11 @@
             renderProject(projectKeys[nextIndex]);
         });
 
-        // Hover effects for arrows
         document.getElementById('modal-prev-btn').addEventListener('mouseenter', cursorActive);
         document.getElementById('modal-prev-btn').addEventListener('mouseleave', cursorInactive);
         document.getElementById('modal-next-btn').addEventListener('mouseenter', cursorActive);
         document.getElementById('modal-next-btn').addEventListener('mouseleave', cursorInactive);
 
-        // Bind events
         document.querySelectorAll('.portfolio-item').forEach(item => {
             item.addEventListener('click', function() {
                 openModal(this.getAttribute('data-id'));
@@ -1388,16 +1340,14 @@
         document.getElementById('modal-close-btn').addEventListener('click', closeModal);
         modalBackdrop.addEventListener('click', closeModal);
         
-        // --- Client Logo 動態跑馬燈邏輯 ---
+        // --- Client Logo 動態跑馬燈邏輯 (全面升級版) ---
         function initClientLogos() {
             const container = document.getElementById('clients-marquee-container');
             if (!container) return;
 
-            // 產生 1 到 30 嘅陣列並打亂 (隨機排序，保證無重複)
             let logos = Array.from({length: 30}, (_, i) => i + 1);
             logos.sort(() => Math.random() - 0.5);
 
-            // 嚴格分拆成 3 組，每組 10 個 Logo，保證同一時間畫面上絕對無重複
             const rows = [
                 logos.slice(0, 10),
                 logos.slice(10, 20),
@@ -1407,30 +1357,23 @@
             let html = '';
 
             rows.forEach((rowLogos, index) => {
-                // 第一行 (0) 向右 (lr), 第二行 (1) 向左 (rl), 第三行 (2) 向右 (lr)
                 const isLR = (index === 0 || index === 2); 
                 const animClass = isLR ? 'anim-lr' : 'anim-rl';
-                
-                // 速度減慢20% (即時間除以0.8)：第一行 37.5s, 第二行 56.25s, 第三行 31.25s
                 const duration = index === 0 ? '37.5s' : (index === 1 ? '56.25s' : '31.25s');
-                
-                // 顯示邏輯：第三行只限 Mobile / Tablet (<1024px) 顯示
                 const visibilityClass = index === 2 ? 'flex min-[1024px]:hidden' : 'flex';
-
-                // 將 10 個 Logo 陣列重複拼接一次 (變成 20 個)，令到 CSS 無縫輪播可以完美對接
-                const loopLogos = [...rowLogos, ...rowLogos];
+                
+                // 保證無縫對接，將 10 個 Logo 放入同一個 Group
+                const loopLogos = [...rowLogos];
 
                 html += `<div class="client-marquee-track ${visibilityClass}">`;
                 
-                // Track 入面有兩個完美對齊嘅 Group 實現無縫 Loop
                 for (let g = 0; g < 2; g++) {
                     html += `<div class="client-marquee-group ${animClass}" style="animation-duration: ${duration};">`;
                     loopLogos.forEach(logoId => {
-                        // 套用自定義 CSS class 計算完美闊度比例
-                        // 加咗 scale-125 min-[820px]:scale-100 令 Mobile 自動放大 25%
+                        // 路徑已更新為 ./assets/project_logo/
                         html += `
                             <div class="client-logo-wrapper flex items-center justify-center aspect-[3/2]">
-                                <img src="./assets/project_logo/logo_${String(logoId).padStart(2, '0')}.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert scale-125 min-[820px]:scale-100 min-[1600px]:max-[1699px]:scale-110 pointer-events-none opacity-80 hover:opacity-100 transition-all duration-300">
+                                <img src="./assets/project_logo/logo_${String(logoId).padStart(2, '0')}.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert scale-125 min-[820px]:scale-100 min-[1600px]:max-[1699px]:scale-110 pointer-events-none opacity-80 hover:opacity-100 transition-opacity duration-300">
                             </div>
                         `;
                     });
@@ -1443,9 +1386,7 @@
             container.innerHTML = html;
         }
 
-        // --- 修正 Grid 鍵盤監聽 ---
         window.addEventListener('keydown', (e) => {
-            // 防止在 input 等元件打字時誤觸
             if (e.target && e.target.tagName) {
                 const tag = e.target.tagName.toLowerCase();
                 if (tag === 'input' || tag === 'textarea') return;
@@ -1457,6 +1398,7 @@
             }
             if (e.key === 'Escape') closeModal();
         });
+
     </script>
 </body>
 </html>
