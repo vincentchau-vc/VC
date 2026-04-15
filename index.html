@@ -472,13 +472,13 @@
     <div id="project-modal" class="fixed inset-0 z-[99999] bg-[#fafafa] dark:bg-[#000] w-full translate-y-full transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] shadow-none overflow-hidden flex flex-col">
         
         <!-- Modal Header (Absolute to match global header) -->
-        <div class="shrink-0 absolute top-[33px] left-0 w-full h-[36px] z-[100005] pointer-events-none">
+        <div class="shrink-0 absolute top-[33px] left-0 w-full h-[36px] z-[100005] pointer-events-none mix-blend-difference text-white">
             <div class="custom-container flex justify-between items-center w-full h-full relative">
                 <!-- Left spacer (Empty div to balance flexbox if needed) -->
                 <div></div>
                 
                 <!-- Center Title (Absolutely Centered) -->
-                <div id="modal-category" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 font-['Inter'] font-normal text-[10px] min-[820px]:text-[12px] tracking-[0.1em] uppercase text-black dark:text-white whitespace-nowrap" style="line-height: 35px;">
+                <div id="modal-category" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 font-['Inter'] font-normal text-[10px] min-[820px]:text-[12px] tracking-[0.1em] uppercase whitespace-nowrap" style="line-height: 35px;">
                     PROJECT HIGHLIGHT
                 </div>
 
@@ -486,14 +486,14 @@
                 <div class="flex justify-end items-center gap-4 min-[820px]:gap-6 pointer-events-auto">
                     <!-- Navigation Arrows -->
                     <div class="flex items-center gap-2 mr-[5px] min-[820px]:mr-0">
-                        <button id="modal-prev-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu text-black dark:text-white">
-                            <img src="./assets/home/arrow.svg" alt="Prev" class="w-[18px] min-[820px]:w-[20px] rotate-180 object-contain pointer-events-none brightness-0 dark:invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <button id="modal-prev-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
+                            <img src="./assets/home/arrow.svg" alt="Prev" class="w-[18px] min-[820px]:w-[20px] rotate-180 object-contain pointer-events-none brightness-0 invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none" style="transform: scaleX(-1);">
                                 <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </button>
-                        <button id="modal-next-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu text-black dark:text-white">
-                            <img src="./assets/home/arrow.svg" alt="Next" class="w-[18px] min-[820px]:w-[20px] object-contain pointer-events-none brightness-0 dark:invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <button id="modal-next-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
+                            <img src="./assets/home/arrow.svg" alt="Next" class="w-[18px] min-[820px]:w-[20px] object-contain pointer-events-none brightness-0 invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none">
                                 <path d="M5 12H19M19 12L12 19M19 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -501,7 +501,7 @@
                     </div>
                     
                     <!-- Close Button -->
-                    <button id="modal-close-btn" class="p-2 -mr-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu text-black dark:text-white">
+                    <button id="modal-close-btn" class="p-2 -mr-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
                         <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[14px] h-[14px] min-[820px]:w-[16px] min-[820px]:h-[16px] pointer-events-none">
                             <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
