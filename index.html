@@ -206,6 +206,12 @@
         body.theme-switching, body.theme-switching * {
             transition-delay: 0ms !important;
         }
+        
+        /* 強制顯示 Logo (當 Modal 開啟時) */
+        #main-logo.force-show {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-black/30 selection:text-black dark:selection:bg-white/30 dark:selection:text-white lock-scroll bg-white dark:bg-[#000] text-black dark:text-white transition-colors duration-700">
@@ -236,7 +242,7 @@
             </a>
 
             <!-- Center: Menu -->
-            <nav id="nav-menu" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex justify-center items-center text-[13px] min-[820px]:text-[13px] lg:text-[15px] font-bold tracking-[0.1em] uppercase pointer-events-auto w-max h-full">
+            <nav id="nav-menu" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex justify-center items-center text-[13px] min-[820px]:text-[13px] lg:text-[15px] font-bold tracking-[0.1em] uppercase pointer-events-auto w-max h-full transition-opacity duration-500">
                 <div class="flex space-x-[34px] min-[820px]:space-x-[34px] lg:space-x-[68px] reveal-up hero-reveal" style="transition-delay: 2000ms;">
                     <a href="#about" class="relative group transition duration-300 cursor-pointer flex flex-col items-center justify-center">
                         <span class="leading-none">About</span>
@@ -254,7 +260,7 @@
             </nav>
 
             <!-- Right: Light/Dark Mode Toggle -->
-            <div class="reveal-up hero-reveal h-full flex items-center" style="transition-delay: 2000ms;">
+            <div class="reveal-up hero-reveal h-full flex items-center transition-opacity duration-300" style="transition-delay: 2000ms;" id="theme-toggle-wrapper">
                 <button id="theme-toggle" class="flex items-center gap-[6px] cursor-pointer pointer-events-auto transition duration-300 hover:opacity-70">
                     <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] hidden dark:block">
                         <circle cx="12" cy="12" r="5"></circle>
@@ -408,7 +414,7 @@
         </section>
 
         <!-- Works Section -->
-        <section id="works" class="custom-container pb-[90px] min-[820px]:pb-[90px] lg:pb-32">
+        <section id="works" class="custom-container pb-[90px] min-[820px]:pb-[90px] lg:pb-32 scroll-mt-[100px]">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
                 <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="01">
                     <img src="./assets/works/01/01_image_01.webp" alt="Work 01" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
@@ -430,6 +436,62 @@
                 </div>
                 <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="07" style="transition-delay: 100ms;">
                     <img src="./assets/works/07/07_image_01.webp" alt="Work 07" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
+                </div>
+            </div>
+        </section>
+
+        <!-- Worked With Section -->
+        <section id="clients" class="custom-container pb-[90px] min-[820px]:pb-[90px] lg:pb-32 scroll-mt-[100px]">
+            <div class="reveal-up mb-12 min-[820px]:mb-16">
+                <p class="font-['Inter'] font-normal text-[10px] min-[820px]:text-[12px] tracking-[0.1em] uppercase text-black dark:text-white text-center">
+                    WORKED WITH
+                </p>
+            </div>
+            <!-- Grid setup based on screen size -->
+            <div class="grid grid-cols-3 min-[820px]:grid-cols-4 min-[1300px]:grid-cols-5 min-[1600px]:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
+                
+                <!-- Slots 0 to 7: Always visible (Mobile: part of 3x3, Tablet: 4x2) -->
+                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image">
+                    <img id="client-logo-0" src="./assets/home/project_logo/logo_01.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 50ms;">
+                    <img id="client-logo-1" src="./assets/home/project_logo/logo_02.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 100ms;">
+                    <img id="client-logo-2" src="./assets/home/project_logo/logo_03.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 150ms;">
+                    <img id="client-logo-3" src="./assets/home/project_logo/logo_04.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 200ms;">
+                    <img id="client-logo-4" src="./assets/home/project_logo/logo_05.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 250ms;">
+                    <img id="client-logo-5" src="./assets/home/project_logo/logo_06.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 300ms;">
+                    <img id="client-logo-6" src="./assets/home/project_logo/logo_07.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 350ms;">
+                    <img id="client-logo-7" src="./assets/home/project_logo/logo_08.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+
+                <!-- Slot 8: Visible on Mobile (<820, as 9th item) and >=1300px. Hidden on Tablet & small Desktop (820px-1299px) -->
+                <div class="col-span-1 flex min-[820px]:hidden min-[1300px]:flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 400ms;">
+                    <img id="client-logo-8" src="./assets/home/project_logo/logo_09.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+
+                <!-- Slot 9: Hidden on <1300px, Visible >=1300px -->
+                <div class="col-span-1 hidden min-[1300px]:flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 450ms;">
+                    <img id="client-logo-9" src="./assets/home/project_logo/logo_10.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+
+                <!-- Slots 10-11: Hidden on <1600px, Visible >=1600px -->
+                <div class="col-span-1 hidden min-[1600px]:flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 500ms;">
+                    <img id="client-logo-10" src="./assets/home/project_logo/logo_11.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
+                </div>
+                <div class="col-span-1 hidden min-[1600px]:flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 550ms;">
+                    <img id="client-logo-11" src="./assets/home/project_logo/logo_12.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
                 </div>
             </div>
         </section>
@@ -463,54 +525,73 @@
     <div id="modal-backdrop" class="fixed inset-0 z-[90000] bg-black/40 dark:bg-black/80 opacity-0 pointer-events-none transition-all duration-800 hidden cursor-default"></div>
 
     <!-- Popup Modal -->
-    <div id="project-modal" class="fixed inset-x-0 bottom-0 top-[81px] z-[99999] bg-white dark:bg-[#0A0A0A] flex flex-col min-[1351px]:flex-row w-full translate-y-full transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-y-auto min-[1351px]:overflow-hidden shadow-none">
+    <div id="project-modal" class="fixed inset-0 z-[99999] bg-[#fafafa] dark:bg-[#000] w-full translate-y-full transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] shadow-none overflow-hidden flex flex-col">
         
-        <!-- 文字資訊容器 -->
-        <div id="modal-right-panel" class="w-full min-[1351px]:w-1/3 h-auto min-[1351px]:h-full min-[1351px]:overflow-y-auto hide-scrollbar bg-white dark:bg-[#0A0A0A] transition-colors duration-700 p-8 md:p-12 lg:p-20 flex flex-col relative border-none min-[1351px]:border-l border-black/10 dark:border-white/10 shrink-0 text-center min-[1351px]:text-left items-center min-[1351px]:items-start order-1 min-[1351px]:order-2">
-            
-            <!-- Close Button (已優化：移除 w-full 防止全闊阻擋) -->
-            <div class="absolute top-8 right-8 md:top-12 md:right-12 min-[1351px]:sticky min-[1351px]:top-8 min-[1351px]:right-0 min-[1351px]:self-end min-[1351px]:z-[100005]">
-                <button id="modal-close-btn" class="
-                    /* Mobile/Vertical: Pill button at bottom */
-                    fixed bottom-[20px] left-1/2 -translate-x-1/2 w-auto h-auto px-12 py-4 bg-black text-white dark:bg-white dark:text-black rounded-full font-bold text-[14px] tracking-widest uppercase flex items-center justify-center pointer-events-auto
-                    /* Desktop/Horizontal: Circular icon button resetting fixed state */
-                    min-[1351px]:static min-[1351px]:translate-x-0 min-[1351px]:w-[75px] min-[1351px]:h-[75px] min-[1351px]:p-0 min-[1351px]:bg-white min-[1351px]:dark:bg-[#0A0A0A] min-[1351px]:text-black min-[1351px]:dark:text-white min-[1351px]:border min-[1351px]:border-black/30 min-[1351px]:dark:border-white/30
-                    hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition duration-300 cursor-pointer z-[100001]">
-                    <span class="min-[1351px]:hidden pointer-events-none">CLOSE</span>
-                    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="hidden min-[1351px]:block w-[14px] h-[14px] pointer-events-none">
-                        <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- 文字區塊 (跟隨父層一起滾動) -->
-            <div id="modal-text-container" class="mt-16 md:mt-24 min-[1351px]:pr-4 flex-grow w-full">
-                <p id="modal-category" class="text-[12px] min-[820px]:text-[12px] lg:text-[14px] text-gray-500 dark:text-gray-400 mb-4 tracking-wide transition-colors duration-700"></p>
-                <h2 id="modal-title" class="text-[30px] min-[820px]:text-[38px] lg:text-[40px] font-bold text-black dark:text-white leading-tight mb-8 transition-colors duration-700"></h2>
-                <p id="modal-desc" class="text-[12px] min-[820px]:text-[14px] lg:text-[16px] text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap transition-colors duration-700"></p>
-            </div>
+        <!-- Modal Header (Absolute to match global header) -->
+        <div class="shrink-0 absolute top-[33px] left-0 w-full h-[36px] z-[100005] pointer-events-none mix-blend-difference text-white">
+            <div class="custom-container flex justify-between items-center w-full h-full relative">
+                <!-- Left spacer (Empty div to balance flexbox if needed) -->
+                <div></div>
+                
+                <!-- Center Title (Absolutely Centered) -->
+                <div id="modal-category" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 font-['Inter'] font-normal text-[10px] min-[820px]:text-[12px] tracking-[0.1em] uppercase whitespace-nowrap" style="line-height: 35px;">
+                    PROJECT HIGHLIGHT
+                </div>
 
-            <!-- Navigation Arrows (Desktop Only) - 已優化：加入 transform-gpu 及推高 z-index -->
-            <div class="hidden min-[1351px]:flex gap-4 w-full mt-12 pb-12 relative z-[100010]">
-                <button id="modal-prev-btn" class="w-[75px] h-[75px] shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200 flex items-center justify-center transition duration-300 cursor-pointer pointer-events-auto transform-gpu">
-                    <img src="./assets/home/arrow.svg" alt="Prev" class="w-[23px] rotate-180 object-contain pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-[23px] hidden pointer-events-none" style="transform: scaleX(-1);">
-                        <path d="M4 12h16M13 5l7 7-7 7" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-                <button id="modal-next-btn" class="w-[75px] h-[75px] shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200 flex items-center justify-center transition duration-300 cursor-pointer pointer-events-auto transform-gpu">
-                    <img src="./assets/home/arrow.svg" alt="Next" class="w-[23px] object-contain pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-[23px] hidden pointer-events-none">
-                        <path d="M4 12h16M13 5l7 7-7 7" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
+                <!-- Right Controls: Navigation & Close -->
+                <div class="flex justify-end items-center gap-4 min-[820px]:gap-6 pointer-events-auto">
+                    <!-- Navigation Arrows -->
+                    <div class="flex items-center gap-2 mr-[5px] min-[820px]:mr-0">
+                        <button id="modal-prev-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
+                            <img src="./assets/home/arrow.svg" alt="Prev" class="w-[18px] min-[820px]:w-[20px] rotate-180 object-contain pointer-events-none brightness-0 invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none" style="transform: scaleX(-1);">
+                                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <button id="modal-next-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
+                            <img src="./assets/home/arrow.svg" alt="Next" class="w-[18px] min-[820px]:w-[20px] object-contain pointer-events-none brightness-0 invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none">
+                                <path d="M5 12H19M19 12L12 19M19 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Close Button -->
+                    <button id="modal-close-btn" class="p-2 -mr-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
+                        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[14px] h-[14px] min-[820px]:w-[16px] min-[820px]:h-[16px] pointer-events-none">
+                            <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- 圖片容器 -->
-        <div class="w-full min-[1351px]:w-2/3 h-auto min-[1351px]:h-full min-[1351px]:overflow-y-auto p-6 md:p-12 lg:p-20 hide-scrollbar cursor-none order-2 min-[1351px]:order-1 bg-[#f5f5f5] dark:bg-transparent transition-colors duration-700" id="modal-images-container">
-        </div>
+        <!-- Modal Content Area -->
+        <!-- Mobile: scroll container is the parent. Desktop: overflow hidden -->
+        <div id="modal-main-scroll" class="flex-grow w-full overflow-y-auto min-[820px]:overflow-hidden transition-colors duration-700 pt-[130px] min-[820px]:pt-[90px]">
+            <!-- Added pb-[30px] here for Mobile so the entire scrolling content has a bottom margin -->
+            <div class="custom-container min-[820px]:h-full pb-[30px] min-[820px]:pb-0">
+                <!-- Removed h-full on Mobile so it flows naturally -->
+                <div class="grid grid-cols-4 lg:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px] min-[820px]:h-full min-[820px]:min-h-0">
+                    
+                    <!-- Images -->
+                    <!-- Removed pb-[30px] on mobile to match grid gap naturally, Desktop keeps independent scroll -->
+                    <div class="col-span-4 lg:col-span-3 xl:col-span-4 min-[820px]:h-full min-[820px]:overflow-y-auto hide-scrollbar order-2 lg:order-1 min-[820px]:pb-[40px] lg:pb-[60px] min-[820px]:min-h-0 flex flex-col gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]" id="modal-images-container">
+                        <!-- JS injects images without mb-12 now -->
+                    </div>
 
+                    <!-- Text -->
+                    <div class="col-span-4 lg:col-span-3 xl:col-span-2 min-[820px]:h-full min-[820px]:overflow-y-auto hide-scrollbar flex flex-col order-1 lg:order-2 min-[820px]:pb-[40px] lg:pb-[60px] min-[820px]:min-h-0 text-center min-[820px]:text-left" id="modal-right-panel">
+                        <!-- Text Area -->
+                        <div class="flex-grow pb-6 min-[820px]:min-h-0" id="modal-text-scroll-container">
+                            <h2 id="modal-title" class="text-[28px] min-[820px]:text-[34px] lg:text-[40px] font-bold text-black dark:text-white leading-tight mb-6 transition-colors duration-700"></h2>
+                            <p id="modal-desc" class="text-[13px] min min-[820px]:text-[14px] lg:text-[15px] text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap transition-colors duration-700"></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- 引入 Three.js -->
@@ -560,10 +641,13 @@
             }
 
             let target = e.currentTarget;
-            // 於 Tablet/Mobile 版面時，檢查整個 Modal 是否可滾動
-            if (window.innerWidth < 1351) {
+            // 於 Tablet/Mobile 版面時，檢查對應的 scroll 容器
+            if (window.innerWidth < 820) {
+                target = document.getElementById('modal-main-scroll');
+            } else if (window.innerWidth < 1351) {
                 target = document.getElementById('project-modal');
             }
+
             // 判斷是否有隱藏的滾動區域
             if (target && target.scrollHeight > Math.ceil(target.clientHeight)) {
                 cursor.classList.add('scroll-mode');
@@ -571,6 +655,12 @@
                 cursor.classList.remove('scroll-mode');
             }
         };
+
+        const modalMainScroll = document.getElementById('modal-main-scroll');
+        if (modalMainScroll) {
+            modalMainScroll.addEventListener('mousemove', handleScrollCursorMove);
+            modalMainScroll.addEventListener('mouseleave', cursorUnscroll);
+        }
 
         const modalImagesContainer = document.getElementById('modal-images-container');
         modalImagesContainer.addEventListener('mousemove', handleScrollCursorMove);
@@ -1081,12 +1171,15 @@
             }
         };
 
+        // Scrollbar compensation utility
+        const getScrollbarWidth = () => window.innerWidth - document.documentElement.clientWidth;
+
         // Modal Logic
         const modal = document.getElementById('project-modal');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const navMenu = document.getElementById('nav-menu');
         let currentProjectId = null;
-        let modalCloseTimeout = null; // 新增：用嚟管理動畫計時器
+        let modalCloseTimeout = null; 
 
         const renderProject = (id, pushToHistory = true) => {
             currentProjectId = id;
@@ -1099,7 +1192,6 @@
             }
 
             document.getElementById('modal-title').textContent = data.title;
-            document.getElementById('modal-category').textContent = data.category;
             document.getElementById('modal-desc').textContent = data.desc;
             
             const imagesContainer = document.getElementById('modal-images-container');
@@ -1107,18 +1199,21 @@
             for (let i = 1; i <= data.imagesCount; i++) {
                 const img = document.createElement('img');
                 img.src = `./assets/works/${id}/${id}_image_${i.toString().padStart(2, '0')}.webp`;
-                // 圖片佔位底色切換：Light Mode 淺灰 / Dark Mode 深黑
-                img.className = 'w-full h-auto object-cover mb-12 bg-[#f0f0f0] dark:bg-[#050505] reveal-image';
+                // 圖片佔位底色切換：Light Mode 淺灰 / Dark Mode 深黑 (移除 mb-12，交由 grid gap 處理)
+                img.className = 'w-full object-cover bg-[#f0f0f0] dark:bg-[#050505] reveal-image shrink-0 aspect-[4/3] lg:aspect-[1132/695]';
                 img.onerror = function() { this.remove(); };
                 imagesContainer.appendChild(img);
                 setTimeout(() => img.classList.add('active'), 100 + (i * 150));
             }
             
-            // Scroll to top
+            // Scroll to top for independent columns (Desktop) and Main Wrapper (Mobile)
+            const mainScroll = document.getElementById('modal-main-scroll');
+            if (mainScroll) mainScroll.scrollTop = 0;
+            
             imagesContainer.scrollTop = 0;
             modal.scrollTop = 0;
-            const rightPanel = document.getElementById('modal-right-panel');
-            if (rightPanel) rightPanel.scrollTop = 0;
+            const textScrollContainer = document.getElementById('modal-text-scroll-container');
+            if (textScrollContainer) textScrollContainer.scrollTop = 0;
         };
 
         const openModal = (id, pushToHistory = true) => {
@@ -1129,12 +1224,31 @@
             }
 
             renderProject(id, pushToHistory);
+            
+            // Fix Scrollbar Jump
+            const scrollbarWidth = getScrollbarWidth();
+            if (scrollbarWidth > 0) {
+                document.body.style.paddingRight = `${scrollbarWidth}px`;
+                const header = document.querySelector('header');
+                if (header) header.style.paddingRight = `${scrollbarWidth}px`;
+            }
+
+            // Force global logo visibility during modal
+            const mainLogo = document.getElementById('main-logo');
+            if (mainLogo) mainLogo.classList.add('force-show');
+
+            // Hide Theme Toggle avoiding any light mode overlay
+            const themeToggle = document.getElementById('theme-toggle-wrapper');
+            if (themeToggle) {
+                themeToggle.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => themeToggle.classList.add('hidden'), 300);
+            }
+
             modalBackdrop.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
             modalBackdrop.classList.add('opacity-100');
             modal.classList.remove('translate-y-full');
             navMenu?.classList.add('opacity-0', 'pointer-events-none');
-            // Hide Header toggle button as well when modal is open
-            document.getElementById('theme-toggle').classList.add('opacity-0', 'pointer-events-none');
+            
             document.documentElement.classList.add('lock-scroll');
             document.body.classList.add('lock-scroll');
         };
@@ -1147,7 +1261,6 @@
             modalBackdrop.classList.remove('opacity-100');
             modalBackdrop.classList.add('opacity-0', 'pointer-events-none');
             navMenu?.classList.remove('opacity-0', 'pointer-events-none');
-            document.getElementById('theme-toggle').classList.remove('opacity-0', 'pointer-events-none');
             
             cursorInactive(); 
             cursorUndiscover();
@@ -1164,8 +1277,26 @@
             modalCloseTimeout = setTimeout(() => {
                 document.documentElement.classList.remove('lock-scroll');
                 document.body.classList.remove('lock-scroll');
+                
+                // Restore scrollbar padding
+                document.body.style.paddingRight = '0px';
+                const header = document.querySelector('header');
+                if (header) header.style.paddingRight = '0px';
+
                 modalBackdrop.classList.add('hidden');
                 currentProjectId = null;
+
+                // Remove logo force-show
+                const mainLogo = document.getElementById('main-logo');
+                if (mainLogo) mainLogo.classList.remove('force-show');
+
+                // Restore Theme Toggle safely
+                const themeToggle = document.getElementById('theme-toggle-wrapper');
+                if (themeToggle) {
+                    themeToggle.classList.remove('hidden');
+                    setTimeout(() => themeToggle.classList.remove('opacity-0', 'pointer-events-none'), 50);
+                }
+
             }, 1000);
         };
 
@@ -1193,6 +1324,7 @@
             window.scrollTo(0, 0);
             initThreeJS(); 
             updateBackgroundOpacity();
+            initClientLogos(); // 啟動 Client Logo 動畫
 
             const hash = window.location.hash;
             const hasDirectLink = hash && hash.startsWith('#pj_') && projectsData[hash.replace('#pj_', '')];
@@ -1247,6 +1379,113 @@
         document.getElementById('modal-close-btn').addEventListener('click', closeModal);
         modalBackdrop.addEventListener('click', closeModal);
         
+        // --- Client Logo 動態輪播邏輯 ---
+        function initClientLogos() {
+            const TOTAL_LOGOS = 30;
+            const NUM_SLOTS = 12;
+            // 記錄當前顯示緊嘅 12 個 Logo ID (1-12)
+            let displayedLogos = Array.from({length: NUM_SLOTS}, (_, i) => i + 1); 
+            // 記錄每個 Slot 幾時先可以再轉 (Timestamp)
+            let slotLockTimes = new Array(NUM_SLOTS).fill(0);
+
+            setInterval(() => {
+                const now = Date.now();
+
+                // 1. 動態獲取當前螢幕嘅 Column 數量，以計算精確嘅 2D 坐標
+                let cols = 3;
+                if (window.innerWidth >= 1600) cols = 6;
+                else if (window.innerWidth >= 1300) cols = 5;
+                else if (window.innerWidth >= 1024) cols = 4;
+
+                // 2. 判斷兩個 Slot 係咪「上下左右」相鄰
+                const isAdjacent = (idx1, idx2) => {
+                    const r1 = Math.floor(idx1 / cols);
+                    const c1 = idx1 % cols;
+                    const r2 = Math.floor(idx2 / cols);
+                    const c2 = idx2 % cols;
+                    // 同一行且左右相鄰，或同一列且上下相鄰
+                    return (r1 === r2 && Math.abs(c1 - c2) === 1) || (c1 === c2 && Math.abs(r1 - r2) === 1);
+                };
+
+                // 3. 搵出目前「轉緊 / 鎖定緊」嘅所有 Slots
+                let lockedSlots = [];
+                for (let i = 0; i < NUM_SLOTS; i++) {
+                    if (now < slotLockTimes[i]) {
+                        lockedSlots.push(i);
+                    }
+                }
+
+                // 4. 篩選出「安全可轉」嘅 Slots
+                let availableSlots = [];
+                for (let i = 0; i < NUM_SLOTS; i++) {
+                    const imgEl = document.getElementById(`client-logo-${i}`);
+                    // 必須可見，且過咗鎖定時間
+                    if (imgEl && imgEl.offsetParent !== null && now >= slotLockTimes[i]) {
+                        // 【關鍵】檢查佢嘅「上下左右」有冇任何一個做緊動畫
+                        let isSafeFromLocked = true;
+                        for (let lockedIdx of lockedSlots) {
+                            if (isAdjacent(i, lockedIdx)) {
+                                isSafeFromLocked = false;
+                                break;
+                            }
+                        }
+                        if (isSafeFromLocked) {
+                            availableSlots.push(i);
+                        }
+                    }
+                }
+
+                if (availableSlots.length === 0) return;
+
+                // 隨機決定今次轉 1 個定 2 個 Logo
+                const numToChange = Math.random() > 0.6 ? 2 : 1;
+                
+                let slotsToChange = [];
+                // 打亂可選 Slot 嘅陣列
+                availableSlots.sort(() => Math.random() - 0.5);
+                
+                // 選出第一個要轉嘅 Slot
+                let firstSlot = availableSlots[0];
+                slotsToChange.push(firstSlot);
+                
+                // 如果要轉第二個，必須確保同剛剛選出嚟嘅第一個都「唔相鄰」
+                if (numToChange === 2) {
+                    let safeForSecond = availableSlots.filter(s => s !== firstSlot && !isAdjacent(s, firstSlot));
+                    if (safeForSecond.length > 0) {
+                        slotsToChange.push(safeForSecond[0]);
+                    }
+                }
+
+                // 執行轉換
+                slotsToChange.forEach(slotIdx => {
+                    let newLogoId;
+                    // 不斷抽，直到抽出嚟嗰個唔喺現有畫面入面 (防重複機制)
+                    do {
+                        newLogoId = Math.floor(Math.random() * TOTAL_LOGOS) + 1;
+                    } while (displayedLogos.includes(newLogoId));
+
+                    // 更新陣列記錄
+                    displayedLogos[slotIdx] = newLogoId;
+                    
+                    // 鎖定呢個 Slot (減慢速度：鎖定 4~6.5 秒停留時間 + 1.5 秒 Fade 時間)
+                    slotLockTimes[slotIdx] = now + 4000 + Math.random() * 2500 + 1500; 
+
+                    // 執行 Fade Out
+                    const imgEl = document.getElementById(`client-logo-${slotIdx}`);
+                    imgEl.classList.remove('opacity-100');
+                    imgEl.classList.add('opacity-0');
+                    
+                    // 等 1.5 秒 (Fade out 完) 之後，換圖再 Fade In
+                    setTimeout(() => {
+                        imgEl.src = `./assets/home/project_logo/logo_${String(newLogoId).padStart(2, '0')}.svg`;
+                        imgEl.classList.remove('opacity-0');
+                        imgEl.classList.add('opacity-100');
+                    }, 1500); 
+                });
+
+            }, 2000); // 檢查頻率維持喺 2 秒
+        }
+
         // --- 修正 Grid 鍵盤監聽 ---
         window.addEventListener('keydown', (e) => {
             // 防止在 input 等元件打字時誤觸
