@@ -1144,7 +1144,7 @@
                 const img = document.createElement('img');
                 img.src = `./assets/works/${id}/${id}_image_${i.toString().padStart(2, '0')}.webp`;
                 // 圖片佔位底色切換：Light Mode 淺灰 / Dark Mode 深黑 (移除 mb-12，交由 grid gap 處理)
-                img.className = 'w-full object-cover bg-[#f0f0f0] dark:bg-[#050505] reveal-image shrink-0 aspect-[4/3] lg:aspect-[1132/695]';
+                img.className = 'w-full h-auto bg-[#f0f0f0] dark:bg-[#050505] reveal-image shrink-0';
                 img.onerror = function() { this.remove(); };
                 imagesContainer.appendChild(img);
                 setTimeout(() => img.classList.add('active'), 100 + (i * 150));
