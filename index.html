@@ -156,10 +156,11 @@
         #custom-cursor .cursor-scroll-icon { opacity: 0; transition: opacity 0.2s; }
         #custom-cursor.scroll-mode .cursor-scroll-icon { opacity: 1; transition-delay: 0.1s; }
 
-        /* Marquee & Scroll Drop */
+        /* --- 跑馬燈 (Skills) --- */
         .marquee-container { overflow: hidden; white-space: nowrap; width: 100%; }
         .marquee-content { display: inline-flex; align-items: center; animation: marquee 35s linear infinite; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        
         @keyframes scrolldrop { 0% { transform: translateY(0); opacity: 0; } 15% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(22px); opacity: 1; } 100% { transform: translateY(22px); opacity: 0; } }
         .animate-scrolldrop { animation: scrolldrop 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
 
@@ -212,6 +213,54 @@
             opacity: 1 !important;
             pointer-events: auto !important;
         }
+
+        /* --- Client Logos Marquee (重構版，完美對應 Resize 且絕不爛版) --- */
+        .client-marquee-track {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow: hidden;
+            width: 100vw;
+            max-width: 100%;
+        }
+        .client-marquee-group {
+            display: flex;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+            align-items: center;
+            will-change: transform;
+        }
+        .anim-rl {
+            animation: scroll-rl linear infinite;
+        }
+        .anim-lr {
+            animation: scroll-lr linear infinite;
+        }
+        @keyframes scroll-rl {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100%); }
+        }
+        @keyframes scroll-lr {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .client-logo-wrapper {
+            flex-shrink: 0;
+            width: calc(100vw / 3); /* Mobile: 一行3個 */
+            padding: 0 15px;
+        }
+        @media (min-width: 1024px) {
+            .client-logo-wrapper { width: calc(100vw / 4); padding: 0 20px; } /* 1024-1299: 一行4個 */
+        }
+        @media (min-width: 1300px) {
+            .client-logo-wrapper { width: calc(100vw / 5); padding: 0 25px; } /* 1300-1599: 一行5個 */
+        }
+        @media (min-width: 1600px) {
+            .client-logo-wrapper { width: calc(100vw / 6); padding: 0 30px; } /* >=1600: 一行6個 */
+        }
+        @media (min-width: 1920px) {
+            .client-logo-wrapper { width: calc(1920px / 6); }
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-black/30 selection:text-black dark:selection:bg-white/30 dark:selection:text-white lock-scroll bg-white dark:bg-[#000] text-black dark:text-white transition-colors duration-700">
@@ -238,6 +287,7 @@
             
             <!-- Left: Logo -->
             <a href="#" id="main-logo" class="flex items-center cursor-pointer transition-opacity duration-500 opacity-0 pointer-events-none hover:opacity-70 h-full">
+                <!-- 正確路徑：home 資料夾 -->
                 <img src="./assets/home/Logo.svg" alt="VCII" class="w-[36px] object-contain -translate-y-[1px]">
             </a>
 
@@ -401,7 +451,7 @@
                         <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 550ms;">SQL</span>
                     </div>
                 </div>
-                <!-- Award Logos -->
+                <!-- Award Logos (正確路徑：home 資料夾) -->
                 <div class="col-span-4 min-[820px]:col-start-4 min-[820px]:col-span-3 grid grid-cols-3 gap-y-12 gap-x-4 min-[820px]:flex min-[820px]:flex-wrap min-[820px]:gap-12 items-center justify-items-center min-[820px]:justify-start mt-4 min-[820px]:mt-[10px]">
                     <img src="./assets/home/HKDA.svg" alt="HKDA" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 100ms;">
                     <img src="./assets/home/Awwwards.svg" alt="Awwwards" class="w-[96px] min-[820px]:w-[96px] lg:w-[120px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 150ms;">
@@ -440,59 +490,16 @@
             </div>
         </section>
 
-        <!-- Worked With Section -->
-        <section id="clients" class="custom-container pb-[90px] min-[820px]:pb-[90px] lg:pb-32 scroll-mt-[100px]">
-            <div class="reveal-up mb-12 min-[820px]:mb-16">
+        <!-- Worked With Section (重構防爛版 Marquee 系統) -->
+        <section id="clients" class="pb-[90px] min-[820px]:pb-[90px] lg:pb-32 scroll-mt-[100px] overflow-hidden w-full">
+            <div class="custom-container reveal-up mb-8 min-[820px]:mb-12">
                 <p class="font-['Inter'] font-normal text-[10px] min-[820px]:text-[12px] tracking-[0.1em] uppercase text-black dark:text-white text-center">
                     WORKED WITH
                 </p>
             </div>
-            <!-- Grid setup based on screen size -->
-            <div class="grid grid-cols-3 min-[820px]:grid-cols-4 min-[1300px]:grid-cols-5 min-[1600px]:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
-                
-                <!-- Slots 0 to 7: Always visible (Mobile: part of 3x3, Tablet: 4x2) -->
-                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image">
-                    <img id="client-logo-0" src="./assets/home/project_logo/logo_01.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 50ms;">
-                    <img id="client-logo-1" src="./assets/home/project_logo/logo_02.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 100ms;">
-                    <img id="client-logo-2" src="./assets/home/project_logo/logo_03.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 150ms;">
-                    <img id="client-logo-3" src="./assets/home/project_logo/logo_04.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 200ms;">
-                    <img id="client-logo-4" src="./assets/home/project_logo/logo_05.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 250ms;">
-                    <img id="client-logo-5" src="./assets/home/project_logo/logo_06.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 300ms;">
-                    <img id="client-logo-6" src="./assets/home/project_logo/logo_07.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-                <div class="col-span-1 flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 350ms;">
-                    <img id="client-logo-7" src="./assets/home/project_logo/logo_08.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-
-                <!-- Slot 8: Visible on Mobile (<820, as 9th item) and >=1300px. Hidden on Tablet & small Desktop (820px-1299px) -->
-                <div class="col-span-1 flex min-[820px]:hidden min-[1300px]:flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 400ms;">
-                    <img id="client-logo-8" src="./assets/home/project_logo/logo_09.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-
-                <!-- Slot 9: Hidden on <1300px, Visible >=1300px -->
-                <div class="col-span-1 hidden min-[1300px]:flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 450ms;">
-                    <img id="client-logo-9" src="./assets/home/project_logo/logo_10.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-
-                <!-- Slots 10-11: Hidden on <1600px, Visible >=1600px -->
-                <div class="col-span-1 hidden min-[1600px]:flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 500ms;">
-                    <img id="client-logo-10" src="./assets/home/project_logo/logo_11.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
-                <div class="col-span-1 hidden min-[1600px]:flex items-center justify-center aspect-[3/2] reveal-image" style="transition-delay: 550ms;">
-                    <img id="client-logo-11" src="./assets/home/project_logo/logo_12.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert transition-opacity duration-[1500ms] ease-in-out opacity-100 min-[1600px]:max-[1699px]:scale-110">
-                </div>
+            
+            <div id="clients-marquee-container" class="flex flex-col gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px] w-full reveal-up" style="transition-delay: 200ms;">
+                <!-- JS 會動態注入無縫雙軌跑馬燈 -->
             </div>
         </section>
 
@@ -543,12 +550,14 @@
                     <!-- Navigation Arrows -->
                     <div class="flex items-center gap-2 mr-[5px] min-[820px]:mr-0">
                         <button id="modal-prev-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
+                            <!-- 正確路徑：home 資料夾 -->
                             <img src="./assets/home/arrow.svg" alt="Prev" class="w-[18px] min-[820px]:w-[20px] rotate-180 object-contain pointer-events-none brightness-0 invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none" style="transform: scaleX(-1);">
                                 <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </button>
                         <button id="modal-next-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
+                            <!-- 正確路徑：home 資料夾 -->
                             <img src="./assets/home/arrow.svg" alt="Next" class="w-[18px] min-[820px]:w-[20px] object-contain pointer-events-none brightness-0 invert transition-all duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none">
                                 <path d="M5 12H19M19 12L12 19M19 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -585,7 +594,7 @@
                         <!-- Text Area -->
                         <div class="flex-grow pb-6 min-[820px]:min-h-0" id="modal-text-scroll-container">
                             <h2 id="modal-title" class="text-[28px] min-[820px]:text-[34px] lg:text-[40px] font-bold text-black dark:text-white leading-tight mb-6 transition-colors duration-700"></h2>
-                            <p id="modal-desc" class="text-[13px] min min-[820px]:text-[14px] lg:text-[15px] text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap transition-colors duration-700"></p>
+                            <p id="modal-desc" class="text-[13px] min-[820px]:text-[14px] lg:text-[15px] text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap transition-colors duration-700"></p>
                         </div>
                     </div>
 
@@ -1379,111 +1388,58 @@
         document.getElementById('modal-close-btn').addEventListener('click', closeModal);
         modalBackdrop.addEventListener('click', closeModal);
         
-        // --- Client Logo 動態輪播邏輯 ---
+        // --- Client Logo 動態跑馬燈邏輯 ---
         function initClientLogos() {
-            const TOTAL_LOGOS = 30;
-            const NUM_SLOTS = 12;
-            // 記錄當前顯示緊嘅 12 個 Logo ID (1-12)
-            let displayedLogos = Array.from({length: NUM_SLOTS}, (_, i) => i + 1); 
-            // 記錄每個 Slot 幾時先可以再轉 (Timestamp)
-            let slotLockTimes = new Array(NUM_SLOTS).fill(0);
+            const container = document.getElementById('clients-marquee-container');
+            if (!container) return;
 
-            setInterval(() => {
-                const now = Date.now();
+            // 產生 1 到 30 嘅陣列並打亂 (隨機排序，保證無重複)
+            let logos = Array.from({length: 30}, (_, i) => i + 1);
+            logos.sort(() => Math.random() - 0.5);
 
-                // 1. 動態獲取當前螢幕嘅 Column 數量，以計算精確嘅 2D 坐標
-                let cols = 3;
-                if (window.innerWidth >= 1600) cols = 6;
-                else if (window.innerWidth >= 1300) cols = 5;
-                else if (window.innerWidth >= 1024) cols = 4;
+            // 嚴格分拆成 3 組，每組 10 個 Logo，保證同一時間畫面上絕對無重複
+            const rows = [
+                logos.slice(0, 10),
+                logos.slice(10, 20),
+                logos.slice(20, 30)
+            ];
 
-                // 2. 判斷兩個 Slot 係咪「上下左右」相鄰
-                const isAdjacent = (idx1, idx2) => {
-                    const r1 = Math.floor(idx1 / cols);
-                    const c1 = idx1 % cols;
-                    const r2 = Math.floor(idx2 / cols);
-                    const c2 = idx2 % cols;
-                    // 同一行且左右相鄰，或同一列且上下相鄰
-                    return (r1 === r2 && Math.abs(c1 - c2) === 1) || (c1 === c2 && Math.abs(r1 - r2) === 1);
-                };
+            let html = '';
 
-                // 3. 搵出目前「轉緊 / 鎖定緊」嘅所有 Slots
-                let lockedSlots = [];
-                for (let i = 0; i < NUM_SLOTS; i++) {
-                    if (now < slotLockTimes[i]) {
-                        lockedSlots.push(i);
-                    }
+            rows.forEach((rowLogos, index) => {
+                // 第一行 (0) 向右 (lr), 第二行 (1) 向左 (rl), 第三行 (2) 向右 (lr)
+                const isLR = (index === 0 || index === 2); 
+                const animClass = isLR ? 'anim-lr' : 'anim-rl';
+                
+                // 速度減慢20% (即時間除以0.8)：第一行 37.5s, 第二行 56.25s, 第三行 31.25s
+                const duration = index === 0 ? '37.5s' : (index === 1 ? '56.25s' : '31.25s');
+                
+                // 顯示邏輯：第三行只限 Mobile / Tablet (<1024px) 顯示
+                const visibilityClass = index === 2 ? 'flex min-[1024px]:hidden' : 'flex';
+
+                // 將 10 個 Logo 陣列重複拼接一次 (變成 20 個)，令到 CSS 無縫輪播可以完美對接
+                const loopLogos = [...rowLogos, ...rowLogos];
+
+                html += `<div class="client-marquee-track ${visibilityClass}">`;
+                
+                // Track 入面有兩個完美對齊嘅 Group 實現無縫 Loop
+                for (let g = 0; g < 2; g++) {
+                    html += `<div class="client-marquee-group ${animClass}" style="animation-duration: ${duration};">`;
+                    loopLogos.forEach(logoId => {
+                        // 套用自定義 CSS class 計算完美闊度比例
+                        html += `
+                            <div class="client-logo-wrapper flex items-center justify-center aspect-[3/2]">
+                                <img src="./assets/project_logo/logo_${String(logoId).padStart(2, '0')}.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert min-[1600px]:max-[1699px]:scale-110 pointer-events-none opacity-80 hover:opacity-100 transition-opacity duration-300">
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
                 }
 
-                // 4. 篩選出「安全可轉」嘅 Slots
-                let availableSlots = [];
-                for (let i = 0; i < NUM_SLOTS; i++) {
-                    const imgEl = document.getElementById(`client-logo-${i}`);
-                    // 必須可見，且過咗鎖定時間
-                    if (imgEl && imgEl.offsetParent !== null && now >= slotLockTimes[i]) {
-                        // 【關鍵】檢查佢嘅「上下左右」有冇任何一個做緊動畫
-                        let isSafeFromLocked = true;
-                        for (let lockedIdx of lockedSlots) {
-                            if (isAdjacent(i, lockedIdx)) {
-                                isSafeFromLocked = false;
-                                break;
-                            }
-                        }
-                        if (isSafeFromLocked) {
-                            availableSlots.push(i);
-                        }
-                    }
-                }
+                html += `</div>`;
+            });
 
-                if (availableSlots.length === 0) return;
-
-                // 隨機決定今次轉 1 個定 2 個 Logo
-                const numToChange = Math.random() > 0.6 ? 2 : 1;
-                
-                let slotsToChange = [];
-                // 打亂可選 Slot 嘅陣列
-                availableSlots.sort(() => Math.random() - 0.5);
-                
-                // 選出第一個要轉嘅 Slot
-                let firstSlot = availableSlots[0];
-                slotsToChange.push(firstSlot);
-                
-                // 如果要轉第二個，必須確保同剛剛選出嚟嘅第一個都「唔相鄰」
-                if (numToChange === 2) {
-                    let safeForSecond = availableSlots.filter(s => s !== firstSlot && !isAdjacent(s, firstSlot));
-                    if (safeForSecond.length > 0) {
-                        slotsToChange.push(safeForSecond[0]);
-                    }
-                }
-
-                // 執行轉換
-                slotsToChange.forEach(slotIdx => {
-                    let newLogoId;
-                    // 不斷抽，直到抽出嚟嗰個唔喺現有畫面入面 (防重複機制)
-                    do {
-                        newLogoId = Math.floor(Math.random() * TOTAL_LOGOS) + 1;
-                    } while (displayedLogos.includes(newLogoId));
-
-                    // 更新陣列記錄
-                    displayedLogos[slotIdx] = newLogoId;
-                    
-                    // 鎖定呢個 Slot (減慢速度：鎖定 4~6.5 秒停留時間 + 1.5 秒 Fade 時間)
-                    slotLockTimes[slotIdx] = now + 4000 + Math.random() * 2500 + 1500; 
-
-                    // 執行 Fade Out
-                    const imgEl = document.getElementById(`client-logo-${slotIdx}`);
-                    imgEl.classList.remove('opacity-100');
-                    imgEl.classList.add('opacity-0');
-                    
-                    // 等 1.5 秒 (Fade out 完) 之後，換圖再 Fade In
-                    setTimeout(() => {
-                        imgEl.src = `./assets/home/project_logo/logo_${String(newLogoId).padStart(2, '0')}.svg`;
-                        imgEl.classList.remove('opacity-0');
-                        imgEl.classList.add('opacity-100');
-                    }, 1500); 
-                });
-
-            }, 2000); // 檢查頻率維持喺 2 秒
+            container.innerHTML = html;
         }
 
         // --- 修正 Grid 鍵盤監聽 ---
