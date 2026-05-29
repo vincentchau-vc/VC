@@ -776,7 +776,7 @@
 
         function initThreeJS() {
             const wrapper = document.getElementById('bg-video-wrapper');
-            if (!wrapper) return;
+            if (!wrapper || typeof THREE === 'undefined') return;
 
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1288,7 +1288,7 @@
 
         window.addEventListener('load', () => {
             window.scrollTo(0, 0);
-            initThreeJS(); 
+            try { initThreeJS(); } catch (e) { console.warn('3D background skipped:', e); }
             updateBackgroundOpacity();
             initClientLogos(); 
 
