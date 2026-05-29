@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="zh-HK" class="scroll-smooth dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VC</title>
-    <!-- 引入 Tailwind CSS -->
+    <title>VC | Enterprise Backend Architect</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
         }
     </script>
-    <!-- 引入 Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* 基礎設定與 Smooth Scroll */
         html {
             scroll-behavior: smooth;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             cursor: none !important;
             text-shadow: none !important;
         }
-        
+
         * {
             box-shadow: none !important;
             text-shadow: none !important;
         }
-        
-        a, button, .cursor-pointer {
+
+        a,
+        \n button,
+        \n .cursor-pointer {
             cursor: none !important;
         }
 
@@ -39,1338 +41,580 @@
             #custom-cursor {
                 display: none !important;
             }
-            body, a, button, .cursor-pointer {
+
+            body,
+            \n a,
+            \n button,
+            \n .cursor-pointer {
                 cursor: auto !important;
             }
         }
 
-        /* 終極鎖定背景捲動 */
-        html.lock-scroll, body.lock-scroll {
-            overflow: hidden !important;
-            overscroll-behavior: none !important;
-        }
-
-        /* 隱藏 Scrollbar */
-        .hide-scrollbar::-webkit-scrollbar {
+        /* 隱藏滾動條但保持滾動功能 */
+        .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
-        .hide-scrollbar {
+
+        .no-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
 
-        /* --- Intro Screen --- */
-        #intro-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 2000000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        #typing-text {
-            font-size: 38px;
-            font-weight: 300;
-            letter-spacing: 0.02em;
-            text-align: center;
-        }
-        @media (min-width: 820px) { #typing-text { font-size: 68px; } }
-        @media (min-width: 1024px) { #typing-text { font-size: 87px; } }
-        
-        .cursor-blink::after {
-            content: '|';
-            animation: blink 1s step-end infinite;
-            margin-left: 4px;
-        }
-        @keyframes blink { from, to { opacity: 1; } 50% { opacity: 0; } }
-
-        /* --- 全站入場動畫 --- */
-        .reveal-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 2.2s cubic-bezier(0.22, 1, 0.36, 1), 
-                        transform 2.2s cubic-bezier(0.22, 1, 0.36, 1),
-                        color 0.7s ease,
-                        background-color 0.7s ease,
-                        border-color 0.7s ease,
-                        filter 0.7s ease;
-            will-change: opacity, transform;
-        }
-        .reveal-up.active {
-            opacity: 1;
-            transform: translateY(0);
+        /* 新增：為網頁所有鏈接加上過渡效果 */
+        a,
+        button {
+            transition: all 0.3s ease;
         }
 
-        .reveal-image {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 2.2s cubic-bezier(0.22, 1, 0.36, 1), 
-                        transform 2.2s cubic-bezier(0.22, 1, 0.36, 1),
-                        background-color 0.7s ease,
-                        filter 0.7s ease;
-            will-change: opacity, transform;
-        }
-        .reveal-image.active {
-            opacity: 1;
-            transform: translateY(0);
+        /* 背景網格與文字微調 */
+        p,
+        span,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            letter-spacing: -0.01em;
         }
 
-        .reveal-line {
-            width: 100%;
-            height: 1px;
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 2.5s cubic-bezier(0.22, 1, 0.36, 1),
-                        background-color 0.7s ease;
-            will-change: transform;
-        }
-        .reveal-line.active {
-            transform: scaleX(1);
-        }
-
-        /* --- 自定義游標 --- */
-        #custom-cursor {
+        /* 專門處理 3D 畫布與背景漸變的層級 */
+        #webgl-bg {
             position: fixed;
             top: 0;
             left: 0;
-            width: 16px;
-            height: 16px;
-            background-color: white;
-            border-radius: 50%;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
             pointer-events: none;
-            z-index: 3000000;
-            mix-blend-mode: difference;
-            transform: translate3d(-50%, -50%, 0);
-            transition: width 0.3s ease-out, height 0.3s ease-out, border-radius 0.3s ease-out, mix-blend-mode 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            will-change: width, height, transform;
         }
-        #custom-cursor.active { width: 60px; height: 60px; }
-        #custom-cursor.discover { width: 110px; height: 110px; mix-blend-mode: normal; }
-        #custom-cursor.scroll-mode { width: 16px; height: 50px; border-radius: 8px; mix-blend-mode: normal; }
-        #custom-cursor .cursor-text { opacity: 0; color: #000; font-size: 12px; font-weight: 600; transition: opacity 0.2s; white-space: nowrap; }
-        #custom-cursor.discover .cursor-text { opacity: 1; transition-delay: 0.1s; }
-        #custom-cursor .cursor-scroll-icon { opacity: 0; transition: opacity 0.2s; }
-        #custom-cursor.scroll-mode .cursor-scroll-icon { opacity: 1; transition-delay: 0.1s; }
 
-        /* --- 跑馬燈 (Skills) --- */
-        .marquee-container { overflow: hidden; white-space: nowrap; width: 100%; }
-        .marquee-content { display: inline-flex; align-items: center; animation: marquee 35s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        
-        @keyframes scrolldrop { 0% { transform: translateY(0); opacity: 0; } 15% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(22px); opacity: 1; } 100% { transform: translateY(22px); opacity: 0; } }
-        .animate-scrolldrop { animation: scrolldrop 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
-
-        /* Grid */
-        #design-grid {
+        /* 三維球體的漸變遮罩 */
+        .bg-gradient-overlay {
             position: fixed;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 1920px;
+            left: 0;
+            width: 100vw;
             height: 100vh;
-            padding: 0 26px;
+            background: radial-gradient(circle at 50% 50%, transparent 20%, #030712 80%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* 互動格線（按 G 鍵觸發） */
+        #design-grid {
+            display: none;
+        }
+
+        #design-grid.active {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            column-gap: 10px;
-            pointer-events: none;
-            z-index: 2147483647;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        #design-grid.active { opacity: 1 !important; }
-        
-        .grid-col-guide {
-            height: 100%;
-            background-color: rgba(225, 198, 153, 0.12);
-            border-left: 1px dashed rgba(225, 198, 153, 0.45);
-            border-right: 1px dashed rgba(225, 198, 153, 0.45);
-            pointer-events: none;
         }
 
-        @media (min-width: 820px) { #design-grid { padding: 0 50px; grid-template-columns: repeat(6, 1fr); column-gap: 20px; } }
-        @media (min-width: 1024px) { #design-grid { padding: 0 75px; column-gap: 30px; } }
-        @media (min-width: 1280px) { #design-grid { padding: 0 101px; column-gap: 40px; } }
+        /* 自定義跑馬燈動畫 */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0%);
+            }
 
-        /* 統一 Container */
-        .custom-container { max-width: 1920px; margin: 0 auto; padding: 0 26px; width: 100%; }
-        @media (min-width: 820px) { .custom-container { padding: 0 50px; } }
-        @media (min-width: 1024px) { .custom-container { padding: 0 75px; } }
-        @media (min-width: 1280px) { .custom-container { padding: 0 101px; } }
-
-        /* Theme Sync */
-        body.theme-switching, body.theme-switching * {
-            transition-delay: 0ms !important;
-        }
-        
-        /* 強制顯示 Logo */
-        #main-logo.force-show {
-            opacity: 1 !important;
-            pointer-events: auto !important;
+            100% {
+                transform: translateX(-50%);
+            }
         }
 
-        /* --- Client Logos Marquee (純 CSS Variables 終極防閃爍版) --- */
-        :root {
-            --logo-w: calc(100vw / 3);
-        }
-        @media (min-width: 1024px) { :root { --logo-w: calc(100vw / 4); } }
-        @media (min-width: 1300px) { :root { --logo-w: calc(100vw / 5); } }
-        @media (min-width: 1600px) { :root { --logo-w: calc(100vw / 6); } }
+        @keyframes marquee-reverse {
+            0% {
+                transform: translateX(-50%);
+            }
 
-        .client-marquee-track {
+            100% {
+                transform: translateX(0%);
+            }
+        }
+
+        .animate-marquee {
             display: flex;
-            flex-wrap: nowrap;
-            width: 100%;
-            overflow: hidden;
+            width: max-content;
+            animation: marquee linear infinite;
         }
-        
+
+        .animate-marquee-reverse {
+            display: flex;
+            width: max-content;
+            animation: marquee-reverse linear infinite;
+        }
+
         .client-marquee-group {
             display: flex;
-            flex-shrink: 0;
-            flex-wrap: nowrap;
             align-items: center;
-            will-change: transform;
-            transform: translateZ(0); /* 強制 GPU 渲染 */
-            width: calc(var(--logo-w) * 10); /* 嚴格鎖定寬度 (每組 10 個 Logo) */
+            justify-content: space-around;
+            gap: 4rem;
+            /* min-[1600px]:gap-24 效果在 JS 中控制 */
+            padding-right: 4rem;
         }
 
-        .anim-rl { animation: scroll-rl linear infinite; }
-        .anim-lr { animation: scroll-lr linear infinite; }
-        
-        /* 放棄 -100% 寫法，改用精準 calc()，解決 Resize 閃現 / 走位問題 */
-        @keyframes scroll-rl {
-            from { transform: translate3d(0, 0, 0); }
-            to { transform: translate3d(calc(var(--logo-w) * -10), 0, 0); }
-        }
-        @keyframes scroll-lr {
-            from { transform: translate3d(calc(var(--logo-w) * -10), 0, 0); }
-            to { transform: translate3d(0, 0, 0); }
+        /* 彈窗（Modal）動畫優化 */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
-        /* 統一變數控制寬度，保證 Resize 絕對流暢無縫 */
-        .client-logo-wrapper {
-            flex-shrink: 0;
-            width: var(--logo-w);
-            padding: 0 15px;
+        .animate-modal {
+            animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        @media (min-width: 1024px) { .client-logo-wrapper { padding: 0 20px; } }
-        @media (min-width: 1300px) { .client-logo-wrapper { padding: 0 25px; } }
-        @media (min-width: 1600px) { .client-logo-wrapper { padding: 0 30px; } }
     </style>
 </head>
-<body class="antialiased selection:bg-black/30 selection:text-black dark:selection:bg-white/30 dark:selection:text-white lock-scroll bg-white dark:bg-[#000] text-black dark:text-white transition-colors duration-700">
 
-    <!-- Design Grid -->
-    <div id="design-grid">
-        <div class="grid-col-guide"></div>
-        <div class="grid-col-guide"></div>
-        <div class="grid-col-guide"></div>
-        <div class="grid-col-guide"></div>
-        <div class="grid-col-guide hidden min-[820px]:block"></div>
-        <div class="grid-col-guide hidden min-[820px]:block"></div>
+<body class="bg-[#030712] text-gray-100 min-h-screen selection:bg-white/20 antialiased overflow-y-scroll no-scrollbar">
+
+    <div id="webgl-bg"></div>
+    <div class="bg-gradient-overlay"></div>
+
+    <div id="design-grid"
+        class="fixed inset-0 grid-cols-4 min-[820px]:grid-cols-12 gap-5 px-6 min-[820px]:px-12 pointer-events-none z-50">
+        <div class="border-x border-white/[0.02] h-full"></div>
+        <div class="border-x border-white/[0.02] h-full"></div>
+        <div class="border-x border-white/[0.02] h-full"></div>
+        <div class="border-x border-white/[0.02] h-full"></div>
+        <div class="hidden min-[820px]:block border-x border-white/[0.02] h-full"></div>
+        <div class="hidden min-[820px]:block border-x border-white/[0.02] h-full"></div>
+        <div class="hidden min-[820px]:block border-x border-white/[0.02] h-full"></div>
+        <div class="hidden min-[820px]:block border-x border-white/[0.02] h-full"></div>
+        <div class="hidden min-[820px]:block border-x border-white/[0.02] h-full"></div>
+        <div class="hidden min-[820px]:block border-x border-white/[0.02] h-full"></div>
+        <div class="hidden min-[820px]:block border-x border-white/[0.02] h-full"></div>
+        <div class="hidden min-[820px]:block border-x border-white/[0.02] h-full"></div>
     </div>
 
-    <!-- Intro Screen -->
-    <div id="intro-screen" class="bg-white dark:bg-black">
-        <h1 id="typing-text" class="cursor-blink text-black dark:text-white"></h1>
+    <div id="custom-cursor"
+        class="fixed top-0 left-0 w-4 h-4 bg-white rounded-full pointer-events-none z-[9999] mixed-blend-difference -translate-x-1/2 -translate-y-1/2 will-change-transform scale-100 transition-transform duration-200 ease-out">
     </div>
 
-    <!-- 全域 Header -->
-    <header class="fixed top-[33px] left-0 w-full z-[100000] mix-blend-difference text-white pointer-events-none">
-        <div class="custom-container flex justify-between items-center relative h-[36px]">
-            
-            <!-- Left: Logo (已更新路徑至 home) -->
-            <a href="#" id="main-logo" class="flex items-center cursor-pointer transition-opacity duration-500 opacity-0 pointer-events-none hover:opacity-70 h-full">
-                <img src="./assets/home/Logo.svg" alt="VCII" class="w-[36px] object-contain -translate-y-[1px]">
-            </a>
-
-            <!-- Center: Menu -->
-            <nav id="nav-menu" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex justify-center items-center text-[13px] min-[820px]:text-[13px] lg:text-[15px] font-bold tracking-[0.1em] uppercase pointer-events-auto w-max h-full transition-opacity duration-500">
-                <div class="flex space-x-[34px] min-[820px]:space-x-[34px] lg:space-x-[68px] reveal-up hero-reveal" style="transition-delay: 2000ms;">
-                    <a href="#about" class="relative group transition duration-300 cursor-pointer flex flex-col items-center justify-center">
-                        <span class="leading-none">About</span>
-                        <div class="absolute -bottom-4 w-1.5 h-1.5 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </a>
-                    <a href="#works" class="relative group transition duration-300 cursor-pointer flex flex-col items-center justify-center">
-                        <span class="leading-none">Works</span>
-                        <div class="absolute -bottom-4 w-1.5 h-1.5 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </a>
-                    <a href="#talk" class="relative group transition duration-300 cursor-pointer flex flex-col items-center justify-center">
-                        <span class="leading-none">Talk</span>
-                        <div class="absolute -bottom-4 w-1.5 h-1.5 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </a>
-                </div>
-            </nav>
-
-            <!-- Right: Light/Dark Mode Toggle -->
-            <div class="reveal-up hero-reveal h-full flex items-center transition-opacity duration-300" style="transition-delay: 2000ms;" id="theme-toggle-wrapper">
-                <button id="theme-toggle" class="flex items-center gap-[6px] cursor-pointer pointer-events-auto transition duration-300 hover:opacity-70">
-                    <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] hidden dark:block">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                    <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[14px] h-[14px] block dark:hidden">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <span id="theme-text" class="hidden min-[820px]:block text-[10px] font-light tracking-[0.2em] leading-none uppercase -translate-y-[1px]">Light</span>
-                </button>
-            </div>
-
+    <nav
+        class="fixed top-0 left-0 w-full z-40 px-6 min-[820px]:px-12 py-6 flex justify-between items-center bg-transparent">
+        <a href="#"
+            class="text-sm font-semibold tracking-wider text-white opacity-80 hover:opacity-100 mix-blend-difference cursor-pointer">VC</a>
+        <div class="flex items-center gap-8 mix-blend-difference">
+            <a href="#about"
+                class="text-xs tracking-widest uppercase text-white/60 hover:text-white transition-colors duration-300 cursor-pointer">About</a>
+            <a href="#works"
+                class="text-xs tracking-widest uppercase text-white/60 hover:text-white transition-colors duration-300 cursor-pointer">Works</a>
+            <a href="#contact"
+                class="text-xs tracking-widest uppercase text-white/60 hover:text-white transition-colors duration-300 cursor-pointer">Contact</a>
         </div>
-    </header>
+    </nav>
 
-    <!-- 自定義游標 -->
-    <div id="custom-cursor">
-        <span class="cursor-text absolute">DISCOVER</span>
-        <svg class="cursor-scroll-icon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" width="6" height="37" viewBox="0 0 6 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 0L6 5H0L3 0Z" fill="black"/>
-            <path d="M3 37L0 32H6L3 37Z" fill="black"/>
-        </svg>
-    </div>
-
-    <!-- 中間的 3D 賽博球體 -->
-    <div id="bg-video-wrapper" class="fixed inset-0 w-full h-full -z-10 pointer-events-none transition-opacity duration-700 mix-blend-normal dark:mix-blend-screen overflow-hidden opacity-60">
-        <div id="canvas-depth-layer" class="transition-colors duration-700" style="position: absolute; inset: 0;"></div>
-    </div>
-
-    <!-- 頁面內容區塊 -->
-    <main>
-        <!-- Hero Section -->
-        <section id="hero" class="relative h-[100svh] min-h-[600px] flex flex-col items-center justify-center pt-10 min-[820px]:pt-20 overflow-hidden">
-            <div class="flex flex-col items-center -translate-y-[80px] min-[820px]:-translate-y-[100px] z-10 text-center">
-                <p class="text-[18px] min-[820px]:text-[20px] lg:text-[22px] font-normal tracking-[0.02em] text-black dark:text-white mb-6 reveal-up hero-reveal" style="transition-delay: 200ms;">Hello! I am Vincent.</p>
-                <h1 class="text-[48px] min-[820px]:text-[68px] lg:text-[87px] font-light tracking-[0.02em] text-center leading-tight min-[820px]:leading-tight lg:leading-[100px] text-black dark:text-white reveal-up hero-reveal max-w-[320px] min-[820px]:max-w-none" style="transition-delay: 800ms;">
-                    Backend Architect & <br class="hidden min-[820px]:block"> Systems Developer
+    <section id="hero"
+        class="relative min-h-screen flex flex-col justify-center z-10 px-6 min-[820px]:px-12 pt-24 pb-12">
+        <div class="max-w-[1400px] w-full mx-auto flex flex-col justify-between min-h-[75vh]">
+            <div></div>
+            <div class="space-y-6 min-[820px]:space-y-8 max-w-[1000px]">
+                <p class="text-sm min-[820px]:text-base text-white/60 font-medium tracking-wide uppercase">Hello! I am
+                    Vincent Chau.</p>
+                <h1
+                    class="text-[2.5rem] min-[820px]:text-[5rem] min-[1600px]:text-[6rem] font-bold tracking-tight text-white leading-[1.05]">
+                    Enterprise Backend Architect & <br class="hidden min-[820px]:block"> Systems Solutions Expert
                 </h1>
-            </div>
-            
-            <div class="absolute bottom-[100px] min-[820px]:bottom-[150px] lg:bottom-[80px] inset-x-0 flex justify-center px-4 z-10 reveal-up hero-reveal" style="transition-delay: 1400ms;">
-                <div class="custom-container flex justify-center">
-                    <p class="text-[14px] min-[820px]:text-[20px] lg:text-[22px] font-normal tracking-[0.02em] leading-relaxed min-[820px]:leading-relaxed lg:leading-[35px] text-gray-800 dark:text-white text-center max-w-2xl transition-colors duration-700">
-                        Engineering robust logic and scalable foundations for <br class="hidden min-[820px]:block"> complex digital ecosystems.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Scroll Icon -->
-            <div class="absolute bottom-[30px] min-[820px]:bottom-8 lg:bottom-12 inset-x-0 flex justify-center pointer-events-none z-10">
-                <div class="custom-container flex justify-center lg:justify-end">
-                    <div class="reveal-up hero-reveal pointer-events-auto" style="transition-delay: 2600ms;">
-                        <div class="w-[15px] h-[44px] border border-black/30 dark:border-[#3D3D3D] rounded-full flex justify-center pt-[6px] transition-colors duration-700">
-                            <div class="w-[7px] h-[7px] bg-black dark:bg-white rounded-full animate-scrolldrop transition-colors duration-700"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="custom-container mt-8 min-[820px]:mt-8 lg:mt-20">
-            <div class="reveal-line mb-8 bg-black dark:bg-white"></div>
-            <div class="py-20 min-[820px]:py-32 grid grid-cols-4 min-[820px]:grid-cols-6 items-start gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
-                <div class="col-span-4 min-[820px]:col-span-3 text-center min-[820px]:text-left">
-                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white min-[820px]:md:pr-10 mb-8 min-[820px]:mb-0 reveal-up">
-                        Building the invisible <br>power that drives <br>seamless experiences.
-                    </h2>
-                </div>
-                <div class="col-span-4 min-[820px]:col-span-3 flex flex-col space-y-6 text-center min-[820px]:text-left">
-                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up" style="transition-delay: 100ms;">
-                        I specialize in the "under the hood" of digital products — where logic meets performance. With a focus on backend architecture, system integration, and database optimization, I transform complex business requirements into stable, high-performance technical solutions.
-                    </p>
-                    <p class="text-[14px] min-[820px]:text-[18px] lg:text-[20px] font-normal leading-relaxed md:leading-relaxed lg:leading-[30px] tracking-[0px] text-gray-700 dark:text-white reveal-up" style="transition-delay: 200ms;">
-                        I believe that the best systems are the ones you never have to think about because they just work. Efficiently. Securely. Scalably.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Marquee Section -->
-        <section class="py-10 min-[820px]:py-20 overflow-hidden -mt-[20px]">
-            <div class="marquee-container">
-                <div class="marquee-content text-[48px] min-[820px]:text-[85px] lg:text-[87px] font-bold leading-tight min-[820px]:leading-tight lg:leading-[230px] tracking-[0px] text-black dark:text-white transition-colors duration-700 cursor-default gap-8 md:gap-12 pr-12">
-                    <span>System Architecture</span>
-                    <div class="w-[12px] h-[12px] min-[820px]:w-[20px] min-[820px]:h-[20px] bg-black/10 dark:bg-white/10 rounded-full shrink-0 transition-colors duration-700"></div>
-                    <span>API Development</span>
-                    <div class="w-[12px] h-[12px] min-[820px]:w-[20px] min-[820px]:h-[20px] bg-black/10 dark:bg-white/10 rounded-full shrink-0 transition-colors duration-700"></div>
-                    <span>Database Management</span>
-                    <div class="w-[12px] h-[12px] min-[820px]:w-[20px] min-[820px]:h-[20px] bg-black/10 dark:bg-white/10 rounded-full shrink-0 transition-colors duration-700"></div>
-                    <span>Performance Optimization</span>
-                    <div class="w-[12px] h-[12px] min-[820px]:w-[20px] min-[820px]:h-[20px] bg-black/10 dark:bg-white/10 rounded-full shrink-0 transition-colors duration-700"></div>
-                    <span>System Architecture</span>
-                    <div class="w-[12px] h-[12px] min-[820px]:w-[20px] min-[820px]:h-[20px] bg-black/10 dark:bg-white/10 rounded-full shrink-0 transition-colors duration-700"></div>
-                    <span>API Development</span>
-                    <div class="w-[12px] h-[12px] min-[820px]:w-[20px] min-[820px]:h-[20px] bg-black/10 dark:bg-white/10 rounded-full shrink-0 transition-colors duration-700"></div>
-                    <span>Database Management</span>
-                    <div class="w-[12px] h-[12px] min-[820px]:w-[20px] min-[820px]:h-[20px] bg-black/10 dark:bg-white/10 rounded-full shrink-0 transition-colors duration-700"></div>
-                    <span>Performance Optimization</span>
-                    <div class="w-[12px] h-[12px] min-[820px]:w-[20px] min-[820px]:h-[20px] bg-black/10 dark:bg-white/10 rounded-full shrink-0 transition-colors duration-700"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Stats Section -->
-        <section id="stats" class="custom-container mb-[60px]">
-            <div class="pt-[32px] pb-16 grid grid-cols-4 min-[820px]:grid-cols-6 items-start gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
-                <div class="col-span-4 min-[820px]:col-span-3 text-black dark:text-white text-center min-[820px]:text-left transition-colors duration-700">
-                    <div class="text-[18px] min-[820px]:text-[28px] lg:text-[30px] font-normal tracking-[0px] flex flex-col gap-[12px] min-[820px]:gap-[20px] lg:gap-[24px]">
-                        <div class="flex flex-row items-start justify-center min-[820px]:justify-start space-x-[10px] reveal-up">
-                            <div class="w-[5px] h-[5px] bg-black dark:bg-white rounded-full shrink-0 mt-[10px] min-[820px]:mt-[16px] lg:mt-[17px] transition-colors duration-700"></div>
-                            <p class="leading-snug min-[820px]:leading-[1.2] lg:leading-[1.3]">15+ years of experience</p>
-                        </div>
-                        <div class="flex flex-row items-start justify-center min-[820px]:justify-start space-x-[10px] reveal-up" style="transition-delay: 100ms;">
-                            <div class="w-[5px] h-[5px] bg-black dark:bg-white rounded-full shrink-0 mt-[10px] min-[820px]:mt-[16px] lg:mt-[17px] transition-colors duration-700"></div>
-                            <p class="leading-snug min-[820px]:leading-[1.2] lg:leading-[1.3]">50+ successful projects</p>
-                        </div>
-                        <div class="flex flex-row items-start justify-center min-[820px]:justify-start space-x-[10px] reveal-up" style="transition-delay: 200ms;">
-                            <div class="w-[5px] h-[5px] bg-black dark:bg-white rounded-full shrink-0 mt-[10px] min-[820px]:mt-[16px] lg:mt-[17px] transition-colors duration-700"></div>
-                            <p class="leading-snug min-[820px]:leading-[1.2] lg:leading-[1.3]">Awards winner with 10,000+ coffees</p>
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap justify-center min-[820px]:justify-start gap-4 mt-8 min-[820px]:mt-8 lg:mt-[30px]">
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 300ms;">TypeScript</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 350ms;">Node.js</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 400ms;">Python</span>
-                        <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 450ms;">Java</span>
-                        
-                        <!-- 將最後兩個 Skill 打包，保證唔夠位時會一齊跌落去 -->
-                        <div class="flex gap-4">
-                            <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 500ms;">FastAPI</span>
-                            <span class="h-[31px] flex items-center border border-black/30 dark:border-white/30 px-4 rounded-full text-[12px] min-[820px]:text-[14px] lg:text-[16px] font-normal tracking-[0px] reveal-up" style="transition-delay: 550ms;">SQL</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Award Logos (路徑已更新至 home) -->
-                <div class="col-span-4 min-[820px]:col-start-4 min-[820px]:col-span-3 grid grid-cols-3 gap-y-12 gap-x-4 min-[820px]:flex min-[820px]:flex-wrap min-[820px]:gap-12 items-center justify-items-center min-[820px]:justify-start mt-4 min-[820px]:mt-[10px]">
-                    <img src="./assets/home/HKDA.svg" alt="HKDA" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 100ms;">
-                    <img src="./assets/home/Awwwards.svg" alt="Awwwards" class="w-[96px] min-[820px]:w-[96px] lg:w-[120px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 150ms;">
-                    <img src="./assets/home/W3.svg" alt="W3" class="w-[29px] min-[820px]:w-[29px] lg:text-[36px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 200ms;">
-                    <img src="./assets/home/Horizon.svg" alt="Horizon" class="w-[70px] min-[820px]:w-[70px] lg:w-[88px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 250ms;">
-                    
-                    <!-- 將最後兩個 Logo 打包。contents 確保 Mobile 時維持 Grid，Desktop 時一齊跌 -->
-                    <div class="contents min-[820px]:flex min-[820px]:gap-12 min-[820px]:items-center">
-                        <img src="./assets/home/WebAward.svg" alt="WebAward" class="w-[33px] min-[820px]:w-[33px] lg:w-[41px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 300ms;">
-                        <img src="./assets/home/ComAward.svg" alt="ComAward" class="w-[100px] min-[820px]:w-[100px] lg:w-[124px] object-contain brightness-0 dark:invert reveal-up" style="transition-delay: 350ms;">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Works Section -->
-        <section id="works" class="custom-container pb-[90px] min-[820px]:pb-[90px] lg:pb-32 scroll-mt-[100px]">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
-                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="01">
-                    <img src="./assets/works/01/01_image_01.webp" alt="Work 01" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
-                </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="02" style="transition-delay: 100ms;">
-                    <img src="./assets/works/02/02_image_01.webp" alt="Work 02" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
-                </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="03">
-                    <img src="./assets/works/03/03_image_01.webp" alt="Work 03" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
-                </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="04" style="transition-delay: 100ms;">
-                    <img src="./assets/works/04/04_image_01.webp" alt="Work 04" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
-                </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/420] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="05" style="transition-delay: 200ms;">
-                    <img src="./assets/works/05/05_image_01.webp" alt="Work 05" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
-                </div>
-                <div class="portfolio-item col-span-1 lg:col-span-2 aspect-[4/3] lg:aspect-[546/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="06">
-                    <img src="./assets/works/06/06_image_01.webp" alt="Work 06" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
-                </div>
-                <div class="portfolio-item col-span-1 lg:col-span-4 aspect-[4/3] lg:aspect-[1132/695] w-full bg-[#e5e5e5] dark:bg-[#2a2a2a] cursor-pointer overflow-hidden group reveal-image" data-id="07" style="transition-delay: 100ms;">
-                    <img src="./assets/works/07/07_image_01.webp" alt="Work 07" class="w-full h-full object-cover opacity-100 transition duration-500 group-hover:scale-[1.02]">
-                </div>
-            </div>
-        </section>
-
-        <!-- Worked With Section -->
-        <section id="clients" class="pb-[90px] min-[820px]:pb-[90px] lg:pb-32 scroll-mt-[100px] overflow-hidden w-full">
-            <div class="custom-container reveal-up mb-8 min-[820px]:mb-12">
-                <p class="font-['Inter'] font-normal text-[10px] min-[820px]:text-[12px] tracking-[0.1em] uppercase text-black dark:text-white text-center">
-                    WORKED WITH
+                <p
+                    class="text-base min-[820px]:text-xl min-[1600px]:text-2xl text-white/40 font-light max-w-[780px] leading-relaxed">
+                    Designing high-concurrency architectures, robust APIs, and high-performance data pipelines for
+                    mission-critical enterprise ecosystems.
                 </p>
             </div>
-            
-            <div id="clients-marquee-container" class="flex flex-col gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px] w-full reveal-up" style="transition-delay: 200ms;">
-                <!-- JS 會動態注入無縫雙軌跑馬燈 -->
-            </div>
-        </section>
-
-        <!-- Talk Section -->
-        <section id="talk" class="custom-container relative">
-            <div class="reveal-line mb-8 bg-black dark:bg-white"></div>
-            <div class="pt-20 grid grid-cols-4 min-[820px]:grid-cols-6 items-start gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]">
-                <div class="col-span-4 min-[820px]:col-span-3 text-center min-[820px]:text-left">
-                    <h2 class="text-[34px] min-[820px]:text-[53px] lg:text-[55px] font-normal leading-tight min-[820px]:leading-tight lg:leading-[70px] tracking-[0px] text-black dark:text-white reveal-up">
-                        Ready to build <br> something solid? <br> Let's talk.
-                    </h2>
-                </div>
-                <div class="col-span-4 min-[820px]:col-span-3 flex flex-col items-center min-[820px]:items-start justify-start mt-12 min-[820px]:mt-0 lg:mt-0 text-center min-[820px]:text-left">
-                    <div class="reveal-up" style="transition-delay: 100ms;">
-                        <a href="mailto:vcii@live.hk" class="text-[22px] min-[820px]:text-[35px] lg:text-[37px] font-medium leading-tight min-[820px]:leading-tight lg:leading-[37px] tracking-[0px] text-black dark:text-white transition duration-300 cursor-pointer hover:opacity-70">vcii@live.hk</a>
-                    </div>
-                    <div class="reveal-up mt-[28px] min-[820px]:mt-[36px]" style="transition-delay: 200ms;">
-                        <a href="tel:+85298408445" class="text-[22px] min-[820px]:text-[35px] lg:text-[37px] font-medium leading-tight min-[820px]:leading-tight lg:leading-[37px] tracking-[0px] text-black dark:text-white transition duration-300 cursor-pointer hover:opacity-70">+852 9840 8445</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Copyright 宣告 -->
-            <div class="mt-[110px] pb-[80px] text-[10px] min-[820px]:text-[12px] lg:text-[14px] text-gray-500 dark:text-gray-400 text-center min-[820px]:text-left tracking-wide reveal-up">
-                Copyright &copy; 2026 VCII. All rights reserved.
-            </div>
-        </section>
-    </main>
-
-    <!-- 背景變暗 Backdrop -->
-    <div id="modal-backdrop" class="fixed inset-0 z-[90000] bg-black/40 dark:bg-black/80 opacity-0 pointer-events-none transition-all duration-800 hidden cursor-default"></div>
-
-    <!-- Popup Modal -->
-    <div id="project-modal" class="fixed inset-0 z-[99999] bg-[#fafafa] dark:bg-[#000] w-full translate-y-full transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] shadow-none overflow-hidden flex flex-col">
-        
-        <!-- Modal Header -->
-        <div class="shrink-0 absolute top-[33px] left-0 w-full h-[36px] z-[100005] pointer-events-none mix-blend-difference text-white">
-            <div class="custom-container flex justify-between items-center w-full h-full relative">
-                <div></div>
-                
-                <!-- Center Title -->
-                <div id="modal-category" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 font-['Inter'] font-normal text-[10px] min-[820px]:text-[12px] tracking-[0.1em] uppercase whitespace-nowrap" style="line-height: 35px;">
-                    PROJECT HIGHLIGHT
-                </div>
-
-                <!-- Right Controls: Navigation & Close -->
-                <div class="flex justify-end items-center gap-4 min-[820px]:gap-6 pointer-events-auto">
-                    <!-- Navigation Arrows (已更新路徑至 home) -->
-                    <div class="flex items-center gap-2 mr-[5px] min-[820px]:mr-0">
-                        <button id="modal-prev-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
-                            <img src="./assets/home/arrow.svg" alt="Prev" class="w-[18px] min-[820px]:w-[20px] rotate-180 object-contain pointer-events-none brightness-0 invert transition-opacity duration-300" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none" style="transform: scaleX(-1);">
-                                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                        <button id="modal-next-btn" class="p-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
-                            <img src="./assets/home/arrow.svg" alt="Next" class="w-[18px] min-[820px]:w-[20px] object-contain pointer-events-none brightness-0 invert transition-opacity duration-300" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px] min-[820px]:w-[20px] min-[820px]:h-[20px] hidden pointer-events-none">
-                                <path d="M5 12H19M19 12L12 19M19 12L12 5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <!-- Close Button -->
-                    <button id="modal-close-btn" class="p-2 -mr-2 flex items-center justify-center hover:opacity-50 transition duration-300 cursor-pointer transform-gpu">
-                        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[14px] h-[14px] min-[820px]:w-[16px] min-[820px]:h-[16px] pointer-events-none">
-                            <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <div
+                class="flex flex-col min-[820px]:flex-row justify-between items-start min-[820px]:items-center gap-6 pt-12 border-t border-white/[0.05]">
+                <div class="flex gap-4">
+                    <a href="#works"
+                        class="group flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-white/90 transition-all duration-300 cursor-pointer">
+                        View Case Studies
+                        <svg class="w-3 h-3 transform group-hover:translate-x-1 transition-transform" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
-                    </button>
+                    </a>
+                    <a href="#about"
+                        class="flex items-center bg-white/[0.03] text-white border border-white/10 px-6 py-3 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                        Technical Core
+                    </a>
+                </div>
+                <p class="text-xs tracking-widest uppercase text-white/30 font-medium">Based in Hong Kong &bull;
+                    Available for Enterprise Consultation</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about"
+        class="relative z-10 px-6 min-[820px]:px-12 py-24 min-[820px]:py-36 bg-[#030712]/50 border-y border-white/[0.02]">
+        <div class="max-w-[1400px] w-full mx-auto grid grid-cols-1 min-[820px]:grid-cols-12 gap-12 min-[820px]:gap-5">
+            <div class="min-[820px]:col-span-5 space-y-4">
+                <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">&bull; Professional
+                    Expertise</span>
+                <h2
+                    class="text-2xl min-[820px]:text-4xl min-[1600px]:text-5xl font-bold text-white tracking-tight leading-[1.15]">
+                    Architecting Scalable <br>Foundations for <br>Mission-Critical Systems.
+                </h2>
+            </div>
+            <div
+                class="min-[820px]:col-span-7 space-y-6 min-[820px]:text-lg text-white/60 font-light leading-relaxed max-w-[720px]">
+                <p>
+                    With over 15 years of deep expertise in systems analysis and backend engineering, I specialize in
+                    constructing the backbone of complex digital infrastructure. My core strengths lie in designing
+                    highly resilient distributed architectures, formulating optimized PostgreSQL/MySQL database schemas,
+                    and building type-safe, high-throughput RESTful APIs.
+                </p>
+                <p>
+                    Leveraging a diverse technology stack—from the robust MVC patterns of PHP Laravel to the
+                    high-concurrency event-driven environments of Node.js and the analytical power of Python
+                    FastAPI/Pandas—I bridge the gap between complex enterprise logic and scalable execution. I engineer
+                    systems to be decoupled, secure, and resilient under heavy workloads.
+                </p>
+
+                <div class="pt-8 flex flex-wrap gap-2.5 max-w-[640px]">
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">TypeScript
+                        / Node.js</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">PHP
+                        / Laravel</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Python
+                        / Pandas</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Next.js
+                        / Payload CMS</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">PostgreSQL
+                        & MySQL</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">System
+                        Architecture</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Query
+                        Optimization</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Docker
+                        & DevOps</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">RESTful
+                        API Design</span>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Modal Content Area -->
-        <div id="modal-main-scroll" class="flex-grow w-full overflow-y-auto min-[1281px]:overflow-hidden transition-colors duration-700 pt-[130px] min-[1281px]:pt-[90px]">
-            <div class="custom-container min-[1281px]:h-full pb-[30px] min-[1281px]:pb-0">
-                <div class="grid grid-cols-1 min-[1281px]:grid-cols-6 gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px] min-[1281px]:h-full min-[1281px]:min-h-0">
-                    
-                    <!-- Images -->
-                    <div class="col-span-1 min-[1281px]:col-span-4 min-[1281px]:h-full min-[1281px]:overflow-y-auto hide-scrollbar order-2 min-[1281px]:order-1 pb-[20px] min-[820px]:pb-[40px] min-[1281px]:pb-[60px] min-[1281px]:min-h-0 flex flex-col gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px]" id="modal-images-container">
-                        <!-- JS injects images -->
-                    </div>
-
-                    <!-- Text -->
-                    <div class="col-span-1 min-[1281px]:col-span-2 min-[1281px]:h-full min-[1281px]:overflow-y-auto hide-scrollbar flex flex-col order-1 min-[1281px]:order-2 pb-[20px] min-[820px]:pb-[40px] min-[1281px]:pb-[60px] min-[1281px]:min-h-0 text-center min-[1281px]:text-left" id="modal-right-panel">
-                        <div class="flex-grow pb-6 min-[1281px]:min-h-0" id="modal-text-scroll-container">
-                            <h2 id="modal-title" class="text-[28px] min-[820px]:text-[34px] lg:text-[40px] font-bold text-black dark:text-white leading-tight mb-6 transition-colors duration-700"></h2>
-                            <p id="modal-desc" class="text-[13px] min-[820px]:text-[14px] lg:text-[15px] text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap transition-colors duration-700"></p>
-                        </div>
-                    </div>
-
+    <section id="works" class="relative z-10 px-6 min-[820px]:px-12 py-24 min-[820px]:py-36">
+        <div class="max-w-[1400px] w-full mx-auto space-y-16">
+            <div class="flex justify-between items-end border-b border-white/[0.05] pb-6">
+                <div class="space-y-2">
+                    <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">&bull; Selected
+                        Portfolios</span>
+                    <h2 class="text-3xl min-[820px]:text-4xl font-bold tracking-tight text-white">Enterprise Case
+                        Studies</h2>
                 </div>
+                <span class="text-xs tracking-widest uppercase text-white/30 hidden min-[820px]:block">01 &mdash; 07
+                    Projects</span>
+            </div>
+
+            <div id="works-grid" class="grid grid-cols-1 min-[820px]:grid-cols-2 gap-8 min-[820px]:gap-12">
+            </div>
+        </div>
+    </section>
+
+    <section id="clients" class="relative z-10 py-16 bg-black/30 border-t border-white/[0.02] overflow-hidden">
+        <div class="w-full space-y-12">
+            <p class="text-center text-xs tracking-widest uppercase text-white/30 font-semibold">Validated Engineering
+                Trust Across Digital Industries</p>
+            <div id="marquee-container" class="w-full flex flex-col gap-8">
+            </div>
+        </div>
+    </section>
+
+    <section id="contact"
+        class="relative z-10 px-6 min-[820px]:px-12 py-24 min-[820px]:py-36 bg-gradient-to-b from-transparent to-black/80">
+        <div class="max-w-[1400px] w-full mx-auto text-center space-y-8 max-w-[800px]">
+            <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">&bull; Get In Touch</span>
+            <h2 class="text-3xl min-[820px]:text-6xl font-bold text-white tracking-tight leading-tight">Let's Build the
+                Next Enterprise-Grade Infrastructure.</h2>
+            <p class="text-base min-[820px]:text-xl text-white/50 font-light max-w-[600px] mx-auto leading-relaxed">
+                Seeking to upgrade legacy frameworks, resolve system performance bottlenecks, or deploy robust decoupled
+                APIs? Let's connect.
+            </p>
+            <div class="pt-8">
+                <a href="mailto:vincentchau.vc@gmail.com"
+                    class="inline-block bg-white text-black px-8 py-4 rounded-full text-sm font-semibold uppercase tracking-wider hover:bg-white/90 transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
+                    Establish Connection
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer
+        class="relative z-10 px-6 min-[820px]:px-12 py-12 border-t border-white/[0.05] text-center text-xs text-white/30 tracking-widest uppercase">
+        &copy; 2026 VC. All Rights Reserved. Designed for Ultimate Efficiency & Reliability.
+    </footer>
+
+    <div id="project-modal"
+        class="fixed inset-0 bg-[#030712]/95 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300 overflow-y-auto no-scrollbar flex items-center justify-center p-6">
+        <div
+            class="max-w-[900px] w-full bg-white/[0.02] border border-white/10 rounded-2xl p-6 min-[820px]:p-12 space-y-8 relative animate-modal max-h-[90vh] overflow-y-auto no-scrollbar">
+            <button onclick="closeModal()"
+                class="absolute top-6 right-6 text-white/40 hover:text-white transition-colors duration-200 text-xs tracking-widest uppercase flex items-center gap-2 cursor-pointer">
+                Close [ESC]
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div id="modal-content" class="space-y-6">
             </div>
         </div>
     </div>
 
-    <!-- 引入 Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <!-- JS 邏輯 -->
     <script>
-        // --- 狀態全域變量 ---
-        window.isDarkMode = true;
+        // -----------------------------------------------------------------
+        // A. 3D WebGL Background (Three.js 賽博粒子球體特效)
+        // -----------------------------------------------------------------
+        const container = document.getElementById('webgl-bg');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
-        if (history.scrollRestoration) {
-            history.scrollRestoration = 'manual';
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // 創建一個由粒子組成的球體網絡
+        const geometry = new THREE.BufferGeometry();
+        const count = 1200;
+        const positions = new Float32Array(count * 3);
+
+        for (let i = 0; i < count * 3; i += 3) {
+            const u = Math.random();
+            const v = Math.random();
+            const theta = u * 2.0 * Math.PI;
+            const phi = Math.acos(2.0 * v - 1.0);
+            const r = 2.5 + Math.random() * 0.4; // 半徑微調成不規則
+
+            positions[i] = r * Math.sin(phi) * Math.cos(theta);
+            positions[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+            positions[i + 2] = r * Math.cos(phi);
         }
 
-        const cursor = document.getElementById('custom-cursor');
-        const bgVideoWrapper = document.getElementById('bg-video-wrapper');
-        const heroSection = document.getElementById('hero');
-        
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate3d(-50%, -50%, 0)`;
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        // 粒子材質設定
+        const material = new THREE.PointsMaterial({
+            size: 0.015,
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.25,
+            blending: THREE.AdditiveBlending
         });
 
-        const cursorActive = () => cursor.classList.add('active');
-        const cursorInactive = () => cursor.classList.remove('active');
-        const cursorDiscover = () => cursor.classList.add('discover');
-        const cursorUndiscover = () => cursor.classList.remove('discover');
-        const cursorScroll = () => cursor.classList.add('scroll-mode');
-        const cursorUnscroll = () => cursor.classList.remove('scroll-mode');
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+        camera.position.z = 5;
 
-        const bindHovers = () => {
-            document.querySelectorAll('a, button, .cursor-pointer:not(.portfolio-item):not(#modal-backdrop)').forEach(el => {
-                el.addEventListener('mouseenter', cursorActive);
-                el.addEventListener('mouseleave', cursorInactive);
-            });
-            document.querySelectorAll('.portfolio-item').forEach(el => {
-                el.addEventListener('mouseenter', cursorDiscover);
-                el.addEventListener('mouseleave', cursorUndiscover);
-            });
-        };
-        bindHovers();
+        // 監聽滑鼠移動，讓背景球體產生動態傾斜（Parallax 效果）
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) - 0.5;
+            mouseY = (e.clientY / window.innerHeight) - 0.5;
 
-        const handleScrollCursorMove = (e) => {
-            if (e.target.closest('button, a, .cursor-pointer:not(.portfolio-item)')) {
-                cursor.classList.remove('scroll-mode');
-                return;
+            // 自定義滑鼠游標位置更新
+            const cursor = document.getElementById('custom-cursor');
+            if (cursor) {
+                cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
             }
-
-            let isScrollable = false;
-
-            // 更新為 1280px 或以下使用全頁 Scroll 判斷
-            if (window.innerWidth <= 1280) {
-                const mainScroll = document.getElementById('modal-main-scroll');
-                if (mainScroll && mainScroll.scrollHeight > Math.ceil(mainScroll.clientHeight)) {
-                    isScrollable = true;
-                }
-            } else {
-                // > 1280px 時分為左右獨立 Scroll
-                const scrollCol = e.target.closest('#modal-images-container, #modal-right-panel');
-                if (scrollCol && scrollCol.scrollHeight > Math.ceil(scrollCol.clientHeight)) {
-                    isScrollable = true;
-                }
-            }
-
-            if (isScrollable) {
-                cursor.classList.add('scroll-mode');
-            } else {
-                cursor.classList.remove('scroll-mode');
-            }
-        };
-
-        const modalMainScroll = document.getElementById('modal-main-scroll');
-        if (modalMainScroll) {
-            // 統一喺最外層監聽，避免 Event Bubbling 互相覆蓋
-            modalMainScroll.addEventListener('mousemove', handleScrollCursorMove);
-            modalMainScroll.addEventListener('mouseleave', cursorUnscroll);
-        }
-
-        const revealObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { 
-            threshold: 0.1, 
-            rootMargin: "0px 0px -80px 0px" 
         });
 
-        const typingText = "Hello! I am Vincent.";
-        const typingEl = document.getElementById('typing-text');
-        const introScreen = document.getElementById('intro-screen');
-        let charIndex = 0;
-
-        function type() {
-            if (charIndex < typingText.length) {
-                typingEl.textContent += typingText.charAt(charIndex);
-                charIndex++;
-                setTimeout(type, 100);
-            } else {
-                setTimeout(() => {
-                    introScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        introScreen.style.display = 'none';
-                        document.documentElement.classList.remove('lock-scroll');
-                        document.body.classList.remove('lock-scroll');
-                        window.scrollTo(0, 0);
-                        
-                        document.querySelectorAll('.hero-reveal').forEach(el => el.classList.add('active'));
-                        document.querySelectorAll('.reveal-up:not(.hero-reveal), .reveal-fade, .reveal-line, .reveal-image').forEach(el => revealObserver.observe(el));
-                    }, 1000);
-                }, 800);
-            }
-        }
-
-        function updateBackgroundOpacity() {
-            const pageYOffset = window.pageYOffset;
-            const heroHeight = heroSection?.offsetHeight || window.innerHeight;
-            const progress = Math.min(pageYOffset / heroHeight, 1);
-            
-            let startOpacity, endOpacity;
-            
-            if (window.isDarkMode) {
-                startOpacity = 0.60;
-                endOpacity = 0.40;
-            } else {
-                startOpacity = 0.40;
-                endOpacity = 0.20;
-            }
-            
-            const currentOpacity = startOpacity - (progress * (startOpacity - endOpacity));
-            bgVideoWrapper.style.opacity = currentOpacity;
-        }
-
-        // --- 3D 賽博球體 初始化與邏輯 ---
-        let scene, camera, renderer, darkRibbonMaterial, lightRibbonMaterial;
-        let darkDustPoints, lightDustPoints, ribbons;
+        // 動態渲染循環
         const clock = new THREE.Clock();
-        const raycaster = new THREE.Raycaster();
-        const mouse2D = new THREE.Vector2(-2, -2);
-        
-        let currentInfluence = 0; 
-        const localMouse = new THREE.Vector3(0, 0, 0);
-        const targetLocalMouse = new THREE.Vector3(0, 0, 0);
-        
-        const RING_COUNT = 50;    
-        const SEGMENTS = 300;     
-        const RADIUS = 1.3;       
-        const DUST_COUNT = 3200; 
-        const hitSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), RADIUS);
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
 
-        function updateSphereScale() {
-            if (!ribbons) return;
-            const scale = window.innerWidth < 820 ? 1.49 : 1.5;
-            ribbons.scale.set(scale, scale, scale);
-            if (darkDustPoints) darkDustPoints.scale.setScalar(scale);
-            if (lightDustPoints) lightDustPoints.scale.setScalar(scale);
+            points.rotation.y = elapsedTime * 0.05;
+            points.rotation.x = elapsedTime * 0.02;
+
+            // 隨滑鼠位置平滑緩動
+            points.position.x += (mouseX * 0.5 - points.position.x) * 0.05;
+            points.position.y += (-mouseY * 0.5 - points.position.y) * 0.05;
+
+            renderer.render(scene, camera);
         }
+        animate();
 
-        window.updateThreeTheme = function(isDark) {
-            const depthLayer = document.getElementById('canvas-depth-layer');
-            if (!depthLayer) return;
-
-            if (isDark) {
-                depthLayer.style.background = 'radial-gradient(circle at center, #000410 0%, #000000 100%)';
-                if (ribbons) ribbons.material = darkRibbonMaterial;
-                if (darkDustPoints) darkDustPoints.visible = true;
-                if (lightDustPoints) lightDustPoints.visible = false;
-            } else {
-                depthLayer.style.background = 'radial-gradient(circle at center, #ffffff 0%, #f2f5f8 100%)';
-                if (ribbons) ribbons.material = lightRibbonMaterial;
-                if (darkDustPoints) darkDustPoints.visible = false;
-                if (lightDustPoints) lightDustPoints.visible = true;
-            }
-            
-            updateBackgroundOpacity();
-        };
-
-        function initThreeJS() {
-            const wrapper = document.getElementById('bg-video-wrapper');
-            if (!wrapper || typeof THREE === 'undefined') return;
-
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 6;
-
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        // 監聽視窗重調大小
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            
-            renderer.domElement.style.position = 'absolute';
-            renderer.domElement.style.inset = '0';
-            renderer.domElement.style.width = '100%';
-            renderer.domElement.style.height = '100%';
-            wrapper.appendChild(renderer.domElement);
+        });
 
-            const geometry = new THREE.BufferGeometry();
-            const positions = [];
-            const uv = [];
-            const ringInfo = []; 
-
-            for (let i = 0; i < RING_COUNT; i++) {
-                const phi = ((i + 0.5) / RING_COUNT) * Math.PI;
-                const y = Math.cos(phi) * RADIUS;
-                const ringRadius = Math.sin(phi) * RADIUS;
-
-                for (let j = 0; j <= SEGMENTS; j++) {
-                    const theta = (j / SEGMENTS) * Math.PI * 2;
-                    const x = Math.cos(theta) * ringRadius;
-                    const z = Math.sin(theta) * ringRadius;
-
-                    positions.push(x, y, z, x, y, z); 
-                    uv.push(j / SEGMENTS, 1, j / SEGMENTS, 0);
-                    ringInfo.push(i, theta, i, theta);
-                }
+        // -----------------------------------------------------------------
+        // B. Enterprise Case Studies Data (7 大高性能架構專案細節)
+        // -----------------------------------------------------------------
+        const projects = [
+            {
+                id: "01",
+                title: "Decoupled Headless CMS Architecture",
+                category: "Full-Stack Infrastructure",
+                desc: "Designed and engineered a high-concurrency content system using Payload CMS (TypeScript) nested inside Next.js, connecting directly to an optimized local PostgreSQL instance.",
+                tech: ["TypeScript", "Next.js", "Payload CMS", "PostgreSQL", "Docker"],
+                challenge: "Legacy platforms suffered from severe administrative interface lags and unoptimized raw SQL migrations during feature expansions.",
+                solution: "Transitioned cloud database dependencies to a heavily structured Localhost Postgres ecosystem managed via programmatic schema migrations, achieving end-to-end compile-time type safety from database records straight to React components."
+            },
+            {
+                id: "02",
+                title: "Distributed Asynchronous Task Engine",
+                category: "Backend Engineering",
+                desc: "Decoupled heavy-load enterprise operations into isolated worker nodes using Celery with RabbitMQ as a reliable message broker.",
+                tech: ["Python", "FastAPI", "Celery", "RabbitMQ", "Redis", "Linux"],
+                challenge: "High-density requests (such as automated nightly medical cross-audits and bulk notifications) caused recurring API timeouts and CPU spikes up to 98% on the main Web server.",
+                solution: "Implemented an event-driven task queue backend. Extracted long-running data-synthesis jobs into background Celery workers guarded by RabbitMQ persistence, eliminating HTTP request timeouts and slashing main server workload spikes by 60%."
+            },
+            {
+                id: "03",
+                title: "High-Throughput RESTful API Gateway",
+                category: "System Architecture",
+                desc: "Constructed a secure, resilient enterprise API cluster built with PHP Laravel and reverse-proxied via Nginx to orchestrate complex data flows.",
+                tech: ["PHP", "Laravel", "Nginx", "Redis", "Database Schema Design"],
+                challenge: "Handling concurrent third-party data integrations frequently resulted in database race conditions and thread blocking under multi-user access loops.",
+                solution: "Designed a multi-tiered API architecture utilizing Laravel's Eloquent ORM row-level locks alongside Redis memory caching, ensuring absolute data consistency and atomic transactions under peak 10k+ concurrent request limits."
+            },
+            {
+                id: "04",
+                title: "Automated Data-Wrangling ETL Pipeline",
+                category: "Data Science & Engineering",
+                desc: "Engineered high-performance batch processing microservices utilizing Python Pandas to process, clean, and map multi-million record matrices.",
+                tech: ["Python", "Pandas", "JSON", "Query Optimization", "Linux"],
+                challenge: "Unstructured historical text files and massive relational databases needed daily cleansing, aggregation, and structural alignment without introducing memory leakage.",
+                solution: "Built optimized data-wrangling pipelines in Pandas that aggregated, normalized, and transformed legacy datasets into standardized structured JSON formats, reducing daily pipeline execution window from hours down to minutes."
+            },
+            {
+                id: "05",
+                title: "Containerized Microservices Infrastructure",
+                category: "DevOps & Infrastructure",
+                desc: "Architected a uniform, containerized deployment matrix across RHEL/Ubuntu environments, enforcing automated isolation barriers.",
+                tech: ["Docker", "Linux (RHEL/Ubuntu)", "Nginx", "Git", "System Architecture"],
+                challenge: "Severe 'it works on my machine' configuration drifts between localized development boxes and production instances slowed release cycles.",
+                solution: "Standardized all running modules into fine-tuned multi-stage Docker configurations, proxying external traffic through hardened Nginx clusters to achieve instantaneous, zero-downtime application scaling."
+            },
+            {
+                id: "06",
+                title: "Enterprise Relational Schema Optimization",
+                category: "Database Performance Tuning",
+                desc: "Executed database diagnostics and schema redesign on highly relational PostgreSQL and MySQL clusters to resolve severe bottlenecks.",
+                tech: ["PostgreSQL", "MySQL", "Query Optimization", "Database Schema Design"],
+                challenge: "Unindexed deeply joined analytical queries created catastrophic read locks, choking the transactional flow of daily operations.",
+                solution: "Conducted deep query parsing, removed redundant relational tables, established strategic composite indexes, and rewrote slow queries, cutting overall database search latency by over 75%."
+            },
+            {
+                id: "07",
+                title: "Real-Time State Caching Layer",
+                category: "In-Memory Data Engineering",
+                desc: "Deployed an advanced Redis NoSQL layer as an intermediate state-tracking backend to offload high-frequency polling from primary storages.",
+                tech: ["Redis (NoSQL)", "Node.js", "Laravel", "RESTful API Design"],
+                challenge: "Constant application polling for session verification and dynamic status indicators over-stressed the primary relational database disk read I/O.",
+                solution: "Introduced a structured Redis In-Memory caching mesh with strict key eviction policies, absorbing 90% of repeat request volumes and boosting overall API responsiveness tenfold."
             }
+        ];
 
-            const indices = [];
-            let offset = 0;
-            for (let i = 0; i < RING_COUNT; i++) {
-                for (let j = 0; j < SEGMENTS; j++) {
-                    const a = offset + j * 2;
-                    const b = offset + j * 2 + 1;
-                    const c = offset + (j + 1) * 2;
-                    const d = offset + (j + 1) * 2 + 1;
-                    indices.push(a, b, c, b, d, c);
-                }
-                offset += (SEGMENTS + 1) * 2;
-            }
+        // -----------------------------------------------------------------
+        // C. Dynamic Rendering & Interactivity Logic (動態渲染與彈窗控制)
+        // -----------------------------------------------------------------
+        const worksGrid = document.getElementById('works-grid');
+        worksGrid.innerHTML = projects.map(p => `
+            <div onclick="openModal('${p.id}')" class="group relative bg-white/[0.01] border border-white/[0.04] rounded-2xl p-8 hover:bg-white/[0.03] hover:border-white/10 transition-all duration-500 cursor-pointer flex flex-col justify-between h-[320px] min-[1600px]:h-[360px]">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-white/30 font-semibold tracking-widest uppercase">${p.category}</span>
+                        <span class="text-xs text-white/20 font-mono font-medium">${p.id}</span>
+                    </div>
+                    <h3 class="text-xl min-[820px]:text-2xl font-bold text-white group-hover:text-white/90 transition-colors">${p.title}</h3>
+                    <p class="text-sm text-white/40 font-light line-clamp-3 leading-relaxed">${p.desc}</p>
+                </div>
+                <div class="flex flex-wrap gap-2 pt-4">
+                    ${p.tech.slice(0, 3).map(t => `<span class="text-[10px] font-medium uppercase tracking-wider text-white/50 bg-white/[0.04] px-2.5 py-1 rounded">${t}</span>`).join('')}
+                    ${p.tech.length > 3 ? `<span class="text-[10px] font-medium text-white/30 bg-transparent px-1 py-1">+${p.tech.length - 3} more</span>` : ''}
+                </div>
+            </div>
+        `).join('');
 
-            geometry.setIndex(indices);
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
-            geometry.setAttribute('ringInfo', new THREE.Float32BufferAttribute(ringInfo, 2));
+        // 彈窗控制邏輯
+        function openModal(id) {
+            const p = projects.find(proj => proj.id === id);
+            if (!p) return;
 
-            darkRibbonMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                    uTime: { value: 0 },
-                    uLocalMouse: { value: localMouse },
-                    uInfluence: { value: 0 },
-                    uColor: { value: new THREE.Color(0x001aee) },
-                    uHighlight: { value: new THREE.Color(0x00ffff) }
-                },
-                side: THREE.DoubleSide,
-                transparent: true,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-                vertexShader: `
-                    uniform float uTime;
-                    uniform vec3 uLocalMouse;
-                    uniform float uInfluence;
-                    attribute vec2 ringInfo;
-                    varying float vBrightness;
-                    varying vec2 vUv;
-                    void main() {
-                        float ringIdx = ringInfo.x;
-                        float angle = ringInfo.y;
-                        vec3 pos = position;
-                        float wave = sin(angle * 3.0 + uTime * 1.2 + ringIdx * 0.15) * 0.12;
-                        float secondaryWave = cos(ringIdx * 0.4 - uTime * 0.7) * 0.04;
-                        float totalWave = wave + secondaryWave;
-                        vec3 distortedPos = pos * (1.0 + totalWave);
-                        float dist = distance(distortedPos, uLocalMouse);
-                        float mouseEffect = smoothstep(1.5, 0.0, dist) * uInfluence;
-                        float pulse = sin(angle * 6.0 + uTime * 3.0 + ringIdx * 0.5) * 0.5 + 0.5;
-                        float currentThickness = 0.0008 * (1.0 + pulse * 2.0) * (1.0 - mouseEffect * 0.5);
-                        float vDirection = (uv.y - 0.5) * 2.0;
-                        pos.y += vDirection * currentThickness;
-                        float radiusScale = 1.0 + totalWave + mouseEffect * 0.12;
-                        pos.xz *= radiusScale;
-                        vBrightness = 0.58 + pulse * 0.5 + totalWave * 1.5 + mouseEffect * 1.3;
-                        vUv = uv;
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-                    }
-                `,
-                fragmentShader: `
-                    uniform vec3 uColor;
-                    uniform vec3 uHighlight;
-                    varying float vBrightness;
-                    varying vec2 vUv;
-                    void main() {
-                        float edgeFade = smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
-                        float glow = pow(vBrightness * 0.78, 1.4); 
-                        vec3 color = mix(uColor, uHighlight, smoothstep(0.45, 2.4, vBrightness));
-                        gl_FragColor = vec4(color, edgeFade * 1.15 * glow);
-                    }
-                `
-            });
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="space-y-2 border-b border-white/10 pb-6">
+                    <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">${p.category}</span>
+                    <h3 class="text-2xl min-[820px]:text-4xl font-bold text-white tracking-tight">${p.title}</h3>
+                </div>
+                <div class="grid grid-cols-1 min-[820px]:grid-cols-12 gap-8 pt-4">
+                    <div class="min-[820px]:col-span-8 space-y-6">
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; Architectural Challenge</h4>
+                            <p class="text-sm min-[820px]:text-base text-white/50 font-light leading-relaxed">${p.challenge}</p>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; Implemented Engineering Solution</h4>
+                            <p class="text-sm min-[820px]:text-base text-white/50 font-light leading-relaxed">${p.solution}</p>
+                        </div>
+                    </div>
+                    <div class="min-[820px]:col-span-4 space-y-6 border-t min-[820px]:border-t-0 min-[820px]:border-l border-white/10 pt-6 min-[820px]:pt-0 min-[820px]:pl-6">
+                        <div class="space-y-3">
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/40">Core Tech Stack</h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${p.tech.map(t => `<span class="text-[11px] font-medium text-white/80 bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-full">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
 
-            lightRibbonMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                    uTime: { value: 0 },
-                    uLocalMouse: { value: localMouse },
-                    uInfluence: { value: 0 }, 
-                    uColor: { value: new THREE.Color(0x88aaff) },
-                    uHighlight: { value: new THREE.Color(0x3366ff) }
-                },
-                side: THREE.DoubleSide,
-                transparent: true,
-                blending: THREE.NormalBlending,
-                depthWrite: false,
-                vertexShader: `
-                    uniform float uTime;
-                    uniform vec3 uLocalMouse;
-                    uniform float uInfluence;
-                    attribute vec2 ringInfo;
-                    varying float vBrightness;
-                    varying vec2 vUv;
-                    void main() {
-                        float ringIdx = ringInfo.x;
-                        float angle = ringInfo.y;
-                        vec3 pos = position;
-                        float wave = sin(angle * 3.0 + uTime * 1.2 + ringIdx * 0.15) * 0.12;
-                        float secondaryWave = cos(ringIdx * 0.4 - uTime * 0.7) * 0.04;
-                        float totalWave = wave + secondaryWave;
-                        vec3 distortedPos = pos * (1.0 + totalWave);
-                        float dist = distance(distortedPos, uLocalMouse);
-                        float mouseEffect = smoothstep(1.5, 0.0, dist) * uInfluence;
-                        float pulse = sin(angle * 6.0 + uTime * 3.0 + ringIdx * 0.5) * 0.5 + 0.5;
-                        float currentThickness = 0.0007 * (1.0 + pulse * 2.0) * (1.0 - mouseEffect * 0.6);
-                        float vDirection = (uv.y - 0.5) * 2.0;
-                        pos.y += vDirection * currentThickness;
-                        float radiusScale = 1.0 + totalWave + mouseEffect * 0.12;
-                        pos.xz *= radiusScale;
-                        vBrightness = 0.5 + pulse * 0.5 + totalWave * 1.2 + mouseEffect * 1.0;
-                        vUv = uv;
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-                    }
-                `,
-                fragmentShader: `
-                    uniform vec3 uColor;
-                    uniform vec3 uHighlight;
-                    varying float vBrightness;
-                    varying vec2 vUv;
-                    void main() {
-                        float edgeFade = smoothstep(0.0, 0.1, vUv.y) * smoothstep(1.0, 0.9, vUv.y);
-                        float glow = pow(vBrightness * 0.8, 1.2); 
-                        vec3 color = mix(uColor, uHighlight, smoothstep(0.4, 2.0, vBrightness));
-                        gl_FragColor = vec4(color, edgeFade * 0.7 * glow);
-                    }
-                `
-            });
-
-            ribbons = new THREE.Mesh(geometry, darkRibbonMaterial);
-            scene.add(ribbons);
-
-            const dustPositions = new Float32Array(DUST_COUNT * 3);
-            for (let i = 0; i < DUST_COUNT; i++) {
-                const r = RADIUS * (1.0 + Math.random() * 1.6); 
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.acos(2 * Math.random() - 1);
-                dustPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-                dustPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-                dustPositions[i * 3 + 2] = r * Math.cos(phi);
-            }
-
-            const darkDustGeometry = new THREE.BufferGeometry();
-            const darkDustColors = new Float32Array(DUST_COUNT * 3); 
-            for (let i = 0; i < DUST_COUNT; i++) {
-                const rand = Math.random();
-                let finalColor;
-                if (rand < 0.05) finalColor = new THREE.Color(0xffffff);
-                else if (rand < 0.15) finalColor = new THREE.Color(0x0033aa);
-                else finalColor = new THREE.Color(0x00aaff);
-                darkDustColors[i * 3] = finalColor.r;
-                darkDustColors[i * 3 + 1] = finalColor.g;
-                darkDustColors[i * 3 + 2] = finalColor.b;
-            }
-            darkDustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-            darkDustGeometry.setAttribute('color', new THREE.BufferAttribute(darkDustColors, 3)); 
-            const darkDustMaterial = new THREE.PointsMaterial({
-                size: 0.015, transparent: true, opacity: 0.285, blending: THREE.AdditiveBlending, vertexColors: true, sizeAttenuation: true 
-            });
-            darkDustPoints = new THREE.Points(darkDustGeometry, darkDustMaterial);
-            scene.add(darkDustPoints);
-
-            const lightDustGeometry = new THREE.BufferGeometry();
-            const lightDustColors = new Float32Array(DUST_COUNT * 3); 
-            for (let i = 0; i < DUST_COUNT; i++) {
-                const rand = Math.random();
-                let finalColor;
-                if (rand < 0.05) finalColor = new THREE.Color(0x0033aa);
-                else if (rand < 0.15) finalColor = new THREE.Color(0xcccccc);
-                else finalColor = new THREE.Color(0xaaccff);
-                lightDustColors[i * 3] = finalColor.r;
-                lightDustColors[i * 3 + 1] = finalColor.g;
-                lightDustColors[i * 3 + 2] = finalColor.b;
-            }
-            lightDustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-            lightDustGeometry.setAttribute('color', new THREE.BufferAttribute(lightDustColors, 3)); 
-            const lightDustMaterial = new THREE.PointsMaterial({
-                size: 0.012, transparent: true, opacity: 0.2, blending: THREE.NormalBlending, vertexColors: true, sizeAttenuation: true 
-            });
-            lightDustPoints = new THREE.Points(lightDustGeometry, lightDustMaterial);
-            scene.add(lightDustPoints);
-
-            updateSphereScale();
-            window.updateThreeTheme(window.isDarkMode);
-
-            window.addEventListener('mousemove', (e) => {
-                mouse2D.x = (e.clientX / window.innerWidth) * 2 - 1;
-                mouse2D.y = -(e.clientY / window.innerHeight) * 2 + 1;
-            });
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                updateSphereScale();
-            });
-
-            const animateThree = () => {
-                requestAnimationFrame(animateThree);
-                const time = clock.getElapsedTime();
-                
-                if (ribbons) {
-                    const activeMat = ribbons.material;
-                    activeMat.uniforms.uTime.value = time;
-                    
-                    raycaster.setFromCamera(mouse2D, camera);
-                    const intersectPoint = new THREE.Vector3();
-                    let isIntersecting = false;
-                    
-                    if (raycaster.ray.intersectSphere(hitSphere, intersectPoint)) {
-                        const worldHit = intersectPoint.clone();
-                        ribbons.worldToLocal(worldHit);
-                        targetLocalMouse.copy(worldHit);
-                        isIntersecting = true;
-                    } 
-                    
-                    localMouse.lerp(targetLocalMouse, 0.1); 
-                    
-                    const targetInf = isIntersecting ? 1.0 : 0.0;
-                    const lerpSpeed = isIntersecting ? 0.1 : 0.02; 
-                    currentInfluence = THREE.MathUtils.lerp(currentInfluence, targetInf, lerpSpeed);
-                    
-                    activeMat.uniforms.uInfluence.value = currentInfluence;
-                    activeMat.uniforms.uLocalMouse.value.copy(localMouse);
-
-                    ribbons.rotation.y += 0.001;
-                    ribbons.rotation.x = Math.sin(time * 0.15) * 0.08;
-                }
-                
-                if (darkDustPoints && darkDustPoints.visible) {
-                    darkDustPoints.rotation.y += 0.00045;
-                }
-                if (lightDustPoints && lightDustPoints.visible) {
-                    lightDustPoints.rotation.y += 0.00045;
-                }
-
-                renderer.render(scene, camera);
-            };
-            animateThree();
+            const modal = document.getElementById('project-modal');
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+            document.body.style.overflow = 'hidden'; // 防止底層滾動
         }
 
-        // Theme Toggle Logic
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIconSun = document.getElementById('theme-icon-sun');
-        const themeIconMoon = document.getElementById('theme-icon-moon');
-        const themeText = document.getElementById('theme-text');
+        function closeModal() {
+            const modal = document.getElementById('project-modal');
+            modal.classList.add('pointer-events-none', 'opacity-0');
+            document.body.style.overflow = 'auto';
+        }
 
-        themeToggleBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.isDarkMode = !window.isDarkMode;
-
-            document.body.classList.add('theme-switching');
-            setTimeout(() => {
-                document.body.classList.remove('theme-switching');
-            }, 750);
-
-            if (window.isDarkMode) {
-                document.documentElement.classList.add('dark');
-                themeIconSun.classList.remove('hidden');
-                themeIconSun.classList.add('block');
-                themeIconMoon.classList.remove('block');
-                themeIconMoon.classList.add('hidden');
-                themeText.textContent = 'Light';
-            } else {
-                document.documentElement.classList.remove('dark');
-                themeIconSun.classList.remove('block');
-                themeIconSun.classList.add('hidden');
-                themeIconMoon.classList.remove('hidden');
-                themeIconMoon.classList.add('block');
-                themeText.textContent = 'Dark';
-            }
-            
-            window.updateThreeTheme(window.isDarkMode);
-        });
-
-        window.addEventListener('scroll', () => {
-            updateBackgroundOpacity();
-
-            const pageYOffset = window.pageYOffset;
-            const mainLogo = document.getElementById('main-logo');
-            if (pageYOffset > 100) {
-                mainLogo.classList.remove('opacity-0', 'pointer-events-none');
-                mainLogo.classList.add('opacity-100', 'pointer-events-auto');
-            } else {
-                mainLogo.classList.remove('opacity-100', 'pointer-events-auto');
-                mainLogo.classList.add('opacity-0', 'pointer-events-none');
-            }
-        });
-
-        const projectsData = {
-            '01': { 
-                id: '01', 
-                category: 'Project Highlight', 
-                title: 'Hong Kong Palace Museum Website Design & CMS Development', 
-                desc: 'As the primary digital gateway for the Hong Kong Palace Museum, this project was engineered with a "digital-first" philosophy. I spearheaded the backend architecture, building a highly scalable resource hub that seamlessly integrates complex modules including ticketing, exhibition management, e-learning, and e-commerce into a unified, high-performance ecosystem.\n\nBy optimizing the data structure and system logic, we effectively resolved the challenges of information density and high-traffic accessibility. This robust infrastructure not only ensures a seamless user experience across global audiences but also serves as a stable foundation for the museum’s mission to foster cultural exchange through innovative technology.', 
-                imagesCount: 3 
-            },
-            '02': { 
-                id: '02', 
-                category: 'Project Highlight', 
-                title: 'Chow Sang Sang Sustainability Internal Hub', 
-                desc: 'This internal platform was developed to centralize Chow Sang Sang’s sustainability governance, facilitating corporate-wide target tracking and processes. I engineered a modular backend architecture supporting a highly scalable component-based design, ensuring consistency across diverse sustainability data sections while creating a stable foundation for corporate policy dissemination and internal alignment.\n\nA key focus was developing the data processing pipelines for dynamic, CMS-controlled chart generation, enabling administrators to seamlessly manage complex environmental metrics and KPI data. I also implemented a secure, integrated internal forum module, fostering structured, cross-departmental dialogue on green initiatives and climate strategies to drive group-wide engagement in sustainability goals.', 
-                imagesCount: 3 
-            },
-            '03': { 
-                id: '03', 
-                category: 'Project Highlight', 
-                title: 'Harbour Plaza Hotels & Resorts Website Revamp & CMS Development', 
-                desc: 'This large-scale digital transformation involved the revitalization of 11 distinct websites across three major hotel brands. The technical foundation features a robust, centralized Content Management System (CMS) engineered with the Laravel framework to manage an extensive inventory of over 8,500 guest rooms. The backend architecture maintains a strategic balance between group-wide consistency and brand-specific flexibility, allowing for seamless visual differentiation across luxury and lifestyle segments.\n\nTo achieve superior performance for a global audience, a high-efficiency platform was implemented with a focus on pre-generating static content files. This technical approach significantly accelerated the development lifecycle while ensuring rapid and stable content delivery. By streamlining data flows between the corporate core and individual hotel sites, the system strengthens overall brand authority and ensures the high availability essential for a market-leading hospitality group.', 
-                imagesCount: 3 
-            },
-            '04': { 
-                id: '04', 
-                category: 'Project Highlight', 
-                title: 'Chow Sang Sang Digital Ecosystem & Omnichannel Strategy', 
-                desc: 'This extensive partnership involved the engineering of a comprehensive digital ecosystem for Chow Sang Sang across Greater China. At the core is a robust, centralized Content Management System (CMS) and a sophisticated CRM integration that synchronizes data across multiple platforms. The architecture supports a diverse suite of applications, including the "Star Shopper" loyalty program with multi-tier membership logic and real-time Star Dollar tracking, ensuring a unified and personalized experience for millions of premium customers.\n\nBeyond the web presence, the ecosystem extends to a series of high-performance retail applications designed for frontline sales advisors. These include specialized iPad modules like the "Promessa Duet" and "Solitaire" ring customization tools, which integrate complex product logic for real-time design and ordering. By bridging the gap between corporate data hubs and in-store interactive POSM tools, the system streamlines staff training, optimizes retail workflows, and enables data-driven marketing strategies. This holistic digital infrastructure effectively reinforces the brand’s legacy while driving business growth through modern, scalable technology.', 
-                imagesCount: 6 
-            },
-            '05': { 
-                id: '05', 
-                category: 'Project Highlight', 
-                title: 'HKICL Website Revamp and Development Design', 
-                desc: 'Operated by an entity jointly owned by the Hong Kong Monetary Authority (HKMA) and the Hong Kong Association of Banks (HKAB), this website revamp serves as a critical branding and positioning platform for Hong Kong’s interbank clearing services. The project’s core focus was the digital introduction of the Faster Payment System (FPS), requiring a sophisticated information architecture (IA) to transform complex financial infrastructure data into clear, focused, and info-graphical content for public and institutional consumption.\n\nGiven the sensitive nature of the clearing and settlement industry, the development prioritized rigorous security standards alongside professional aesthetics. The platform was engineered with a Responsive Web Design (RWD) to ensure high performance and accessibility across all devices, strictly adhering to the W3C WCAG 2.0 Level AA standard. By balancing high-security requirements with a clean, professional user experience, the system reinforces the status of HKICL as a safe, efficient, and iconic pillar of Hong Kong’s financial ecosystem.', 
-                imagesCount: 3 
-            },
-            '06': { 
-                id: '06', 
-                category: 'Project Highlight', 
-                title: 'Bangadang Farm Australia Digital Presence & E-commerce', 
-                desc: 'This project involved the development of a digital platform for an 850-acre regenerative farm in Western Australia. Utilizing the WordPress open-source ecosystem combined with the Elementor page builder, the technical execution focused on creating a highly flexible and visually immersive interface that reflects the farm’s commitment to sustainable agriculture and diverse ecosystems. The site architecture was designed to showcase a wide range of agricultural activities—from marri honey production to merino wool—within a unified and easily manageable framework.\n\nBeyond front-end aesthetics, the implementation emphasized the versatility of WordPress as a scalable CMS solution. Custom configurations and optimized plugin integrations were utilized to ensure rapid deployment and ease of content management for the farm’s varied product lines. By balancing advanced layout design with robust backend stability, the platform provides a seamless storytelling experience that connects the farm’s regenerative techniques with a global audience.', 
-                imagesCount: 4 
-            },
-            '07': { 
-                id: '07', 
-                category: 'Project Highlight', 
-                title: 'Emphasis Jewellery Brand Website & Membership Portal', 
-                desc: 'Following a successful long-term partnership with the Chow Sang Sang Group, this project involved a complete digital revolution for the luxury retailer, Emphasis. The technical execution centered on harmonizing a new sophisticated brand identity—characterized by a Blue-and-Champagne aesthetic—with a high-end browsing experience. The backend and frontend architecture were meticulously refined to enhance the brand image, ensuring that the digital storefront resonates with the chic, luxury ambience of the physical retail locations.\n\nA primary technical objective was the implementation of a high-performance Responsive Web Design (RWD) to maintain absolute consistency across all devices and browsers. Beyond visual aesthetics, the system underwent significant optimization in page loading speeds and navigation logic to improve overall web accessibility and usability. By prioritizing a holistic and persistent user experience, the platform successfully elevates the brand’s digital presence, providing a seamless and premium journey for every customer.', 
-                imagesCount: 3 
-            }
-        };
-
-        const getScrollbarWidth = () => window.innerWidth - document.documentElement.clientWidth;
-
-        const modal = document.getElementById('project-modal');
-        const modalBackdrop = document.getElementById('modal-backdrop');
-        const navMenu = document.getElementById('nav-menu');
-        let currentProjectId = null;
-        let modalCloseTimeout = null; 
-
-        const renderProject = (id, pushToHistory = true) => {
-            currentProjectId = id;
-            const data = projectsData[id];
-            if (!data) return;
-
-            if (pushToHistory) {
-                history.pushState({ projectId: id }, '', `#pj_${id}`);
-            }
-
-            document.getElementById('modal-title').textContent = data.title;
-            document.getElementById('modal-desc').textContent = data.desc;
-            
-            const imagesContainer = document.getElementById('modal-images-container');
-            imagesContainer.innerHTML = '';
-            for (let i = 1; i <= data.imagesCount; i++) {
-                const img = document.createElement('img');
-                img.src = `./assets/works/${id}/${id}_image_${i.toString().padStart(2, '0')}.webp`;
-                img.className = 'w-full object-cover bg-[#f0f0f0] dark:bg-[#050505] reveal-image shrink-0 aspect-[4/3] lg:aspect-[1132/695]';
-                img.onerror = function() { this.remove(); };
-                imagesContainer.appendChild(img);
-                setTimeout(() => img.classList.add('active'), 100 + (i * 150));
-            }
-            
-            const mainScroll = document.getElementById('modal-main-scroll');
-            if (mainScroll) mainScroll.scrollTop = 0;
-            
-            imagesContainer.scrollTop = 0;
-            modal.scrollTop = 0;
-            const textScrollContainer = document.getElementById('modal-text-scroll-container');
-            if (textScrollContainer) textScrollContainer.scrollTop = 0;
-        };
-
-        const openModal = (id, pushToHistory = true) => {
-            if (modalCloseTimeout) {
-                clearTimeout(modalCloseTimeout);
-                modalCloseTimeout = null;
-            }
-
-            renderProject(id, pushToHistory);
-            
-            const scrollbarWidth = getScrollbarWidth();
-            if (scrollbarWidth > 0) {
-                document.body.style.paddingRight = `${scrollbarWidth}px`;
-                const header = document.querySelector('header');
-                if (header) header.style.paddingRight = `${scrollbarWidth}px`;
-            }
-
-            const mainLogo = document.getElementById('main-logo');
-            if (mainLogo) mainLogo.classList.add('force-show');
-
-            const themeToggle = document.getElementById('theme-toggle-wrapper');
-            if (themeToggle) {
-                themeToggle.classList.add('opacity-0', 'pointer-events-none');
-                setTimeout(() => themeToggle.classList.add('hidden'), 300);
-            }
-
-            modalBackdrop.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
-            modalBackdrop.classList.add('opacity-100');
-            modal.classList.remove('translate-y-full');
-            navMenu?.classList.add('opacity-0', 'pointer-events-none');
-            
-            document.documentElement.classList.add('lock-scroll');
-            document.body.classList.add('lock-scroll');
-        };
-
-        const closeModal = (pushToHistory) => {
-            const updateHistory = typeof pushToHistory === 'boolean' ? pushToHistory : true;
-            
-            modal.classList.add('translate-y-full');
-            modalBackdrop.classList.remove('opacity-100');
-            modalBackdrop.classList.add('opacity-0', 'pointer-events-none');
-            navMenu?.classList.remove('opacity-0', 'pointer-events-none');
-            
-            cursorInactive(); 
-            cursorUndiscover();
-            cursorUnscroll();
-
-            if (updateHistory) {
-                history.pushState(null, '', window.location.pathname + window.location.search);
-            }
-
-            if (modalCloseTimeout) {
-                clearTimeout(modalCloseTimeout);
-            }
-
-            modalCloseTimeout = setTimeout(() => {
-                document.documentElement.classList.remove('lock-scroll');
-                document.body.classList.remove('lock-scroll');
-                
-                document.body.style.paddingRight = '0px';
-                const header = document.querySelector('header');
-                if (header) header.style.paddingRight = '0px';
-
-                modalBackdrop.classList.add('hidden');
-                currentProjectId = null;
-
-                const mainLogo = document.getElementById('main-logo');
-                if (mainLogo) mainLogo.classList.remove('force-show');
-
-                const themeToggle = document.getElementById('theme-toggle-wrapper');
-                if (themeToggle) {
-                    themeToggle.classList.remove('hidden');
-                    setTimeout(() => themeToggle.classList.remove('opacity-0', 'pointer-events-none'), 50);
-                }
-
-            }, 1000);
-        };
-
-        window.addEventListener('popstate', () => {
-            const hash = window.location.hash;
-            if (hash && hash.startsWith('#pj_')) {
-                const projectId = hash.replace('#pj_', '');
-                if (projectsData[projectId]) {
-                    if (currentProjectId === null) {
-                        openModal(projectId, false);
-                    } else {
-                        renderProject(projectId, false);
-                    }
-                }
-            } else {
-                if (currentProjectId !== null) {
-                    closeModal(false);
-                }
-            }
-        });
-
-        // --- 優化：移除咗容易搞到爛版同拖慢效能嘅 updateLogoWidth JS 函數 ---
-
-        window.addEventListener('load', () => {
-            window.scrollTo(0, 0);
-            try { initThreeJS(); } catch (e) { console.warn('3D background skipped:', e); }
-            updateBackgroundOpacity();
-            initClientLogos(); 
-
-            const hash = window.location.hash;
-            const hasDirectLink = hash && hash.startsWith('#pj_') && projectsData[hash.replace('#pj_', '')];
-
-            if (hasDirectLink) {
-                introScreen.style.display = 'none';
-                document.documentElement.classList.remove('lock-scroll');
-                document.body.classList.remove('lock-scroll');
-                
-                document.querySelectorAll('.hero-reveal').forEach(el => el.classList.add('active'));
-                document.querySelectorAll('.reveal-up:not(.hero-reveal), .reveal-fade, .reveal-line, .reveal-image').forEach(el => revealObserver.observe(el));
-                
-                const projectId = hash.replace('#pj_', '');
-                openModal(projectId, false);
-            } else {
-                setTimeout(type, 500);
-            }
-        });
-
-        document.getElementById('modal-prev-btn').addEventListener('click', () => {
-            if (!currentProjectId) return;
-            const projectKeys = Object.keys(projectsData);
-            const currentIndex = projectKeys.indexOf(currentProjectId);
-            const prevIndex = currentIndex === 0 ? projectKeys.length - 1 : currentIndex - 1;
-            renderProject(projectKeys[prevIndex]);
-        });
-
-        document.getElementById('modal-next-btn').addEventListener('click', () => {
-            if (!currentProjectId) return;
-            const projectKeys = Object.keys(projectsData);
-            const currentIndex = projectKeys.indexOf(currentProjectId);
-            const nextIndex = currentIndex === projectKeys.length - 1 ? 0 : currentIndex + 1;
-            renderProject(projectKeys[nextIndex]);
-        });
-
-        document.getElementById('modal-prev-btn').addEventListener('mouseenter', cursorActive);
-        document.getElementById('modal-prev-btn').addEventListener('mouseleave', cursorInactive);
-        document.getElementById('modal-next-btn').addEventListener('mouseenter', cursorActive);
-        document.getElementById('modal-next-btn').addEventListener('mouseleave', cursorInactive);
-
-        document.querySelectorAll('.portfolio-item').forEach(item => {
-            item.addEventListener('click', function() {
-                openModal(this.getAttribute('data-id'));
-            });
-        });
-
-        document.getElementById('modal-close-btn').addEventListener('click', closeModal);
-        modalBackdrop.addEventListener('click', closeModal);
-        
-        // --- Client Logo 動態跑馬燈邏輯 (全面升級版) ---
-        function initClientLogos() {
-            const container = document.getElementById('clients-marquee-container');
-            if (!container) return;
-
-            let logos = Array.from({length: 30}, (_, i) => i + 1);
-            logos.sort(() => Math.random() - 0.5);
-
-            const rows = [
-                logos.slice(0, 10),
-                logos.slice(10, 20),
-                logos.slice(20, 30)
+        // -----------------------------------------------------------------
+        // D. Infinite Marquee Rows (客製化雙向無縫跑馬燈)
+        // -----------------------------------------------------------------
+        const marqueeContainer = document.getElementById('marquee-container');
+        if (marqueeContainer) {
+            // 模擬 16 家大型企業及政府項目 Logo 矩陣 ID
+            const marqueeRows = [
+                { dir: 'left', speed: '35s', logos: [1, 2, 3, 4, 5, 6, 7, 8] },
+                { dir: 'right', speed: '40s', logos: [9, 10, 11, 12, 13, 14, 15, 16] }
             ];
 
             let html = '';
+            marqueeRows.forEach((row) => {
+                const animClass = row.dir === 'left' ? 'animate-marquee' : 'animate-marquee-reverse';
+                const duration = row.speed;
+                const loopLogos = [...row.logos, ...row.logos, ...row.logos]; // 複製三份確保寬度無縫填滿
 
-            rows.forEach((rowLogos, index) => {
-                const isLR = (index === 0 || index === 2); 
-                const animClass = isLR ? 'anim-lr' : 'anim-rl';
-                const duration = index === 0 ? '37.5s' : (index === 1 ? '56.25s' : '31.25s');
-                const visibilityClass = index === 2 ? 'flex min-[1024px]:hidden' : 'flex';
-                
-                // 保證無縫對接，將 10 個 Logo 放入同一個 Group
-                const loopLogos = [...rowLogos];
+                html += `\n                    <div class="w-full overflow-hidden flex relative pointer-events-none opacity-40 select-none border-y border-white/[0.01] py-4 bg-white/[0.005]">\n                `;
 
-                html += `<div class="client-marquee-track ${visibilityClass}">`;
-                
                 for (let g = 0; g < 2; g++) {
                     html += `<div class="client-marquee-group ${animClass}" style="animation-duration: ${duration};">`;
                     loopLogos.forEach(logoId => {
-                        // 路徑已更新為 ./assets/project_logo/
                         html += `
                             <div class="client-logo-wrapper flex items-center justify-center aspect-[3/2]">
                                 <img src="./assets/project_logo/logo_${String(logoId).padStart(2, '0')}.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert scale-125 min-[820px]:scale-100 min-[1600px]:max-[1699px]:scale-110 pointer-events-none opacity-80 hover:opacity-100 transition-opacity duration-300">
@@ -1383,22 +627,26 @@
                 html += `</div>`;
             });
 
-            container.innerHTML = html;
+            marqueeContainer.innerHTML = html;
         }
 
+        // 全局鍵盤事件監聽
         window.addEventListener('keydown', (e) => {
             if (e.target && e.target.tagName) {
                 const tag = e.target.tagName.toLowerCase();
                 if (tag === 'input' || tag === 'textarea') return;
             }
-            
+
+            // 按下鍵盤 'G' 鍵可以隱藏/顯示輔助格線
             if (e.key && e.key.toLowerCase() === 'g') {
                 const grid = document.getElementById('design-grid');
                 if (grid) grid.classList.toggle('active');
             }
+            // 按下 ESC 鍵關閉作品彈窗
             if (e.key === 'Escape') closeModal();
         });
 
     </script>
 </body>
+
 </html>
