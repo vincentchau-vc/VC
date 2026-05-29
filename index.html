@@ -31,8 +31,8 @@
         }
 
         a,
-        \n button,
-        \n .cursor-pointer {
+        button,
+        .cursor-pointer {
             cursor: none !important;
         }
 
@@ -43,9 +43,9 @@
             }
 
             body,
-            \n a,
-            \n button,
-            \n .cursor-pointer {
+            a,
+            button,
+            .cursor-pointer {
                 cursor: auto !important;
             }
         }
@@ -193,7 +193,7 @@
     </div>
 
     <div id="custom-cursor"
-        class="fixed top-0 left-0 w-4 h-4 bg-white rounded-full pointer-events-none z-[9999] mixed-blend-difference -translate-x-1/2 -translate-y-1/2 will-change-transform scale-100 transition-transform duration-200 ease-out">
+        class="fixed top-0 left-0 w-4 h-4 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference will-change-transform">
     </div>
 
     <nav
@@ -424,14 +424,14 @@
 
         // 監聽滑鼠移動，讓背景球體產生動態傾斜（Parallax 效果）
         let mouseX = 0, mouseY = 0;
+        const customCursor = document.getElementById('custom-cursor');
+
         window.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth) - 0.5;
             mouseY = (e.clientY / window.innerHeight) - 0.5;
 
-            // 自定義滑鼠游標位置更新
-            const cursor = document.getElementById('custom-cursor');
-            if (cursor) {
-                cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+            if (customCursor && window.innerWidth >= 820) {
+                customCursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
             }
         });
 
