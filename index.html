@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VC | Enterprise Backend Architect</title>
+    <title>VC | Analyst Programmer & Application Developer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -110,46 +110,128 @@
             display: grid;
         }
 
-        /* 自定義跑馬燈動畫 */
-        @keyframes marquee {
-            0% {
-                transform: translateX(0%);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        @keyframes marquee-reverse {
-            0% {
-                transform: translateX(-50%);
-            }
-
-            100% {
-                transform: translateX(0%);
-            }
-        }
-
-        .animate-marquee {
+        /* 自定義游標 */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            mix-blend-mode: difference;
             display: flex;
-            width: max-content;
-            animation: marquee linear infinite;
+            align-items: center;
+            justify-content: center;
+            will-change: width, height, transform;
+            transition: width 0.3s ease-out, height 0.3s ease-out, border-radius 0.3s ease-out, mix-blend-mode 0.3s;
         }
 
-        .animate-marquee-reverse {
+        #custom-cursor.active {
+            width: 60px;
+            height: 60px;
+        }
+
+        #custom-cursor.discover {
+            width: 110px;
+            height: 110px;
+            mix-blend-mode: normal;
+        }
+
+        #custom-cursor .cursor-text {
+            opacity: 0;
+            color: #000;
+            font-size: 12px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        #custom-cursor.discover .cursor-text {
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+
+        /* Client Logos Marquee */
+        :root {
+            --logo-w: calc(100vw / 3);
+        }
+
+        @media (min-width: 1024px) {
+            :root {
+                --logo-w: calc(100vw / 4);
+            }
+        }
+
+        @media (min-width: 1300px) {
+            :root {
+                --logo-w: calc(100vw / 5);
+            }
+        }
+
+        @media (min-width: 1600px) {
+            :root {
+                --logo-w: calc(100vw / 6);
+            }
+        }
+
+        .client-marquee-track {
             display: flex;
-            width: max-content;
-            animation: marquee-reverse linear infinite;
+            flex-wrap: nowrap;
+            width: 100%;
+            overflow: hidden;
         }
 
         .client-marquee-group {
             display: flex;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
             align-items: center;
-            justify-content: space-around;
-            gap: 4rem;
-            /* min-[1600px]:gap-24 效果在 JS 中控制 */
-            padding-right: 4rem;
+            will-change: transform;
+            transform: translateZ(0);
+            width: calc(var(--logo-w) * 15);
+        }
+
+        .anim-rl {
+            animation: scroll-rl linear infinite;
+        }
+
+        .anim-lr {
+            animation: scroll-lr linear infinite;
+        }
+
+        @keyframes scroll-rl {
+            from {
+                transform: translate3d(0, 0, 0);
+            }
+
+            to {
+                transform: translate3d(calc(var(--logo-w) * -15), 0, 0);
+            }
+        }
+
+        @keyframes scroll-lr {
+            from {
+                transform: translate3d(calc(var(--logo-w) * -15), 0, 0);
+            }
+
+            to {
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .client-logo-wrapper {
+            flex-shrink: 0;
+            width: var(--logo-w);
+            padding: 0 15px;
+        }
+
+        @media (min-width: 1024px) {
+            .client-logo-wrapper {
+                padding: 0 20px;
+            }
         }
 
         /* 彈窗（Modal）動畫優化 */
@@ -192,8 +274,8 @@
         <div class="hidden min-[820px]:block border-x border-white/[0.02] h-full"></div>
     </div>
 
-    <div id="custom-cursor"
-        class="fixed top-0 left-0 w-4 h-4 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference will-change-transform">
+    <div id="custom-cursor">
+        <span class="cursor-text absolute">DISCOVER</span>
     </div>
 
     <nav
@@ -219,19 +301,19 @@
                     Vincent Chau.</p>
                 <h1
                     class="text-[2.5rem] min-[820px]:text-[5rem] min-[1600px]:text-[6rem] font-bold tracking-tight text-white leading-[1.05]">
-                    Enterprise Backend Architect & <br class="hidden min-[820px]:block"> Systems Solutions Expert
+                    Analyst Programmer & <br class="hidden min-[820px]:block"> Application Systems Developer
                 </h1>
                 <p
                     class="text-base min-[820px]:text-xl min-[1600px]:text-2xl text-white/40 font-light max-w-[780px] leading-relaxed">
-                    Designing high-concurrency architectures, robust APIs, and high-performance data pipelines for
-                    mission-critical enterprise ecosystems.
+                    Building and maintaining reliable web applications, databases, and integrations for
+                    mission-critical operations — from requirements analysis to deployment and support.
                 </p>
             </div>
             <div class="flex flex-col min-[820px]:flex-row items-start min-[820px]:items-center gap-6 pt-12 border-t border-white/[0.05]">
                 <div class="flex gap-4">
                     <a href="#works"
                         class="group flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-white/90 transition-all duration-300 cursor-pointer">
-                        View Case Studies
+                        View Projects
                         <svg class="w-3 h-3 transform group-hover:translate-x-1 transition-transform" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -240,7 +322,7 @@
                     </a>
                     <a href="#about"
                         class="flex items-center bg-white/[0.03] text-white border border-white/10 px-6 py-3 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-white/10 transition-all duration-300 cursor-pointer">
-                        Technical Core
+                        Technical Skills
                     </a>
                 </div>
             </div>
@@ -255,52 +337,66 @@
                     Expertise</span>
                 <h2
                     class="text-2xl min-[820px]:text-4xl min-[1600px]:text-5xl font-bold text-white tracking-tight leading-[1.15]">
-                    Architecting Scalable <br>Foundations for <br>Mission-Critical Systems.
+                    Delivering Practical Application Systems <br>from Analysis to Development and Support.
                 </h2>
             </div>
             <div
                 class="min-[820px]:col-span-7 space-y-6 min-[820px]:text-lg text-white/60 font-light leading-relaxed max-w-[720px]">
                 <p>
-                    With over 15 years of deep expertise in systems analysis and backend engineering, I specialize in
-                    constructing the backbone of complex digital infrastructure. My core strengths lie in designing
-                    highly resilient distributed architectures, formulating optimized PostgreSQL/MySQL database schemas,
-                    and building type-safe, high-throughput RESTful APIs.
+                    With over 15 years of experience in systems analysis and application development — delivering 60+
+                    web and application projects — I specialize in translating business requirements into maintainable
+                    software. My core strengths include database design with PostgreSQL/MySQL, RESTful API development,
+                    and building reliable web applications with PHP Laravel and modern JavaScript frameworks.
                 </p>
                 <p>
-                    Leveraging a diverse technology stack—from the robust MVC patterns of PHP Laravel to the
-                    high-concurrency event-driven environments of Node.js and the analytical power of Python
-                    FastAPI/Pandas—I bridge the gap between complex enterprise logic and scalable execution. I engineer
-                    systems to be decoupled, secure, and resilient under heavy workloads.
+                    My primary focus has been content management systems and custom web applications — from requirements
+                    gathering and database design to development, deployment, and ongoing support.
+                </p>
+                <p>
+                    Typical work includes CMS and admin platform development, API and third-party integration, and
+                    enhancing existing systems for long-term maintainability. Projects span retail, finance, culture,
+                    hospitality, and healthcare-related environments.
                 </p>
 
                 <div class="pt-8 flex flex-wrap gap-2.5 max-w-[640px]">
                     <span
-                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">TypeScript
-                        / Node.js</span>
-                    <span
                         class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">PHP
                         / Laravel</span>
                     <span
-                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Python
-                        / Pandas</span>
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">CMS
+                        Development</span>
                     <span
-                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Next.js
-                        / Payload CMS</span>
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">MySQL
+                        & PostgreSQL</span>
                     <span
-                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">PostgreSQL
-                        & MySQL</span>
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">RESTful
+                        API Design</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">CAS
+                        / SSO Integration</span>
                     <span
                         class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">System
-                        Architecture</span>
+                        Analysis</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">JavaScript
+                        / TypeScript</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Node.js
+                        / Next.js</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Python
+                        / FastAPI</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Redis</span>
                     <span
                         class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Query
                         Optimization</span>
                     <span
                         class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Docker
-                        & DevOps</span>
+                        & Git</span>
                     <span
-                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">RESTful
-                        API Design</span>
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Linux
+                        & Nginx</span>
                 </div>
             </div>
         </div>
@@ -308,15 +404,12 @@
 
     <section id="works" class="relative z-10 px-6 min-[820px]:px-12 py-24 min-[820px]:py-36">
         <div class="max-w-[1400px] w-full mx-auto space-y-16">
-            <div class="flex justify-between items-end border-b border-white/[0.05] pb-6">
+            <div class="border-b border-white/[0.05] pb-6">
                 <div class="space-y-2">
                     <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">&bull; Selected
-                        Portfolios</span>
-                    <h2 class="text-3xl min-[820px]:text-4xl font-bold tracking-tight text-white">Enterprise Case
-                        Studies</h2>
+                        Projects</span>
+                    <h2 class="text-3xl min-[820px]:text-4xl font-bold tracking-tight text-white">Featured Work</h2>
                 </div>
-                <span class="text-xs tracking-widest uppercase text-white/30 hidden min-[820px]:block">01 &mdash; 07
-                    Projects</span>
             </div>
 
             <div id="works-grid" class="grid grid-cols-1 min-[820px]:grid-cols-2 gap-8 min-[820px]:gap-12">
@@ -325,10 +418,16 @@
     </section>
 
     <section id="clients" class="relative z-10 py-16 bg-black/30 border-t border-white/[0.02] overflow-hidden">
-        <div class="w-full space-y-12">
-            <p class="text-center text-xs tracking-widest uppercase text-white/30 font-semibold">Validated Engineering
-                Trust Across Digital Industries</p>
-            <div id="marquee-container" class="w-full flex flex-col gap-8">
+        <div class="w-full space-y-10">
+            <div class="text-center space-y-3 px-6 min-[820px]:px-12">
+                <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">&bull; Past
+                    Collaborations</span>
+                <p class="text-sm min-[820px]:text-base text-white/30 font-light max-w-[560px] mx-auto leading-relaxed">
+                    Organizations and teams I've supported through application development and system delivery.
+                </p>
+            </div>
+            <div id="marquee-container"
+                class="flex flex-col gap-[10px] min-[820px]:gap-[20px] lg:gap-[30px] xl:gap-[40px] w-full">
             </div>
         </div>
     </section>
@@ -338,11 +437,11 @@
         <div class="max-w-[1400px] w-full mx-auto text-center space-y-8 max-w-[800px]">
             <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">&bull; Open to Opportunities</span>
             <h2 class="text-3xl min-[820px]:text-6xl font-bold text-white tracking-tight leading-tight">Ready to
-                contribute to your backend team.</h2>
+                contribute as an Analyst Programmer.</h2>
             <p class="text-base min-[820px]:text-xl text-white/50 font-light max-w-[600px] mx-auto leading-relaxed">
-                I'm exploring senior backend and systems engineering roles where I can design scalable APIs, optimize
-                data layers, and ship reliable infrastructure. If you're hiring—or know a team that is—I'd love to
-                connect.
+                I'm seeking a role where I can apply my experience in systems analysis, application development,
+                database design, and ongoing system support — particularly in healthcare and public service
+                environments.
             </p>
             <div class="pt-8">
                 <a href="mailto:vincentchau.vc@gmail.com"
@@ -355,13 +454,13 @@
 
     <footer
         class="relative z-10 px-6 min-[820px]:px-12 py-12 border-t border-white/[0.05] text-center text-xs text-white/30 tracking-widest uppercase">
-        &copy; 2026 VC. All Rights Reserved. Designed for Ultimate Efficiency & Reliability.
+        &copy; 2026 Vincent Chau. All Rights Reserved.
     </footer>
 
     <div id="project-modal"
-        class="fixed inset-0 bg-[#030712]/95 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300 overflow-y-auto no-scrollbar flex items-center justify-center p-6">
-        <div
-            class="max-w-[900px] w-full bg-white/[0.02] border border-white/10 rounded-2xl p-6 min-[820px]:p-12 space-y-8 relative animate-modal max-h-[90vh] overflow-y-auto no-scrollbar">
+        class="fixed inset-0 bg-[#030712]/95 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300 overflow-y-auto no-scrollbar flex items-center justify-center p-6 cursor-default">
+        <div id="modal-panel"
+            class="max-w-[960px] w-full bg-white/[0.02] border border-white/10 rounded-2xl p-6 min-[820px]:p-12 space-y-8 relative animate-modal max-h-[90vh] overflow-y-auto no-scrollbar">
             <button onclick="closeModal()"
                 class="absolute top-6 right-6 text-white/40 hover:text-white transition-colors duration-200 text-xs tracking-widest uppercase flex items-center gap-2 cursor-pointer">
                 Close [ESC]
@@ -458,94 +557,119 @@
         });
 
         // -----------------------------------------------------------------
-        // B. Enterprise Case Studies Data (7 大高性能架構專案細節)
+        // B. Selected Projects (4 featured CMS & web application deliveries)
         // -----------------------------------------------------------------
         const projects = [
             {
                 id: "01",
-                title: "Decoupled Headless CMS Architecture",
-                category: "Full-Stack Infrastructure",
-                desc: "Designed and engineered a high-concurrency content system using Payload CMS (TypeScript) nested inside Next.js, connecting directly to an optimized local PostgreSQL instance.",
-                tech: ["TypeScript", "Next.js", "Payload CMS", "PostgreSQL", "Docker"],
-                challenge: "Legacy platforms suffered from severe administrative interface lags and unoptimized raw SQL migrations during feature expansions.",
-                solution: "Transitioned cloud database dependencies to a heavily structured Localhost Postgres ecosystem managed via programmatic schema migrations, achieving end-to-end compile-time type safety from database records straight to React components."
+                assetsId: "04",
+                title: "Chow Sang Sang Digital Ecosystem",
+                category: "CMS & Web Application",
+                desc: "Retail digital ecosystem with centralized CMS, CRM integration, loyalty programme logic, and in-store advisor applications.",
+                challenge: "The client required synchronized data and applications across web, CRM, loyalty tiers, and frontline retail tools within one platform.",
+                solution: "Delivered CMS and application backend work including membership logic, CRM-connected data flows, and retail product modules for in-store advisors.",
+                tech: ["PHP", "Laravel", "MySQL", "CMS Development", "RESTful API", "Redis"],
+                imagesCount: 6
             },
             {
                 id: "02",
-                title: "Distributed Asynchronous Task Engine",
-                category: "Backend Engineering",
-                desc: "Decoupled heavy-load enterprise operations into isolated worker nodes using Celery with RabbitMQ as a reliable message broker.",
-                tech: ["Python", "FastAPI", "Celery", "RabbitMQ", "Redis", "Linux"],
-                challenge: "High-density requests (such as automated nightly medical cross-audits and bulk notifications) caused recurring API timeouts and CPU spikes up to 98% on the main Web server.",
-                solution: "Implemented an event-driven task queue backend. Extracted long-running data-synthesis jobs into background Celery workers guarded by RabbitMQ persistence, eliminating HTTP request timeouts and slashing main server workload spikes by 60%."
+                assetsId: "01",
+                title: "Hong Kong Palace Museum — Website & CMS Development",
+                category: "CMS & Web Application",
+                desc: "Museum website and CMS integrating ticketing, exhibitions, e-learning, and e-commerce for a high-traffic public institution.",
+                challenge: "The museum needed one digital platform to manage dense content and multiple operational modules while remaining stable for daily public use.",
+                solution: "Contributed to backend and CMS development, including database structure, system logic, and module integration to support content operations and public access.",
+                tech: ["PHP", "Laravel", "MySQL", "CMS Development", "RESTful API"],
+                imagesCount: 3
             },
             {
                 id: "03",
-                title: "High-Throughput RESTful API Gateway",
-                category: "System Architecture",
-                desc: "Constructed a secure, resilient enterprise API cluster built with PHP Laravel and reverse-proxied via Nginx to orchestrate complex data flows.",
-                tech: ["PHP", "Laravel", "Nginx", "Redis", "Database Schema Design"],
-                challenge: "Handling concurrent third-party data integrations frequently resulted in database race conditions and thread blocking under multi-user access loops.",
-                solution: "Designed a multi-tiered API architecture utilizing Laravel's Eloquent ORM row-level locks alongside Redis memory caching, ensuring absolute data consistency and atomic transactions under peak 10k+ concurrent request limits."
+                assetsId: "05",
+                title: "HKICL Website Revamp",
+                category: "Institutional Website",
+                desc: "Institutional website revamp for Hong Kong interbank clearing services, introducing FPS content and WCAG 2.0 Level AA accessibility.",
+                challenge: "Complex financial content had to be presented clearly to public and institutional audiences while meeting security and accessibility requirements.",
+                solution: "Supported website development with responsive implementation, information architecture for FPS content, and WCAG 2.0 Level AA compliance.",
+                tech: ["PHP", "JavaScript", "MySQL", "CMS Development", "HTML5 & CSS3"],
+                imagesCount: 3
             },
             {
                 id: "04",
-                title: "Automated Data-Wrangling ETL Pipeline",
-                category: "Data Science & Engineering",
-                desc: "Engineered high-performance batch processing microservices utilizing Python Pandas to process, clean, and map multi-million record matrices.",
-                tech: ["Python", "Pandas", "JSON", "Query Optimization", "Linux"],
-                challenge: "Unstructured historical text files and massive relational databases needed daily cleansing, aggregation, and structural alignment without introducing memory leakage.",
-                solution: "Built optimized data-wrangling pipelines in Pandas that aggregated, normalized, and transformed legacy datasets into standardized structured JSON formats, reducing daily pipeline execution window from hours down to minutes."
-            },
-            {
-                id: "05",
-                title: "Containerized Microservices Infrastructure",
-                category: "DevOps & Infrastructure",
-                desc: "Architected a uniform, containerized deployment matrix across RHEL/Ubuntu environments, enforcing automated isolation barriers.",
-                tech: ["Docker", "Linux (RHEL/Ubuntu)", "Nginx", "Git", "System Architecture"],
-                challenge: "Severe 'it works on my machine' configuration drifts between localized development boxes and production instances slowed release cycles.",
-                solution: "Standardized all running modules into fine-tuned multi-stage Docker configurations, proxying external traffic through hardened Nginx clusters to achieve instantaneous, zero-downtime application scaling."
-            },
-            {
-                id: "06",
-                title: "Enterprise Relational Schema Optimization",
-                category: "Database Performance Tuning",
-                desc: "Executed database diagnostics and schema redesign on highly relational PostgreSQL and MySQL clusters to resolve severe bottlenecks.",
-                tech: ["PostgreSQL", "MySQL", "Query Optimization", "Database Schema Design"],
-                challenge: "Unindexed deeply joined analytical queries created catastrophic read locks, choking the transactional flow of daily operations.",
-                solution: "Conducted deep query parsing, removed redundant relational tables, established strategic composite indexes, and rewrote slow queries, cutting overall database search latency by over 75%."
-            },
-            {
-                id: "07",
-                title: "Real-Time State Caching Layer",
-                category: "In-Memory Data Engineering",
-                desc: "Deployed an advanced Redis NoSQL layer as an intermediate state-tracking backend to offload high-frequency polling from primary storages.",
-                tech: ["Redis (NoSQL)", "Node.js", "Laravel", "RESTful API Design"],
-                challenge: "Constant application polling for session verification and dynamic status indicators over-stressed the primary relational database disk read I/O.",
-                solution: "Introduced a structured Redis In-Memory caching mesh with strict key eviction policies, absorbing 90% of repeat request volumes and boosting overall API responsiveness tenfold."
+                assetsId: "03",
+                title: "Harbour Plaza Hotels & Resorts — Multi-Site CMS",
+                category: "CMS & Web Application",
+                desc: "Revamp of 11 hotel brand websites on a centralized Laravel CMS managing 8,500+ guest rooms across three hospitality brands.",
+                challenge: "Multiple brand sites required consistent CMS control with brand-specific flexibility and reliable performance for global visitors.",
+                solution: "Built and maintained the centralized CMS on Laravel, supporting multi-brand content workflows, room inventory management, and efficient content delivery.",
+                tech: ["PHP", "Laravel", "MySQL", "CMS Development", "Nginx"],
+                imagesCount: 3
             }
         ];
+
+        function projectAssetsId(project) {
+            return project.assetsId || project.id;
+        }
+
+        function projectImageSrc(project, index) {
+            const folder = projectAssetsId(project);
+            return `./assets/works/${folder}/${folder}_image_${String(index).padStart(2, '0')}.webp`;
+        }
+
+        function projectImagesHtml(project) {
+            return Array.from({ length: project.imagesCount }, (_, i) => i + 1).map(index => `
+                <img src="${projectImageSrc(project, index)}" alt="Project screenshot ${index}"
+                    class="w-full rounded-lg object-cover aspect-[16/10] bg-white/[0.03] border border-white/[0.06]"
+                    onerror="this.remove()">
+            `).join('');
+        }
 
         // -----------------------------------------------------------------
         // C. Dynamic Rendering & Interactivity Logic (動態渲染與彈窗控制)
         // -----------------------------------------------------------------
         const worksGrid = document.getElementById('works-grid');
         worksGrid.innerHTML = projects.map(p => `
-            <div onclick="openModal('${p.id}')" class="group relative bg-white/[0.01] border border-white/[0.04] rounded-2xl p-8 hover:bg-white/[0.03] hover:border-white/10 transition-all duration-500 cursor-pointer flex flex-col justify-between h-[320px] min-[1600px]:h-[360px]">
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-white/30 font-semibold tracking-widest uppercase">${p.category}</span>
-                        <span class="text-xs text-white/20 font-mono font-medium">${p.id}</span>
-                    </div>
-                    <h3 class="text-xl min-[820px]:text-2xl font-bold text-white group-hover:text-white/90 transition-colors">${p.title}</h3>
-                    <p class="text-sm text-white/40 font-light line-clamp-3 leading-relaxed">${p.desc}</p>
+            <div onclick="openModal('${p.id}')" class="portfolio-item group relative bg-white/[0.01] border border-white/[0.04] rounded-2xl overflow-hidden hover:bg-white/[0.03] hover:border-white/10 transition-all duration-500 cursor-pointer flex flex-col">
+                <div class="aspect-[16/10] overflow-hidden bg-white/[0.03] border-b border-white/[0.04]">
+                    <img src="${projectImageSrc(p, 1)}" alt="${p.title}" class="w-full h-full object-cover transition duration-500 group-hover:scale-[1.02]">
                 </div>
-                <div class="flex flex-wrap gap-2 pt-4">
-                    ${p.tech.slice(0, 3).map(t => `<span class="text-[10px] font-medium uppercase tracking-wider text-white/50 bg-white/[0.04] px-2.5 py-1 rounded">${t}</span>`).join('')}
-                    ${p.tech.length > 3 ? `<span class="text-[10px] font-medium text-white/30 bg-transparent px-1 py-1">+${p.tech.length - 3} more</span>` : ''}
+                <div class="p-8 flex flex-col justify-between flex-grow gap-6">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-white/30 font-semibold tracking-widest uppercase">${p.category}</span>
+                            <span class="text-xs text-white/20 font-mono font-medium">${p.id}</span>
+                        </div>
+                        <h3 class="text-xl min-[820px]:text-2xl font-bold text-white group-hover:text-white/90 transition-colors">${p.title}</h3>
+                        <p class="text-sm text-white/40 font-light line-clamp-3 leading-relaxed">${p.desc}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${p.tech.slice(0, 3).map(t => `<span class="text-[10px] font-medium uppercase tracking-wider text-white/50 bg-white/[0.04] px-2.5 py-1 rounded">${t}</span>`).join('')}
+                        ${p.tech.length > 3 ? `<span class="text-[10px] font-medium text-white/30 bg-transparent px-1 py-1">+${p.tech.length - 3} more</span>` : ''}
+                    </div>
                 </div>
             </div>
         `).join('');
+
+        function bindCursorHovers() {
+            const cursor = document.getElementById('custom-cursor');
+            if (!cursor) return;
+
+            document.querySelectorAll('a, button, .cursor-pointer:not(.portfolio-item)').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('active'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+            });
+
+            document.querySelectorAll('.portfolio-item').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('discover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('discover'));
+            });
+        }
+
+        bindCursorHovers();
+
+        const projectModal = document.getElementById('project-modal');
+        projectModal.addEventListener('click', (e) => {
+            if (!e.target.closest('#modal-panel')) closeModal();
+        });
 
         // 彈窗控制邏輯
         function openModal(id) {
@@ -558,14 +682,20 @@
                     <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">${p.category}</span>
                     <h3 class="text-2xl min-[820px]:text-4xl font-bold text-white tracking-tight">${p.title}</h3>
                 </div>
-                <div class="grid grid-cols-1 min-[820px]:grid-cols-12 gap-8 pt-4">
+                <div class="space-y-3 pb-6 border-b border-white/10">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-white/40">Screenshots</h4>
+                    <div class="grid grid-cols-1 gap-3">
+                        ${projectImagesHtml(p)}
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 min-[820px]:grid-cols-12 gap-8 pt-2">
                     <div class="min-[820px]:col-span-8 space-y-6">
                         <div class="space-y-2">
-                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; Architectural Challenge</h4>
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; Project Overview</h4>
                             <p class="text-sm min-[820px]:text-base text-white/50 font-light leading-relaxed">${p.challenge}</p>
                         </div>
                         <div class="space-y-2">
-                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; Implemented Engineering Solution</h4>
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; My Contribution</h4>
                             <p class="text-sm min-[820px]:text-base text-white/50 font-light leading-relaxed">${p.solution}</p>
                         </div>
                     </div>
@@ -582,7 +712,8 @@
 
             const modal = document.getElementById('project-modal');
             modal.classList.remove('pointer-events-none', 'opacity-0');
-            document.body.style.overflow = 'hidden'; // 防止底層滾動
+            document.body.style.overflow = 'hidden';
+            customCursor?.classList.remove('discover', 'active');
         }
 
         function closeModal() {
@@ -591,31 +722,37 @@
             document.body.style.overflow = 'auto';
         }
 
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+
         // -----------------------------------------------------------------
-        // D. Infinite Marquee Rows (客製化雙向無縫跑馬燈)
+        // D. Client Logo Marquee (30 logos from ./assets/project_logo/)
         // -----------------------------------------------------------------
-        const marqueeContainer = document.getElementById('marquee-container');
-        if (marqueeContainer) {
-            // 模擬 16 家大型企業及政府項目 Logo 矩陣 ID
-            const marqueeRows = [
-                { dir: 'left', speed: '35s', logos: [1, 2, 3, 4, 5, 6, 7, 8] },
-                { dir: 'right', speed: '40s', logos: [9, 10, 11, 12, 13, 14, 15, 16] }
+        function initClientLogos() {
+            const marqueeContainer = document.getElementById('marquee-container');
+            if (!marqueeContainer) return;
+
+            let logos = Array.from({ length: 30 }, (_, i) => i + 1);
+            logos.sort(() => Math.random() - 0.5);
+
+            const rows = [
+                { logos: logos.slice(0, 15), dir: 'lr', speed: '45s' },
+                { logos: logos.slice(15, 30), dir: 'rl', speed: '55s' }
             ];
 
             let html = '';
-            marqueeRows.forEach((row) => {
-                const animClass = row.dir === 'left' ? 'animate-marquee' : 'animate-marquee-reverse';
-                const duration = row.speed;
-                const loopLogos = [...row.logos, ...row.logos, ...row.logos]; // 複製三份確保寬度無縫填滿
 
-                html += `\n                    <div class="w-full overflow-hidden flex relative pointer-events-none opacity-40 select-none border-y border-white/[0.01] py-4 bg-white/[0.005]">\n                `;
+            rows.forEach((row) => {
+                const animClass = row.dir === 'lr' ? 'anim-lr' : 'anim-rl';
+
+                html += `<div class="client-marquee-track flex">`;
 
                 for (let g = 0; g < 2; g++) {
-                    html += `<div class="client-marquee-group ${animClass}" style="animation-duration: ${duration};">`;
-                    loopLogos.forEach(logoId => {
+                    html += `<div class="client-marquee-group ${animClass}" style="animation-duration: ${row.speed};">`;
+                    row.logos.forEach(logoId => {
                         html += `
                             <div class="client-logo-wrapper flex items-center justify-center aspect-[3/2]">
-                                <img src="./assets/project_logo/logo_${String(logoId).padStart(2, '0')}.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 dark:invert scale-125 min-[820px]:scale-100 min-[1600px]:max-[1699px]:scale-110 pointer-events-none opacity-80 hover:opacity-100 transition-opacity duration-300">
+                                <img src="./assets/project_logo/logo_${String(logoId).padStart(2, '0')}.svg" alt="Client Logo" class="w-full h-full object-contain brightness-0 invert scale-125 min-[820px]:scale-100 min-[1600px]:max-[1699px]:scale-110 pointer-events-none opacity-80">
                             </div>
                         `;
                     });
@@ -627,6 +764,8 @@
 
             marqueeContainer.innerHTML = html;
         }
+
+        initClientLogos();
 
         // 全局鍵盤事件監聽
         window.addEventListener('keydown', (e) => {
