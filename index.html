@@ -4,7 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VC | Analyst Programmer & Application Developer</title>
+    <title>Vincent Chau | Systems Analyst</title>
+    <meta name="description" content="Systems Analyst with 15+ years in CMS, web applications, API integration, and production support across retail, finance, culture, and hospitality.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Vincent Chau | Systems Analyst">
+    <meta property="og:description" content="Systems Analyst — CMS, web applications, API integration, and application support from analysis to deployment.">
+    <meta property="og:url" content="https://vincentchau-vc.github.io/VC/">
+    <meta property="og:image" content="https://vincentchau-vc.github.io/VC/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vincent Chau | Systems Analyst">
+    <meta name="twitter:description" content="Systems Analyst — CMS, web applications, API integration, and application support.">
+    <meta name="twitter:image" content="https://vincentchau-vc.github.io/VC/assets/og-image.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -154,6 +164,62 @@
             transition-delay: 0.1s;
         }
 
+        #custom-cursor.scroll-mode {
+            width: 16px;
+            height: 50px;
+            border-radius: 8px;
+            mix-blend-mode: normal;
+        }
+
+        #custom-cursor.scroll-mode .cursor-text {
+            opacity: 0;
+        }
+
+        #custom-cursor .cursor-scroll-icon {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        #custom-cursor.scroll-mode .cursor-scroll-icon {
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+
+        @keyframes scrolldrop {
+            0% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+
+            15% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            70% {
+                transform: translateY(22px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(22px);
+                opacity: 0;
+            }
+        }
+
+        .animate-scrolldrop {
+            animation: scrolldrop 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        #modal-scroll-indicator {
+            transition: opacity 0.3s ease;
+        }
+
+        #modal-scroll-indicator.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
         /* Client Logos Marquee */
         :root {
             --logo-w: calc(100vw / 3);
@@ -276,6 +342,11 @@
 
     <div id="custom-cursor">
         <span class="cursor-text absolute">DISCOVER</span>
+        <svg class="cursor-scroll-icon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            width="6" height="37" viewBox="0 0 6 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 0L6 5H0L3 0Z" fill="black" />
+            <path d="M3 37L0 32H6L3 37Z" fill="black" />
+        </svg>
     </div>
 
     <nav
@@ -301,7 +372,7 @@
                     Vincent Chau.</p>
                 <h1
                     class="text-[2.5rem] min-[820px]:text-[5rem] min-[1600px]:text-[6rem] font-bold tracking-tight text-white leading-[1.05]">
-                    Analyst Programmer & <br class="hidden min-[820px]:block"> Application Systems Developer
+                    Systems Analyst & <br class="hidden min-[820px]:block"> Application Systems Developer
                 </h1>
                 <p
                     class="text-base min-[820px]:text-xl min-[1600px]:text-2xl text-white/40 font-light max-w-[780px] leading-relaxed">
@@ -309,7 +380,8 @@
                     mission-critical operations — from requirements analysis to deployment and support.
                 </p>
             </div>
-            <div class="flex flex-col min-[820px]:flex-row items-start min-[820px]:items-center gap-6 pt-12 border-t border-white/[0.05]">
+            <div
+                class="flex flex-col min-[820px]:flex-row items-start min-[820px]:items-center gap-6 pt-12 border-t border-white/[0.05]">
                 <div class="flex gap-4">
                     <a href="#works"
                         class="group flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-white/90 transition-all duration-300 cursor-pointer">
@@ -365,6 +437,8 @@
                     <span
                         class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">CMS
                         Development</span>
+                    <span
+                        class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">Drupal</span>
                     <span
                         class="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-xs font-medium text-white/80 tracking-wide">MySQL
                         & PostgreSQL</span>
@@ -435,13 +509,14 @@
     <section id="contact"
         class="relative z-10 px-6 min-[820px]:px-12 py-24 min-[820px]:py-36 bg-gradient-to-b from-transparent to-black/80">
         <div class="max-w-[1400px] w-full mx-auto text-center space-y-8 max-w-[800px]">
-            <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">&bull; Open to Opportunities</span>
+            <span class="text-xs font-bold tracking-widest text-white/40 uppercase block">&bull; Open to
+                Opportunities</span>
             <h2 class="text-3xl min-[820px]:text-6xl font-bold text-white tracking-tight leading-tight">Ready to
-                contribute as an Analyst Programmer.</h2>
+                contribute as a Systems Analyst.</h2>
             <p class="text-base min-[820px]:text-xl text-white/50 font-light max-w-[600px] mx-auto leading-relaxed">
-                I'm seeking a role where I can apply my experience in systems analysis, application development,
-                database design, and ongoing system support — particularly in healthcare and public service
-                environments.
+                I'm seeking opportunities to apply my experience in systems analysis, application development,
+                database design, and ongoing system support — including Analyst Programmer roles in healthcare and
+                public service environments.
             </p>
             <div class="pt-8">
                 <a href="mailto:vincentchau.vc@gmail.com"
@@ -469,6 +544,13 @@
                 </svg>
             </button>
             <div id="modal-content" class="space-y-6">
+            </div>
+            <div id="modal-scroll-indicator"
+                class="hidden pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
+                <div
+                    class="w-[15px] h-[44px] border border-white/30 rounded-full flex justify-center pt-[6px] bg-[#030712]/50 backdrop-blur-sm">
+                    <div class="w-[7px] h-[7px] bg-white rounded-full animate-scrolldrop"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -564,43 +646,47 @@
                 id: "01",
                 assetsId: "04",
                 title: "Chow Sang Sang Digital Ecosystem",
-                category: "CMS & Web Application",
-                desc: "Retail digital ecosystem with centralized CMS, CRM integration, loyalty programme logic, and in-store advisor applications.",
-                challenge: "The client required synchronized data and applications across web, CRM, loyalty tiers, and frontline retail tools within one platform.",
-                solution: "Delivered CMS and application backend work including membership logic, CRM-connected data flows, and retail product modules for in-store advisors.",
-                tech: ["PHP", "Laravel", "MySQL", "CMS Development", "RESTful API", "Redis"],
+                category: "Systems Analysis & Application",
+                desc: "Multi-brand retail ecosystem — membership site (reward.chowsangsang.com), brand sales web tools, CSS product APIs, shared diamond inventory, and high-volume product data across platforms.",
+                challenge: "CSS product and diamond data are fetched via external APIs with extensive attributes, but the diamond API was too slow for frontline sales tools across multiple brand platforms. Items such as diamonds also share the same inventory pool across channels, so stock must stay consistent while product data is retrieved and validated in real time.",
+                analysis: "Analyzed cross-platform requirements for style retrieval, diamond data handling, and shared inventory rules on PostgreSQL; identified the upstream diamond API as a performance bottleneck and defined a FastAPI service layer to improve response time and data processing.",
+                solution: "Built a Python FastAPI caching and aggregation layer on PostgreSQL for slow diamond and style API calls, alongside PHP/Laravel backend work for shared stock validation, API integration, membership platform support, and CRM-connected data flows. Integrated CAS single sign-on across brand sales tools so users could move between platforms without separate logins.",
+                tech: ["PHP", "Laravel", "Python", "FastAPI", "PostgreSQL", "RESTful API", "Redis", "CAS / SSO Integration"],
                 imagesCount: 6
             },
             {
                 id: "02",
                 assetsId: "01",
                 title: "Hong Kong Palace Museum — Website & CMS Development",
-                category: "CMS & Web Application",
-                desc: "Museum website and CMS integrating ticketing, exhibitions, e-learning, and e-commerce for a high-traffic public institution.",
-                challenge: "The museum needed one digital platform to manage dense content and multiple operational modules while remaining stable for daily public use.",
-                solution: "Contributed to backend and CMS development, including database structure, system logic, and module integration to support content operations and public access.",
+                category: "Systems Analysis & Application",
+                desc: "Museum website and CMS for a high-traffic West Kowloon cultural institution — exhibitions, visitor information, ticketing, events, and membership.",
+                challenge: "The museum needed a bilingual public platform to publish dense exhibition content, visitor guidance, and programme updates while remaining stable for daily use.",
+                analysis: "Analyzed content workflows for exhibitions, visit planning, ticketing, events, and membership; defined database structure and CMS architecture for a unified bilingual platform.",
+                solution: "Developed backend and CMS components for exhibition publishing, visitor information, programme listings, and ongoing content maintenance.",
                 tech: ["PHP", "Laravel", "MySQL", "CMS Development", "RESTful API"],
                 imagesCount: 3
             },
             {
                 id: "03",
                 assetsId: "05",
-                title: "HKICL Website Revamp",
-                category: "Institutional Website",
-                desc: "Institutional website revamp for Hong Kong interbank clearing services, introducing FPS content and WCAG 2.0 Level AA accessibility.",
-                challenge: "Complex financial content had to be presented clearly to public and institutional audiences while meeting security and accessibility requirements.",
-                solution: "Supported website development with responsive implementation, information architecture for FPS content, and WCAG 2.0 Level AA compliance.",
+                title: "HKICL — Corporate Website & CMS Development",
+                category: "Systems Analysis & Application",
+                desc: "Corporate website and CMS for Hong Kong's interbank clearing institution — legacy content migration, FPS integration, and dual-server failover.",
+                challenge: "The legacy site held years of clearing-service content that had to move into a new CMS and website without disrupting public access, while meeting strict security and uptime requirements for a mission-critical financial institution.",
+                analysis: "Reviewed legacy content and planned how clearing services and FPS pages would be organised in the new CMS; defined migration workflows, bilingual publishing, and dual-server failover for service continuity.",
+                solution: "Built the CMS and public website, executed structured content migration from the legacy platform, integrated FPS and Information Centre content, and deployed dual-server failover so the site remains available if one server fails.",
                 tech: ["PHP", "JavaScript", "MySQL", "CMS Development", "HTML5 & CSS3"],
                 imagesCount: 3
             },
             {
                 id: "04",
                 assetsId: "03",
-                title: "Harbour Plaza Hotels & Resorts — Multi-Site CMS",
-                category: "CMS & Web Application",
-                desc: "Revamp of 11 hotel brand websites on a centralized Laravel CMS managing 8,500+ guest rooms across three hospitality brands.",
-                challenge: "Multiple brand sites required consistent CMS control with brand-specific flexibility and reliable performance for global visitors.",
-                solution: "Built and maintained the centralized CMS on Laravel, supporting multi-brand content workflows, room inventory management, and efficient content delivery.",
+                title: "Harbour Plaza Hotels & Resorts — Shared CMS & Hotel Websites",
+                category: "Systems Analysis & Application",
+                desc: "Shared Laravel CMS for 13 hotel websites across four brands — stakeholder requirements, in-house shared CMS proposal, and multilingual group and property content.",
+                challenge: "Each brand and hotel had different content and operational needs, making it difficult to maintain consistent standards and efficient updates across 13 property websites.",
+                analysis: "Gathered requirements from group management and individual hotel teams; proposed a shared CMS architecture in-house so the group portal and individual property sites could be managed from one flexible platform—rather than separate CMS instances per property.",
+                solution: "Built and maintained the shared Laravel CMS, database design, and publishing workflows for the group portal and 13 hotel websites across four brands.",
                 tech: ["PHP", "Laravel", "MySQL", "CMS Development", "Nginx"],
                 imagesCount: 3
             }
@@ -666,6 +752,50 @@
 
         bindCursorHovers();
 
+        const modalPanel = document.getElementById('modal-panel');
+        const modalScrollIndicator = document.getElementById('modal-scroll-indicator');
+
+        function updateModalScrollIndicator() {
+            if (!modalPanel || !modalScrollIndicator) return;
+
+            const canScroll = modalPanel.scrollHeight > modalPanel.clientHeight + 4;
+            const atBottom = modalPanel.scrollTop + modalPanel.clientHeight >= modalPanel.scrollHeight - 24;
+
+            if (canScroll && !atBottom) {
+                modalScrollIndicator.classList.remove('hidden');
+            } else {
+                modalScrollIndicator.classList.add('hidden');
+            }
+        }
+
+        function handleModalScrollCursor(e) {
+            if (!customCursor || window.innerWidth < 820) return;
+
+            if (e.target.closest('button, a, .cursor-pointer')) {
+                customCursor.classList.remove('scroll-mode');
+                return;
+            }
+
+            if (modalPanel && modalPanel.scrollHeight > Math.ceil(modalPanel.clientHeight)) {
+                customCursor.classList.add('scroll-mode');
+                customCursor.classList.remove('discover', 'active');
+            } else {
+                customCursor.classList.remove('scroll-mode');
+            }
+        }
+
+        function setupModalScrollUI() {
+            if (!modalPanel) return;
+            updateModalScrollIndicator();
+            setTimeout(updateModalScrollIndicator, 100);
+        }
+
+        if (modalPanel) {
+            modalPanel.onscroll = updateModalScrollIndicator;
+            modalPanel.addEventListener('mousemove', handleModalScrollCursor);
+            modalPanel.addEventListener('mouseleave', () => customCursor?.classList.remove('scroll-mode'));
+        }
+
         const projectModal = document.getElementById('project-modal');
         projectModal.addEventListener('click', (e) => {
             if (!e.target.closest('#modal-panel')) closeModal();
@@ -691,11 +821,15 @@
                 <div class="grid grid-cols-1 min-[820px]:grid-cols-12 gap-8 pt-2">
                     <div class="min-[820px]:col-span-8 space-y-6">
                         <div class="space-y-2">
-                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; Project Overview</h4>
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; Business &amp; Technical Challenge</h4>
                             <p class="text-sm min-[820px]:text-base text-white/50 font-light leading-relaxed">${p.challenge}</p>
                         </div>
                         <div class="space-y-2">
-                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; My Contribution</h4>
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; Systems Analysis</h4>
+                            <p class="text-sm min-[820px]:text-base text-white/50 font-light leading-relaxed">${p.analysis}</p>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-white/70">&bull; Development &amp; Implementation</h4>
                             <p class="text-sm min-[820px]:text-base text-white/50 font-light leading-relaxed">${p.solution}</p>
                         </div>
                     </div>
@@ -713,13 +847,22 @@
             const modal = document.getElementById('project-modal');
             modal.classList.remove('pointer-events-none', 'opacity-0');
             document.body.style.overflow = 'hidden';
-            customCursor?.classList.remove('discover', 'active');
+            customCursor?.classList.remove('discover', 'active', 'scroll-mode');
+
+            modalContent.querySelectorAll('img').forEach(img => {
+                if (img.complete) return;
+                img.addEventListener('load', updateModalScrollIndicator);
+            });
+            setupModalScrollUI();
         }
 
         function closeModal() {
             const modal = document.getElementById('project-modal');
             modal.classList.add('pointer-events-none', 'opacity-0');
             document.body.style.overflow = 'auto';
+            customCursor?.classList.remove('scroll-mode');
+            modalScrollIndicator?.classList.add('hidden');
+            if (modalPanel) modalPanel.scrollTop = 0;
         }
 
         window.openModal = openModal;
